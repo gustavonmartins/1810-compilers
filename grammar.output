@@ -1,0 +1,209 @@
+Terminals unused in grammar
+
+   DECLARATION
+
+
+Grammar
+
+    0 $accept: SOURCE $end
+
+    1 SOURCE: NOISES EXECS NOISES
+
+    2 EXECS: EXEC
+    3      | EXECS NOISES EXEC
+
+    4 EXEC: NONLOOPED
+    5     | LOOPED
+
+    6 LOOPED: OPEN NOISES EXECS NOISES CLOSE
+
+    7 NOISES: NOISE
+    8       | NOISES NOISE
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+error (256)
+NOISE (258) 7 8
+DECLARATION (259)
+NONLOOPED (260) 4
+OPEN (261) 6
+CLOSE (262) 6
+
+
+Nonterminals, with rules where they appear
+
+$accept (8)
+    on left: 0
+SOURCE (9)
+    on left: 1, on right: 0
+EXECS (10)
+    on left: 2 3, on right: 1 3 6
+EXEC (11)
+    on left: 4 5, on right: 2 3
+LOOPED (12)
+    on left: 6, on right: 5
+NOISES (13)
+    on left: 7 8, on right: 1 3 6 8
+
+
+State 0
+
+    0 $accept: . SOURCE $end
+
+    NOISE  shift, and go to state 1
+
+    SOURCE  go to state 2
+    NOISES  go to state 3
+
+
+State 1
+
+    7 NOISES: NOISE .
+
+    $default  reduce using rule 7 (NOISES)
+
+
+State 2
+
+    0 $accept: SOURCE . $end
+
+    $end  shift, and go to state 4
+
+
+State 3
+
+    1 SOURCE: NOISES . EXECS NOISES
+    8 NOISES: NOISES . NOISE
+
+    NOISE      shift, and go to state 5
+    NONLOOPED  shift, and go to state 6
+    OPEN       shift, and go to state 7
+
+    EXECS   go to state 8
+    EXEC    go to state 9
+    LOOPED  go to state 10
+
+
+State 4
+
+    0 $accept: SOURCE $end .
+
+    $default  accept
+
+
+State 5
+
+    8 NOISES: NOISES NOISE .
+
+    $default  reduce using rule 8 (NOISES)
+
+
+State 6
+
+    4 EXEC: NONLOOPED .
+
+    $default  reduce using rule 4 (EXEC)
+
+
+State 7
+
+    6 LOOPED: OPEN . NOISES EXECS NOISES CLOSE
+
+    NOISE  shift, and go to state 1
+
+    NOISES  go to state 11
+
+
+State 8
+
+    1 SOURCE: NOISES EXECS . NOISES
+    3 EXECS: EXECS . NOISES EXEC
+
+    NOISE  shift, and go to state 1
+
+    NOISES  go to state 12
+
+
+State 9
+
+    2 EXECS: EXEC .
+
+    $default  reduce using rule 2 (EXECS)
+
+
+State 10
+
+    5 EXEC: LOOPED .
+
+    $default  reduce using rule 5 (EXEC)
+
+
+State 11
+
+    6 LOOPED: OPEN NOISES . EXECS NOISES CLOSE
+    8 NOISES: NOISES . NOISE
+
+    NOISE      shift, and go to state 5
+    NONLOOPED  shift, and go to state 6
+    OPEN       shift, and go to state 7
+
+    EXECS   go to state 13
+    EXEC    go to state 9
+    LOOPED  go to state 10
+
+
+State 12
+
+    1 SOURCE: NOISES EXECS NOISES .
+    3 EXECS: EXECS NOISES . EXEC
+    8 NOISES: NOISES . NOISE
+
+    NOISE      shift, and go to state 5
+    NONLOOPED  shift, and go to state 6
+    OPEN       shift, and go to state 7
+
+    $default  reduce using rule 1 (SOURCE)
+
+    EXEC    go to state 14
+    LOOPED  go to state 10
+
+
+State 13
+
+    3 EXECS: EXECS . NOISES EXEC
+    6 LOOPED: OPEN NOISES EXECS . NOISES CLOSE
+
+    NOISE  shift, and go to state 1
+
+    NOISES  go to state 15
+
+
+State 14
+
+    3 EXECS: EXECS NOISES EXEC .
+
+    $default  reduce using rule 3 (EXECS)
+
+
+State 15
+
+    3 EXECS: EXECS NOISES . EXEC
+    6 LOOPED: OPEN NOISES EXECS NOISES . CLOSE
+    8 NOISES: NOISES . NOISE
+
+    NOISE      shift, and go to state 5
+    NONLOOPED  shift, and go to state 6
+    OPEN       shift, and go to state 7
+    CLOSE      shift, and go to state 16
+
+    EXEC    go to state 14
+    LOOPED  go to state 10
+
+
+State 16
+
+    6 LOOPED: OPEN NOISES EXECS NOISES CLOSE .
+
+    $default  reduce using rule 6 (LOOPED)
