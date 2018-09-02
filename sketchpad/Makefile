@@ -9,3 +9,9 @@ fb3-1:	fb3-1.l fb3-1.y fb3-1.h fb3-1main.c
 		flex -o fb3-1.lex.c fb3-1.l
 		cc -o $@ fb3-1.tab.c fb3-1.lex.c fb3-1main.c
 		rm fb3-1.tab.c fb3-1.lex.c fb3-1.tab.h
+
+fb3-2:	fb3-2.l fb3-2.y fb3-2main.h fb3-2main.c
+		bison -d fb3-2.y
+		flex -o fb3-2.lex.c fb3-2.l
+		cc -o $@ fb3-2.tab.c fb3-2.lex.c fb3-2main.c
+		rm fb3-2.tab.c fb3-2.lex.c fb3-2.tab.h
