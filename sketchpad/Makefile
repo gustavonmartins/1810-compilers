@@ -13,5 +13,5 @@ fb3-1:	fb3-1.l fb3-1.y fb3-1.h fb3-1main.c
 fb3-2:	fb3-2.l fb3-2.y fb3-2main.h fb3-2main.c
 		bison -d fb3-2.y
 		flex -o fb3-2.lex.c fb3-2.l
-		cc -o $@ fb3-2.tab.c fb3-2.lex.c fb3-2main.c
+		cc -o $@ fb3-2.tab.c fb3-2.lex.c fb3-2main.c -lm
 		rm fb3-2.tab.c fb3-2.lex.c fb3-2.tab.h

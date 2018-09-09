@@ -1,7 +1,7 @@
 %option noyywrap nodefault yylineno
 
 %{
-#include "fb3-2.h"
+#include "fb3-2main.h"
 #include "fb3-2.tab.h"
 %}
 
@@ -33,10 +33,10 @@ EXP ([Ee][-+]?[0-9]+)
 "do"                    {return DO;}
 "let"                   {return LET;}
 
-"sqrt"                  {yylfal.fn = B_sqrt; return FUNC;}
-"exp"                   {yylfal.fn = B_exp; return FUNC;}
-"log"                   {yylfal.fn = B_log; return FUNC;}
-"print"                 {yylfal.fn = B_print; return FUNC;}
+"sqrt"                  {yylval.fn = B_sqrt; return FUNC;}
+"exp"                   {yylval.fn = B_exp; return FUNC;}
+"log"                   {yylval.fn = B_log; return FUNC;}
+"print"                 {yylval.fn = B_print; return FUNC;}
 
 [a-zA-Z][a-zA-Z0-9]*    {yylval.s = lookup(yytext); return NAME;}
 

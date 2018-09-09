@@ -47,7 +47,7 @@ struct ufncall{
 struct flow{
   int nodetype;
   struct ast* cond;
-  struct ast* tl;ct 
+  struct ast* tl; 
   struct ast *el;
 };
 
@@ -72,7 +72,7 @@ struct ast* newcmp(int cmptype, struct ast* l, struct ast* r);
 struct ast* newfunc(int functype, struct ast* l);
 struct ast* newcall(struct symbol* s, struct ast* l);
 struct ast* newref(struct symbol* s);
-struct ast* newasgn(strut symbol *s, struct ast* v);
+struct ast* newasgn(struct symbol *s, struct ast* v);
 struct ast* newnum(double d);
 struct ast* newflow(int nodetype, struct ast* cond, struct ast* tl, struct ast* tr);
 
@@ -82,5 +82,5 @@ double eval(struct ast*);
 
 void treefree(struct ast*);
 
-static double callbuitin(struct fncall*);
+static double callbuiltin(struct fncall*);
 static double calluser(struct ufncall*);

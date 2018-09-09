@@ -3,7 +3,7 @@
 #include <stdarg.h>
 #include <string.h>
 #include <math.h>
-#include "fb3-2.h"
+#include "fb3-2main.h"
 
 static unsigned symhash(char* sym){
   unsigned int hash = 0;
@@ -71,13 +71,13 @@ struct ast* newcmp(int cmptype, struct ast* l, struct ast* r){
     exit(0);
   }
   a->nodetype = '0'+cmptype;
-  a->l=k;
+  a->l=l;
   a->r=r;
   return a;
 }
 
 struct ast* newfunc(int functype, struct ast* l){
-  struct fncall* a = malloc(sizeof(fncall));
+  struct fncall* a = malloc(sizeof(struct fncall));
 
   if(!a){
     yyerror("out of space");
@@ -91,7 +91,7 @@ struct ast* newfunc(int functype, struct ast* l){
 }
 
 struct ast* newcall(struct symbol* s, struct ast* l){
-  struct ufncall* a = malloc(sizeof(ufncall));
+  struct ufncall* a = malloc(sizeof(struct ufncall));
 
   if(!a){
     yyerror("out of space");
@@ -105,7 +105,7 @@ struct ast* newcall(struct symbol* s, struct ast* l){
 }
 
 struct ast* newref(struct symbol* s){
-  struct symref* a = malloc(sizeof(symref));
+  struct symref* a = malloc(sizeof(struct symref));
 
   if(!a){
     yyerror("out of space");
@@ -118,7 +118,7 @@ struct ast* newref(struct symbol* s){
 }
 
 struct ast* newasgn(struct symbol* s, struct ast* v){
-  struct symasgn* a = malloc(sizeof(symasgn));
+  struct symasgn* a = malloc(sizeof(struct symasgn));
 
   if(!a){
     yyerror("out of space");
@@ -131,8 +131,8 @@ struct ast* newasgn(struct symbol* s, struct ast* v){
   return (struct ast*)a;
 }
 
-struct ast* newflow(int nodetype,struct ast* cond, struct ast* tl,struct asl* el){
-  struct flow* a = malloc(sizeof(flow));
+struct ast* newflow(int nodetype,struct ast* cond, struct ast* tl,struct ast* el){
+  struct flow* a = malloc(sizeof(struct flow));
 
   if(!a){
     yyerror("out of space");
@@ -152,7 +152,7 @@ void treefree(struct ast* a){
     case '-'  :
     case '*'  :
     case '/'  :
-    case '1': case '2'; case '3': case '4': case '5': case '6':
+    case '1': case '2': case '3': case '4': case '5': case '6':
     case 'L':
       treefree(a->r);
 
@@ -176,7 +176,7 @@ void treefree(struct ast* a){
     default:  printf("internal error: free bad node %c\n", a->nodetype);
   }
 
-  fre(a);
+  free(a);
 }
 
 struct symlist* newsymlist(struct symbol* sym, struct symlist* next){
@@ -212,7 +212,7 @@ double eval(struct ast* a){
   switch(a->nodetype){
     case 'K': v = ((struct numval*)a)->number;break;
     case 'N': v = ((struct symref*)a)->s->value;break;
-    case '=': v = ((struct symasgn*)a)->s->value=eval(((struct symasgn*)a)->);break;
+    case '=': v = ((struct symasgn*)a)->s->value=eval(((struct symasgn*)a)->v);break;
 
 
     case '+': v = eval(a->l)+eval(a->r);break;
@@ -286,14 +286,14 @@ static double callbuiltin(struct fncall* f){
 void dodef(struct symbol* name, struct symlist* syms, struct ast* func){
   if(name->syms) symlistfree(name->syms);
   if(name->func) treefree(name->func);
-  name->sysms = sysms;
+  name->syms = syms;
   name->func = func;
 }
 
 static double calluser(struct ufncall* f){
-  struct symbol* fn=f->s;
+  struct symbol* fn = f->s;
   struct symlist* sl;
-  struct ast*;
+  struct ast* args = f->l;
   double *oldval, *newval;
   double v;
   int nargs;
@@ -304,7 +304,7 @@ static double calluser(struct ufncall* f){
     return 0;
   }
 
-  sl=fn->sysms;
+  sl=fn->syms;
   for(nargs=0; sl; sl=sl->next){nargs++;}
 
   oldval=(double*)malloc(nargs*sizeof(double));

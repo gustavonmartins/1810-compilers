@@ -1,7 +1,7 @@
 %{
 # include <stdio.h>
 # include <stdlib.h>
-# include "fb3-2.h"
+# include "fb3-2main.h"
 %} 
 
 %union{
@@ -36,7 +36,7 @@ calclist  : %empty
                                                             treefree($2);
                                                             printf("> ");
                                                             }
-          | calclist LET NAME '(' symlist ')' '=' list EOL  {dodef($3, $5; $8);
+          | calclist LET NAME '(' symlist ')' '=' list EOL  {dodef($3, $5, $8);
                                                             printf("Defined %s\n> ", $3->name);
                                                             }
           | calclist error EOL                              {yyerrok; printf("> ");}
@@ -64,13 +64,13 @@ exp       : exp CMP exp           {$$ = newcmp($2,$1,$3);}
           | NAME                  {$$ = newref($1);}
           | NAME '=' exp          {$$ = newasgn($1,$3);}
           | FUNC '(' explist ')'  {$$ = newfunc($1,$3);}
-          | NAME '(' explist ')'  {$$ = newref($1,$3);}
+          | NAME '(' explist ')'  {$$ = newcall($1,$3);}
          ;
 
 explist   : exp
           | exp ',' explist       {$$ = newast('L',$1,$3);}
           ;
 
-symlist   : NAME                  {$$ = newsymlist('S',$1,NULL);}
-          | NAME ',' symlist      {$$ = newsymlist('S',$1,$3);}
+symlist   : NAME                  {$$ = newsymlist($1,NULL);}
+          | NAME ',' symlist      {$$ = newsymlist($1,$3);}
           ;
