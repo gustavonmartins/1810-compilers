@@ -85,4 +85,9 @@ int main(int argc, char* argv[]){
   yydebug = 1;
   errors = 0;
   yyparse();
+  printf("Woow!! Parse Completed!\n");
+  if(errors==0){
+    print_code();
+    fetch_execute_cycle();
+  }
 }

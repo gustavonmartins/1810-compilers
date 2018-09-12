@@ -1,3 +1,5 @@
+#include <stdio.h>
+
 #include "CG.h"
 
 int data_offset=0;
@@ -23,4 +25,13 @@ void gen_code(enum code_ops operation, int arg){
 void back_patch(int addr, enum code_ops operation, int arg){
   code[addr].op=operation;
   code[addr].arg=arg;
+}
+
+void print_code(){
+  int i=0;
+  
+  while(i<code_offset){
+    printf("%31d: %-10s%41d\n", i, op_name[(int) code[i].op], code[i].arg);
+    i++;
+  }
 }

@@ -5,6 +5,8 @@ enum code_ops {HALT,STORE,JMP_FALSE,JMP_TRUE,GOTO,
               DATA,LD_INT,LD_VAR,READ_INT,WRITE_INT,
               LT,EQ,GT,ADD,SUB,MULT,DIV,PWR};
 
+extern const char* op_name[18]; 
+          
 struct instruction {enum code_ops op; int arg;};
 
 struct instruction code[999];
