@@ -37,11 +37,11 @@ declarations: %empty
             ;
 
 id_seq      : %empty
-            | id_seq IDENTIFIER '.'           {install($2);}
+            | id_seq IDENTIFIER ','           {install($2);}
             ;
 
 commands    : %empty
-            | commands command '.'
+            | commands command ';'
             ;
 
 command     : SKIP
