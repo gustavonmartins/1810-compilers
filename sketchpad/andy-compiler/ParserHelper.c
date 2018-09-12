@@ -1,20 +1,26 @@
+#include "ParserHelper.h"
+#include "ST.h"
+#include "CG.h"
+#include <stdlib.h>
+#include <stdio.h>
+
 struct lbs* newlblrec(){
   return (struct lbs*) malloc(sizeof(struct lbs));
 }
 
 void install(char* sym_name){
-  symrec* s;
+  struct symrec* s;
   s=getsym(sym_name);
   if(s==0){
     s=putsym(sym_name);
   }else{
     errors++;
-    printf("%s is already defined\n", sym_name);
+    printf("%s is already defined\n", sym_name);
   }
 }
 
 void context_check(enum code_ops operation, char* sym_name){
-  symrec* identifier;
+  struct symrec* identifier;
   identifier=getsym(sym_name);
   if(identifier==0){
     errors++;
