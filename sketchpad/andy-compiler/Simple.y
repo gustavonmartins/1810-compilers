@@ -91,3 +91,8 @@ int main(int argc, char* argv[]){
     fetch_execute_cycle();
   }
 }
+
+void yyerror(char* s){
+  errors++;
+  printf("%s\n", s);
+}

@@ -6,7 +6,4 @@
 
 
 
-void yyerror(char* s){
-  errors++;
-  printf("%s\n", s);
-}
+
