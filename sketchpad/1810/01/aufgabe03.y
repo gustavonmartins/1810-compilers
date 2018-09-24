@@ -5,15 +5,17 @@
 %token PICTURE IDENTIFIER START END
 %token VAR
 %token TYPE
-%token FOR TO VAL_INTEGER STEP DO DONE
-%token VAL_POINT
+%token FOR TO VAL_INT STEP DO DONE
+%token VAL_NUM VAL_POINT VAL_LINESHAPE VAL_STRING
 
 %token ASGN ":=" 
 %token ASGN_LATE "<-"
+%token LBLB "<<"
+%token RBRB ">>"
 
 %%
 
-program : PICTURE '"' IDENTIFIER '"' declarations START commands END
+program : PICTURE VAL_STRING declarations START commands END
         ;
 
 declarations  : %empty
@@ -30,9 +32,10 @@ commands      : %empty
 command       :  assign ';'
               |  fcall ';'
               |  loop ';'
+              |  IDENTIFIER ';'  /* for Terms */
               ;
 
-loop          :  FOR IDENTIFIER ":=" TO VAL_INTEGER STEP VAL_INTEGER DO commands DONE
+loop          :  FOR IDENTIFIER ":=" VAL_NUM TO VAL_NUM STEP VAL_NUM DO commands DONE
 
 assign        :  IDENTIFIER ":=" potentialvalue
               |  IDENTIFIER "<-" potentialvalue
@@ -67,11 +70,16 @@ args_inner    :  potentialvalue
 IDENTIFIER_or_val     :  IDENTIFIER
                       |  value
                       |  '(' IDENTIFIER_or_val ')'
+                      |  "<<" args_inner ">>"
                       ;
 
 value                 :  VAL_POINT
-                      |  VAL_INTEGER
+                      |  VAL_INT
+                      |  VAL_NUM
+                      |  VAL_STRING
                       ;
+                      
+                      
 
 potentialvalue     :  IDENTIFIER_or_val
                    |  fcall

@@ -5,33 +5,45 @@
 %}
 
 DIGIT [0-9]
-ID    [a-z][a-z0-9]*
-INT   DIGIT+
+ID    [a-zA-Z][a-zA-Z0-9]*
+INT   [-+]?{DIGIT}+
+NUM   [-+]?{DIGIT}+\.?{DIGIT}*
+POINT [^{ID}]"("{NUM}","{NUM}")"
+STRING \".*\"
 
 %%
 
-":="                  {return ASGN;};
-"<-"                  {return ASGN_LATE;};
-picture               {return(PICTURE);};
-start                 {return(START);};
-end                   {return(END);};
-var                   {return(VAR);};
-Int                   {return(TYPE);};
-Num                   {return(TYPE);};
-String                {return(TYPE);};
-Point                 {return(TYPE);};
-Path                  {return(TYPE);};
-Term                  {return(TYPE);};
-for                   {return(FOR);};
-to                    {return(TO);};
-step                  {return(STEP);};
-do                    {return(DO);};
-done                  {return(DONE);};
-"("{DIGIT}+","{DIGIT}+")"      {return(VAL_POINT);};
-{ID}                  {return(IDENTIFIER);};
-{DIGIT}+              {return VAL_INTEGER;};
 
-[ \t\n]+              {};
+picture               {return(PICTURE);}
+start                 {return(START);}
+end                   {return(END);}
+var                   {return(VAR);}
+Int                   {return(TYPE);}
+Num                   {return(TYPE);}
+String                {return(TYPE);}
+Point                 {return(TYPE);}
+Path                  {return(TYPE);}
+Term                  {return(TYPE);}
+for                   {return(FOR);}
+to                    {return(TO);}
+step                  {return(STEP);}
+do                    {return(DO);}
+done                  {return(DONE);}
+
+":="                  {return ASGN;}
+"<-"                  {return ASGN_LATE;}
+"<<"                  {return LBLB;}
+">>"                  {return RBRB;}
+
+{STRING}              {return VAL_STRING;}
+{POINT}               {return VAL_POINT;}
+{ID}                  {return IDENTIFIER;}
+{NUM}                 {return VAL_NUM;}
+{INT}                 {return VAL_INT;}
+
+
+[ \t\n]+              {}
+\%.*                  {}
 .                     {return yytext[0];}
 %%                    
 
