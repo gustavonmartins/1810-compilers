@@ -69,7 +69,6 @@ args_inner    :  potentialvalue
               
 IDENTIFIER_or_val     :  IDENTIFIER
                       |  value
-                      |  '(' IDENTIFIER_or_val ')'
                       |  "<<" args_inner ">>"
                       ;
 
