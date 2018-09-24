@@ -29,25 +29,30 @@ commands      : %empty
               | commands command
               ;
 
-command       :  assign ';'
-              |  fcall ';'
-              |  loop ';'
+command       :  assign ';' /*1*/
+              |  fcall ';'  /*1*/
+              |  loop ';'   /*1*/
               |  IDENTIFIER ';'  /* for Terms */
               ;
+/*0*/
+assign        :  IDENTIFIER ":=" potentialvalue   /*2*/
+              |  IDENTIFIER "<-" potentialvalue   /*2*/
+              ;
+
+fcall         :  IDENTIFIER args                  /*2*/
+              |  fcall_arith                      /*2*/
+              ; 
 
 loop          :  FOR IDENTIFIER ":=" VAL_NUM TO VAL_NUM STEP VAL_NUM DO commands DONE
+/*1*/
+potentialvalue     :  IDENTIFIER_or_val           /*3*/
+                   |  fcall                       /*3 (in 2)*/
+                   |  val_therme                  /*3*/
+                   ;
 
-assign        :  IDENTIFIER ":=" potentialvalue
-              |  IDENTIFIER "<-" potentialvalue
+args          :  '(' args_inner ')'               /*3*/
               ;
-
-val_therme    :  '{' commands '}'
-              ;
-              
-fcall         :  IDENTIFIER args
-              |  fcall_arith
-              ;              
-              
+                   
 fcall_arith   :  IDENTIFIER_or_val '+' IDENTIFIER_or_val
               |  IDENTIFIER_or_val '-' IDENTIFIER_or_val
               |  IDENTIFIER_or_val '*' IDENTIFIER_or_val
@@ -59,18 +64,27 @@ fcall_arith   :  IDENTIFIER_or_val '+' IDENTIFIER_or_val
               |  "abs" '(' IDENTIFIER_or_val ')'
               |  "random" '(' IDENTIFIER_or_val ',' IDENTIFIER_or_val ')'
               ;
+/*2*/
+              
+IDENTIFIER_or_val     :  IDENTIFIER
+                      |  value                  /*4*/
+                      |  "<<" args_inner ">>"
+                      ;
 
-args          :  '(' args_inner ')'
+val_therme    :  '{' commands '}'
               ;
+              
+             
+              
+
+
+
 
 args_inner    :  potentialvalue
               |  args_inner ',' potentialvalue
               ;
               
-IDENTIFIER_or_val     :  IDENTIFIER
-                      |  value
-                      |  "<<" args_inner ">>"
-                      ;
+/*3*/
 
 value                 :  VAL_POINT
                       |  VAL_INT
@@ -80,10 +94,7 @@ value                 :  VAL_POINT
                       
                       
 
-potentialvalue     :  IDENTIFIER_or_val
-                   |  fcall
-                   |  val_therme
-                   ;
+
 
 %%
 
