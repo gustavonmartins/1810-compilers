@@ -8,7 +8,8 @@
 %token FOR TO VAL_INTEGER STEP DO DONE
 %token VAL_POINT
 
-%token ASGN ASGN_LATE
+%token ASGN ":=" 
+%token ASGN_LATE "<-"
 
 %%
 
@@ -33,8 +34,8 @@ command       :  assign ';'
 
 loop          :  FOR IDENTIFIER ":=" TO VAL_INTEGER STEP VAL_INTEGER DO commands DONE
 
-assign        :  IDENTIFIER ASGN potentialvalue
-              |  IDENTIFIER ASGN_LATE potentialvalue
+assign        :  IDENTIFIER ":=" potentialvalue
+              |  IDENTIFIER "<-" potentialvalue
               ;
 
 val_therme    :  '{' commands '}'
