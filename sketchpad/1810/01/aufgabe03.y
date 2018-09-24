@@ -53,10 +53,10 @@ fcall_arith   :  IDENTIFIER_or_val '+' IDENTIFIER_or_val
               |  IDENTIFIER_or_val '*' IDENTIFIER_or_val
               |  IDENTIFIER_or_val '/' IDENTIFIER_or_val
               |  IDENTIFIER_or_val "mod" IDENTIFIER_or_val
-              |  "sin" IDENTIFIER_or_val
-              |  "cos" IDENTIFIER_or_val
-              |  "ln" IDENTIFIER_or_val
-              |  "abs" IDENTIFIER_or_val
+              |  "sin" '(' IDENTIFIER_or_val ')'  /* TODO: Make it able of calling arithm results*/
+              |  "cos" '(' IDENTIFIER_or_val ')'
+              |  "ln" '(' IDENTIFIER_or_val ')'
+              |  "abs" '(' IDENTIFIER_or_val ')'
               |  "random" '(' IDENTIFIER_or_val ',' IDENTIFIER_or_val ')'
               ;
 
