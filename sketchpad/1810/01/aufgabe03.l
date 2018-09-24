@@ -8,7 +8,8 @@ DIGIT [0-9]
 ID    [a-zA-Z][a-zA-Z0-9]*
 INT   [-+]?{DIGIT}+
 NUM   [-+]?{DIGIT}+\.?{DIGIT}*
-POINT [^{ID}]"("{NUM}","{NUM}")"
+FCALLPREFIXOPEN {ID}"("
+POINT "("{NUM}","{NUM}")"
 STRING \".*\"
 
 %%
@@ -36,6 +37,7 @@ done                  {return(DONE);}
 ">>"                  {return RBRB;}
 
 {STRING}              {return VAL_STRING;}
+{FCALLPREFIXOPEN}           {return FCALLPREFIXOPEN;}
 {POINT}               {return VAL_POINT;}
 {ID}                  {return IDENTIFIER;}
 {NUM}                 {return VAL_NUM;}

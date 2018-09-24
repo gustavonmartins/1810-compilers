@@ -7,6 +7,7 @@
 %token TYPE
 %token FOR TO VAL_INT STEP DO DONE
 %token VAL_NUM VAL_POINT VAL_LINESHAPE VAL_STRING
+%token FCALLPREFIXOPEN
 
 %token ASGN ":=" 
 %token ASGN_LATE "<-"
@@ -39,8 +40,8 @@ assign        :  IDENTIFIER ":=" potentialvalue   /*2*/
               |  IDENTIFIER "<-" potentialvalue   /*2*/
               ;
 
-fcall         :  IDENTIFIER args                  /*2*/
-              |  fcall_arith                      /*2*/
+fcall         :  FCALLPREFIXOPEN args ')'                 /*2*/
+              |  fcall_nonprefix                      /*2*/
               ; 
 
 loop          :  FOR IDENTIFIER ":=" VAL_NUM TO VAL_NUM STEP VAL_NUM DO commands DONE
@@ -50,19 +51,14 @@ potentialvalue     :  IDENTIFIER_or_val           /*3*/
                    |  val_therme                  /*3*/
                    ;
 
-args          :  '(' args_inner ')'               /*3*/
+args          :   args_inner                /*3*/
               ;
                    
-fcall_arith   :  IDENTIFIER_or_val '+' IDENTIFIER_or_val
+fcall_nonprefix   :  IDENTIFIER_or_val '+' IDENTIFIER_or_val
               |  IDENTIFIER_or_val '-' IDENTIFIER_or_val
               |  IDENTIFIER_or_val '*' IDENTIFIER_or_val
               |  IDENTIFIER_or_val '/' IDENTIFIER_or_val
               |  IDENTIFIER_or_val "mod" IDENTIFIER_or_val
-              |  "sin" '(' IDENTIFIER_or_val ')'  /* TODO: Make it able of calling arithm results*/
-              |  "cos" '(' IDENTIFIER_or_val ')'
-              |  "ln" '(' IDENTIFIER_or_val ')'
-              |  "abs" '(' IDENTIFIER_or_val ')'
-              |  "random" '(' IDENTIFIER_or_val ',' IDENTIFIER_or_val ')'
               ;
 /*2*/
               
