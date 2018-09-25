@@ -30,14 +30,14 @@ commands      : %empty
               | commands command
               ;
 
-command       :  assign ';' /*1*/
+command       :  assign  /*1*/
               |  fcall ';'  /*1*/
               |  loop ';'   /*1*/
               |  IDENTIFIER ';'  /* for Terms */
               ;
 /*0*/
-assign        :  IDENTIFIER ":=" potentialvalue   /*2*/
-              |  IDENTIFIER "<-" potentialvalue   /*2*/
+assign        :  IDENTIFIER ":=" potentialvalue ';'  /*2*/
+              |  IDENTIFIER "<-" potentialvalue ';'  /*2*/
               ;
 
 fcall         :  FCALLPREFIXOPEN args ')'                 /*2*/
@@ -54,11 +54,11 @@ potentialvalue     :  IDENTIFIER_or_val           /*3*/
 args          :   args_inner                /*3*/
               ;
                    
-fcall_nonprefix   :  IDENTIFIER_or_val '+' IDENTIFIER_or_val
-              |  IDENTIFIER_or_val '-' IDENTIFIER_or_val
-              |  IDENTIFIER_or_val '*' IDENTIFIER_or_val
-              |  IDENTIFIER_or_val '/' IDENTIFIER_or_val
-              |  IDENTIFIER_or_val "mod" IDENTIFIER_or_val
+fcall_nonprefix   :  potentialvalue '+' potentialvalue
+              |  potentialvalue '-' potentialvalue
+              |  potentialvalue '*' potentialvalue
+              |  potentialvalue '/' potentialvalue
+              |  potentialvalue "mod" potentialvalue
               ;
 /*2*/
               
