@@ -13,12 +13,14 @@
 %token ASGN_LATE "<-"
 %token LBLB "<<"
 %token RBRB ">>"
+%token MOD "mod"
+
+%left '+' '-'
+%left '*' '/' "mod"
 
 %expect 0
 
 %%
-
-
 
 program : PICTURE VAL_STRING declarations START commands END
         ;
@@ -34,19 +36,20 @@ commands      : %empty
               | commands command
               ;
 
-command       :  assign  /*1*/
+command       :  assign ';' /*1*/
               |  fcall ';'  /*1*/
               |  loop ';'   /*1*/
               |  IDENTIFIER ';'  /* for Terms */
               ;
 /*0*/
-assign        :  IDENTIFIER ":=" potentialvalue ';'  /*2*/
-              |  IDENTIFIER "<-" potentialvalue ';'  /*2*/
+assign        :  IDENTIFIER ":=" potentialvalue   /*2*/
+              |  IDENTIFIER "<-" potentialvalue  /*2*/
               ;
 
 fcall         :  FCALLPREFIXOPEN args ')'                 /*2*/
               |  fcall_nonprefix                      /*2*/
-              ; 
+              |  '(' IDENTIFIER ',' potentialvalue ')'
+			  ; 
 
 loop          :  FOR IDENTIFIER ":=" VAL_NUM TO VAL_NUM STEP VAL_NUM DO commands DONE
 /*1*/
@@ -57,7 +60,7 @@ potentialvalue     :  IDENTIFIER_or_val           /*3*/
 
 args          :   args_inner                /*3*/
               ;
-                   
+
 fcall_nonprefix   :  potentialvalue '+' potentialvalue
               |  potentialvalue '-' potentialvalue
               |  potentialvalue '*' potentialvalue
@@ -73,12 +76,6 @@ IDENTIFIER_or_val     :  IDENTIFIER
 
 val_therme    :  '{' commands '}'
               ;
-              
-             
-              
-
-
-
 
 args_inner    :  potentialvalue
               |  args_inner ',' potentialvalue
@@ -91,11 +88,7 @@ value                 :  VAL_POINT
                       |  VAL_NUM
                       |  VAL_STRING
                       ;
-                      
-                      
-
-
-
+					  
 %%
 
 int main(int argc, char* argv[]){

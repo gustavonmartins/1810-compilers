@@ -35,8 +35,7 @@ done;
 setlinewidth(10);
 black;
 
-p:=plot(0,0,200,0,3*360, t, sin(t));  %TODO: MANY STUFF MISSING
-
+p:=plot(0,0,200,0,3*360, (t, sin(t)));  %TODO: MANY STUFF MISSING
 translate(100,100,{draw(scalebox(400,200,p));});
 
 end
