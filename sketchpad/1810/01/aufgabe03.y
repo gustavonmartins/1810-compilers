@@ -14,7 +14,11 @@
 %token LBLB "<<"
 %token RBRB ">>"
 
+%expect 0
+
 %%
+
+
 
 program : PICTURE VAL_STRING declarations START commands END
         ;
