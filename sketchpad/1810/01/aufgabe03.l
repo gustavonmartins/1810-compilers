@@ -9,7 +9,6 @@ ID    [a-zA-Z][a-zA-Z0-9]*
 INT   [ ]*[~]?{DIGIT}+[ ]*
 NUM   [ ]*[~]?{DIGIT}+\.?{DIGIT}*[ ]*
 FCALLPREFIXOPEN {ID}[ ]*"("
-POINT "("{NUM}","{NUM}")"
 STRING \".*\"
 
 %option yylineno
@@ -41,7 +40,6 @@ done                  {return(DONE);}
 {STRING}              {return VAL_STRING;}
 "mod"				  {return MOD;}
 {FCALLPREFIXOPEN}     {return FCALLPREFIXOPEN;}
-{POINT}               {return VAL_POINT;}
 {ID}                  {return IDENTIFIER;}
 {NUM}                 {return VAL_NUM;}
 {INT}                 {return VAL_INT;}

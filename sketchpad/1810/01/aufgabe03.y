@@ -6,7 +6,7 @@
 %token VAR
 %token TYPE
 %token FOR TO VAL_INT STEP DO DONE
-%token VAL_NUM VAL_POINT VAL_LINESHAPE VAL_STRING
+%token VAL_NUM VAL_LINESHAPE VAL_STRING
 %token FCALLPREFIXOPEN
 
 %token ASGN ":=" 
@@ -50,10 +50,9 @@ assign        :  IDENTIFIER ":=" potentialvalue   /*2*/
 
 fcall         :  FCALLPREFIXOPEN args ')'                 /*2*/
               |  fcall_nonprefix                      /*2*/
-              |  '(' IDENTIFIER ',' potentialvalue ')'
 			  ; 
 
-loop          :  FOR IDENTIFIER ":=" VAL_NUM TO VAL_NUM STEP VAL_NUM DO commands DONE
+loop          :  FOR IDENTIFIER ":=" potentialvalue TO potentialvalue STEP potentialvalue DO commands DONE
 /*1*/
 potentialvalue     :  IDENTIFIER_or_val           /*3*/
                    |  fcall                       /*3 (in 2)*/
@@ -86,11 +85,14 @@ args_inner    :  potentialvalue
               
 /*3*/
 
-value                 :  VAL_POINT
+value                 :  val_tuple
                       |  VAL_INT
                       |  VAL_NUM
                       |  VAL_STRING
                       ;
+					  
+val_tuple			  :  '(' potentialvalue ',' potentialvalue ')'
+					  ;
 					  
 %%
 int yylineno;
