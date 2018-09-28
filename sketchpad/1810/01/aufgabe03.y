@@ -68,6 +68,8 @@ fcall_nonprefix   :  potentialvalue '+' potentialvalue
               |  potentialvalue '*' potentialvalue
               |  potentialvalue '/' potentialvalue
               |  potentialvalue "mod" potentialvalue
+			  |  '+' potentialvalue
+			  |  '-' potentialvalue
               ;
 /*2*/
               
