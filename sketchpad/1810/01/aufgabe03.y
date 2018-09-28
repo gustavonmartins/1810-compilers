@@ -20,6 +20,8 @@
 
 %expect 0
 
+
+
 %%
 
 program : PICTURE VAL_STRING declarations START commands END
@@ -56,6 +58,7 @@ loop          :  FOR IDENTIFIER ":=" VAL_NUM TO VAL_NUM STEP VAL_NUM DO commands
 potentialvalue     :  IDENTIFIER_or_val           /*3*/
                    |  fcall                       /*3 (in 2)*/
                    |  val_therme                  /*3*/
+				   | '(' potentialvalue ')'
                    ;
 
 args          :   args_inner                /*3*/
@@ -90,17 +93,19 @@ value                 :  VAL_POINT
                       ;
 					  
 %%
+int yylineno;
 
 int main(int argc, char* argv[]){
   extern FILE* yyin;
   ++argv;--argc;
   yyin = fopen(argv[0],"r");
   yydebug = 1;
+  yylineno=1;
   yyparse();
   printf("Woow!! Parse Completed!\n");
 
 }
 
-void yyerror(char* s){
-  printf("%s\n", s);
+void yyerror(const char* s){
+  printf("Error on line %d: %s\n", yylineno, s);
 }

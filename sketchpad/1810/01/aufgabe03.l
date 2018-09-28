@@ -12,6 +12,8 @@ FCALLPREFIXOPEN {ID}[ ]*"("
 POINT "("{NUM}","{NUM}")"
 STRING \".*\"
 
+%option yylineno
+
 %%
 
 
