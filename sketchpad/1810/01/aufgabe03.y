@@ -1,5 +1,9 @@
 %{
 #define YYDEBUG 1
+
+extern int yylineno;
+extern char *yytext;
+
 %}
 
 %token PICTURE IDENTIFIER START END
@@ -19,6 +23,7 @@
 %left '*' '/' "mod"
 
 %expect 0
+%error-verbose
 
 
 
@@ -97,7 +102,6 @@ val_tuple			  :  '(' potentialvalue ',' potentialvalue ')'
 					  ;
 					  
 %%
-int yylineno;
 
 int main(int argc, char* argv[]){
   extern FILE* yyin;
@@ -111,5 +115,5 @@ int main(int argc, char* argv[]){
 }
 
 void yyerror(const char* s){
-  printf("Error on line %d: %s\n", yylineno, s);
+  printf("Error on line %d, text \"%s\": %s\n", yylineno,yytext, s);
 }
