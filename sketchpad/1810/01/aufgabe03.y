@@ -36,7 +36,7 @@ declarations  : %empty
               | declarations declaration 
               ;
 
-declaration   : VAR IDENTIFIER ':' TYPE ';'
+declaration   : VAR list ':' TYPE ';'
               ;
 
 commands      : %empty
@@ -53,54 +53,42 @@ assign        :  IDENTIFIER ":=" potentialvalue   /*2*/
               |  IDENTIFIER "<-" potentialvalue  /*2*/
               ;
 
-fcall         :  FCALLPREFIXOPEN args ')'                 /*2*/
+fcall         :  FCALLPREFIXOPEN list ')'                 /*2*/
               |  fcall_nonprefix                      /*2*/
 			  ; 
 
 loop          :  FOR IDENTIFIER ":=" potentialvalue TO potentialvalue STEP potentialvalue DO commands DONE
 /*1*/
-potentialvalue     :  IDENTIFIER_or_val           /*3*/
-                   |  fcall                       /*3 (in 2)*/
-                   |  val_therme                  /*3*/
-				   | '(' potentialvalue ')'
+potentialvalue     :  value           				/*3*/
+				   |  IDENTIFIER
+				   |  fcall                       /*3 (in 2)*/
+				   |  "<<" list ">>"
+				   |  '{' commands '}'
+				   |  '(' potentialvalue ')'
                    ;
 
-args          :   args_inner                /*3*/
+list          :  potentialvalue
+              |  list ',' potentialvalue
               ;
 
-fcall_nonprefix   :  potentialvalue '+' potentialvalue
-              |  potentialvalue '-' potentialvalue
-              |  potentialvalue '*' potentialvalue
-              |  potentialvalue '/' potentialvalue
-              |  potentialvalue "mod" potentialvalue
-			  |  '+' potentialvalue
-			  |  '-' potentialvalue
-              ;
+fcall_nonprefix   	:  potentialvalue '+' potentialvalue
+					|  potentialvalue '-' potentialvalue
+					|  potentialvalue '*' potentialvalue
+					|  potentialvalue '/' potentialvalue
+					|  potentialvalue "mod" potentialvalue
+					|  '+' potentialvalue
+					|  '-' potentialvalue
+					;
 /*2*/
-              
-IDENTIFIER_or_val     :  IDENTIFIER
-                      |  value                  /*4*/
-                      |  "<<" args_inner ">>"
-                      ;
-
-val_therme    :  '{' commands '}'
-              ;
-
-args_inner    :  potentialvalue
-              |  args_inner ',' potentialvalue
-              ;
               
 /*3*/
 
-value                 :  val_tuple
+value                 :  '(' potentialvalue ',' potentialvalue ')' /* tuple, used for points and describing function */
                       |  VAL_INT
                       |  VAL_NUM
                       |  VAL_STRING
                       ;
-					  
-val_tuple			  :  '(' potentialvalue ',' potentialvalue ')'
-					  ;
-					  
+
 %%
 
 int main(int argc, char* argv[]){
