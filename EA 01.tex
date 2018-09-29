@@ -1,0 +1,95 @@
+\documentclass[11pt]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage{mathtools}
+\usepackage{amssymb}
+\usepackage{caption}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{listings}
+\DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{listing}{\colorbox{gray}{\parbox{\textwidth}{#1#2#3}}}
+\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
+\title{\textbf{1810 Einsendenaufgabe KE 01}}
+\author{Gustavo Nunes Martins}
+\date{29 September 2018}
+\begin{document}
+	\maketitle
+	\section*{Aufgabe 1}
+	\section*{Aufgabe 2}	\begin{lstlisting}[label=some-code,caption=Lexer Code]
+	#define TRUE 1
+	
+	int gettoken(){
+	int c;
+	state = 0; start_state=0;
+	
+	while (TRUE){
+	switch(state){
+	case 11:
+	c = nextchar();
+	if isdigit(c)		state=12;
+	else if issign(c)	state=13;
+	else				state=next_diagram();
+	break;
+	
+	case 12:
+	c = nextchar();
+	if c=='.'			state=14;
+	else if isdigit(c)	state=12;
+	else				state=next_diagram();
+	break;
+	
+	case 13:
+	c=nextchar();
+	if isdigit(c)		state=12;
+	else				state=next_diagram();
+	break;
+	
+	case 14:
+	c=nextchar();
+	if isdigit(c)		state=15;
+	else if c=='E'		state=17;
+	else				state=16;
+	break;
+	
+	case 15:
+	c=nextchar();
+	if isdigit(c)		state=15;
+	else if c=='E'		state=17;
+	else				state=16;
+	break;
+	
+	case 16:
+	return REAL;
+	break;
+	
+	case 17:
+	c=nextchar();
+	if isdigit(c)		state=18;
+	else if issign(c)	state=19;
+	else				state=next_diagram();
+	break;
+	
+	case 18;
+	c=nextchar(c)
+	if isdigit(c)		state=18;
+	else				state=16;
+	break;
+	
+	case 19:
+	c=nextchar();
+	if isdigit(c)		state=18;
+	else				state=next_diagram();
+	}
+	}
+	}
+	\end{lstlisting}
+	\section*{Aufgabe 3}
+	Anmerkungen: 
+	\begin{itemize}
+		\item Das lesen von negativ-Nummern lauft nicht nur durch den Lexer, aber auch durch den Parser. Das erleichtert die Entscheidung von "-" als negativ-Nummern oder als Subtraktion.
+		\item Punkte (z.B. (3,2) oder (p,5)) und Funktionen ((v, f(v)) sind alle durch Tupeln repr\"{a}sentiert.
+		\item Relative Bindungskr\"{a}fte zwischen Multiplikation, Division, Summierung und Subtraktion sind durch %token Vorrang verwirklicht.
+		\item Der Code fuers Lexer und Parser ist als zip Datei geliefert.
+		
+	\end{itemize}
+\end{document}
