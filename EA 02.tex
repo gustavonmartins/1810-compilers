@@ -14,6 +14,7 @@
 \usepackage{tikz}
 \usetikzlibrary{automata,positioning}
 
+\usepackage{makecell}
 
 \title{\textbf{1810 Einsendeaufgabe KE 02}}
 \author{Gustavo Nunes Martins}
@@ -30,73 +31,79 @@
 	\end{center}
 	Die folgenden Syntax-Diagramme helfen, die Parser zu erzeugen. Die entsprechende Implementation ist nebenan:
 	\subsection*{S:}
-	\begin{minipage}{.5\textwidth}
-	\includegraphics[width=.3\linewidth]{../../../../Desktop/diagram/diagram/S}
+	\begin{minipage}{.4\textwidth}
+	\includegraphics[width=0.4\linewidth]{ke-02/diagram/diagram/S}
+
 	\end{minipage}
 	\begin{minipage}{0.6\textwidth}
-		\begin{lstlisting}[language=C]		
+	\begin{lstlisting}[language=C]		
 void CheckS(){
   CheckA();
+  if (lookAhead!=$) then
+    {error($)}
 }
-		\end{lstlisting}
+	\end{lstlisting}
 	\end{minipage}
 	\subsection*{A:}
-	\begin{minipage}{0.5\textwidth}
-		\includegraphics[width=1\linewidth]{../../../../Desktop/diagram/diagram/A}
+	\begin{minipage}{0.4\textwidth}
+	\includegraphics[width=1\linewidth]{ke-02/diagram/diagram/A}
 	\end{minipage}
 	\begin{minipage}{0.6\textwidth}
 		\begin{lstlisting}[language=C]		
 bool CheckA(){
-  if (getchar()=='x') then 
-    {CheckB();checkT('y');checkT('x');return TRUE}
-  else if (getchar()=='w') then 
-    {checkT('z');checkA();checkT('x');return TRUE}
+  if (lookAhead=='x') then 
+    {CheckB();match('y');match('x');return TRUE}
+  else if (lookAhead=='w') then 
+    {match('z');checkA();match('x');return TRUE}
   else error('A');
 }
 		\end{lstlisting}
 	\end{minipage}	
 	\subsection*{B:}
-	\begin{minipage}{0.5\textwidth}
-		\includegraphics[width=1\linewidth]{../../../../Desktop/diagram/diagram/B}
+	\begin{minipage}{0.4\textwidth}
+	\includegraphics[width=1\linewidth]{ke-02/diagram/diagram/B}
+	
 	\end{minipage}
 	\begin{minipage}{0.6\textwidth}
-		\begin{lstlisting}[language=C]		
+	\begin{lstlisting}[language=C]		
 void CheckB(){
-if (getchar()=='y') then 
-  {checkT('z');checkT('z');checkB();checkV();}
+if (lookAhead=='y') then 
+  {match('z');match('z');checkB();checkV();}
 else if (checkA()) then 
-  {checkT('w');checkV();}
+  {match('w');checkV();}
 else error('B');
 }
 \end{lstlisting}
 	\end{minipage}
 	\subsection*{V:}
-	\begin{minipage}{0.5\textwidth}
-		\includegraphics[width=.75\linewidth]{../../../../Desktop/diagram/diagram/V}
+	\begin{minipage}{0.4\textwidth}
+	\includegraphics[width=1\linewidth]{ke-02/diagram/diagram/V}
 	\end{minipage}
 	\begin{minipage}{0.6\textwidth}
 		\begin{lstlisting}[language=C]		
 void CheckV(){
-  if (getchar()==' ') then 
-    {}
-  else if (getchar()=='w') then 
-    {checkT('z');checkV();}
-  else error('V');
+  if (lookAhead=='w') then 
+    {match('z');checkV();}
+  else {}
 }
 		\end{lstlisting}
 	\end{minipage}
 \begin{lstlisting}[language=C]
 
 int main(){
+  lookAhead = nextSymbol();
   checkS();
 }
 		
-void CheckT(char terminal){
-  if (getchar()!=terminal) then error(terminal);
+void match(terminal t){
+  if lookAhead != t then 
+    error(t);
+  else
+    {lookAhead = nextSymbol();} / nextSymbol aus den Lexer
 }
 
-void error(char location){
-  printf("ERROR: Symbol %s failed\n", location);
+void error(symbol failedOn){
+  printf("ERROR: Symbol %s malformed\n", failedOn);
   exit(-1);
 }
 
@@ -108,9 +115,9 @@ void error(char location){
 	\begin{tabular}{l|l}
 		vorher & naher \\ \hline
 		$S \rightarrow aTbUcU \mid aTbU$ & 
-		$S \rightarrow aTbUS', S'\rightarrow cU\mid \varepsilon$
-		\\
-		$T\rightarrow dVd \mid dVdW \mid dVdX$ & $T\rightarrow dVdT', T'\rightarrow \varepsilon\mid W \mid X$
+		\makecell{$S \rightarrow aTbUS'$\\$ S'\rightarrow cU\mid \varepsilon$}
+		\\ \hline
+		$T\rightarrow dVd \mid dVdW \mid dVdX$ & \makecell{$T\rightarrow dVdT'$ \\$ T'\rightarrow \varepsilon\mid W \mid X$}
 	\end{tabular}
 	\subsection*{b}
 	\begin{tabular}{l|l|l|l}
