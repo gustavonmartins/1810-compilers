@@ -1,0 +1,65 @@
+<HTML>
+  <BODY>
+
+  <H3>
+    <CENTER>
+    CSc 135<br>
+    Computing Theory and Languages<br><br>
+
+    Practice exercises - Pumping Lemma<br>
+    SOLUTIONS
+    </CENTER>
+  </H3>
+  <hr>
+
+  <pre>
+All solutions assume pumping length P and partition(y) length k.
+i is the number of times partition k is to be pumped.
+
+1. choose string  a(P)-b(2P), and i=2.
+   The result is a(P+k)b(2P) which isn't in L.
+
+2. Assume P>1 and choose string  0(P)-1-2(P), and i=2.
+   The result is 0(P+k)-1-2(P) which isn't in L.
+
+3. choose string  a(2P)-b(P), and i=0.
+   The resulting string is a(2P-k)-b(P), which isn't in L.
+   Note that k=1 fails in some cases, because some of the a's can
+    be moved into the Z partition (labeled w in the problem).
+
+4. choose string  a(P)-b(P), and i=2.
+   The resulting string is a(P+k)-b(P) which isn't in L because n>l.
+
+5. choose string  b(P)-a(2P), and i=2.
+   The resulting string is b(P+k)-a(2P), which isn't in L.
+   Note that k=0 fails in some cases, because some of the a's can
+    be moved into the XY partition (labeled v in the problem).
+
+6. choose string  b(P)-a-b(P)-a, and i=0.
+   The resulting string is b(P-k)-a-b(P)-a, which can't be in L.
+
+The last two are tricky:
+
+7. Assume P>=2 and choose string  0(P!), and i=2.
+   The resulting string is 0(P!+k).  For that to be in the language,
+   P!+k must itself be a factorial.  Since P!+k is greater than P!,
+   let's check to see if (P+1)! is already too large to be that factorial.
+   The largest possible value for k would be P, and in that case the
+   resulting string would be 0(P!+P).  But P!+P < (P+1)!, because
+   (P+1)! is equal to (P!)x(P+1), and comparing P!+P to P!x(P+1), it
+   is clear that the second length is greater.  So the resulting string
+   cannot possibly be in the language.
+
+8. choose string  a(N) where N is a prime and N>P+1.  That is, pick the
+   first prime number bigger than P+1.  Note that since the partition xy
+   must be less than P, this guarantees that |z|>1.  Now choose i=|xz|.
+   Then our string looks like:  a(D), where  D = |xz| + (|y|)(|xz|),
+   which equals (1+|y|)(|xz|).  Since both 1+|y| and |xz| are at least 2,
+   their product cannot be a prime.  Therefore, the resulting string is
+   not in the language.
+   
+  </pre>
+
+  </BODY>
+</HTML>
+
