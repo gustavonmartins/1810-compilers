@@ -1,6 +1,8 @@
 %{
 #define YYDEBUG 1
 
+#include <stdlib.h>
+
 extern int yylineno;
 extern char *yytext;
 
@@ -98,10 +100,12 @@ int main(int argc, char* argv[]){
   yydebug = 1;
   yylineno=1;
   yyparse();
-  printf("Woow!! Parse Completed!\n");
+  printf("accepted\n");
 
 }
 
 void yyerror(const char* s){
+  printf("rejected: \n");
   printf("Error on line %d, text \"%s\": %s\n", yylineno,yytext, s);
+  exit(-1);
 }
