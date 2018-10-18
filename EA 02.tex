@@ -122,34 +122,57 @@ void error(symbol failedOn){
 		$T\rightarrow dVd \mid dVdW \mid dVdX$ & \makecell{$T\rightarrow dVdT'$ \\$ T'\rightarrow \varepsilon\mid W \mid X$}
 	\end{tabular}
 	\subsection*{b}
-	\begin{tabular}{l|l|l|l}
-		Regel & FIRST & FOLLOW & Steuer \\ \hline
-		S & \{a\} & \{\$\} & \{\} \\
-		S' & $\{\varepsilon,c\}$ & \{\$\} & \{\} \\
-		T & \{d\} & \{b\}  & \{\} \\
-		T' & $\{\varepsilon,e,f\}$ & \{b\}  & \{\} \\
-		U & $\{h, g, \varepsilon\}$ & \{\$,c\} & \\
-		V & \{d\} & \{d\} & \\
-		W & \{e\} & \{b\} & \\
-		X & \{f\} & \{b\} & \\
-		Y & \{h\} & \{\$,c\} & \\
-		Z & $\{g,\varepsilon\}$ & \{\$,c\} &
+	\begin{tabular}{l|l|l}
+		Regel & FIRST & FOLLOW \\ \hline
+		S & \{a\} & \{\$\}  \\
+		S' & $\{\varepsilon,c\}$ & \{\$\}  \\
+		T & \{d\} & \{b\}   \\
+		T' & $\{\varepsilon,e,f\}$ & \{b\}   \\
+		U & $\{h, g, \varepsilon\}$ & \{\$,c\} \\
+		V & \{d\} & \{d\} \\
+		W & \{e\} & \{b\} \\
+		X & \{f\} & \{b\} \\
+		Y & \{h\} & \{\$,c\} \\
+		Z & $\{g,\varepsilon\}$ & \{\$,c\} 
 	\end{tabular}
+	\newline
+	Für die Steuermenge, FSME(A) bedeutet FIRST(A) - $ \{\varepsilon\}$:
+	
+	\begin{tabular}{l|l|l}
+		Regel & Steuer & Herleitung\\ \hline
+		$ S \rightarrow aTbuS'$ 		& $\{a\}$ 		& FIRST(A) \\ \hline
+		$ S' \rightarrow cU $ 			& $\{c\}$ 		& FIRST(S') \\
+		$ S' \rightarrow \varepsilon $ 	& $\{\$\}$ 		& FOLLOW(S') \\ \hline 
+		$ T \rightarrow dVdT' $ 		& $\{d\}$ 		& FIRST(T) \\ \hline
+		$ T' \rightarrow W $ 			& $\{e\}$ 		& FIRST(W) \\
+		$ T' \rightarrow X $ 			& $\{f\}$ 		& FIRST(X) \\
+		$ T' \rightarrow \varepsilon $ 	& $\{b\}$ 		& FOLLOW(T') \\ \hline
+		$ U \rightarrow Y $ 			& $\{h\}$ 		& FIRST(Y) \\
+		$ U \rightarrow Z $ 			& $\{c,g,\$\}$ 	& FSME(Z) $ \bigcup FOLLOW(Z) $ \\ \hline
+		$ V \rightarrow d $ 			& $\{d\}$ 		& FIRST(V) \\ \hline
+		$ W \rightarrow eT $ 			& $\{e\}$ 		& FIRST(W) \\ \hline
+		$ X \rightarrow fT $ 			& $\{f\}$ 		& FIRST(X) \\ \hline
+		$ Y \rightarrow hZ $ 			& $\{h\}$ 		& FIRST(Y) \\ \hline
+		$ Z \rightarrow g $ 			& $\{g\}$ 		& FIRST(Z) \\ \hline
+		$ Z \rightarrow \varepsilon $ 	& $\{c,\$\}$ 	& FOLLOW(Z) \\
+	\end{tabular}
+	
 	\subsection*{c}
 	\begin{adjustwidth}{-2cm}{}
 	\begin{tabular}{l|l|l|l|l|l|l|l|l|l}
 		 & a & b & c & d & e & f & g & h & \$ \\
-		S & $ S \rightarrow aTbUS' $ & & & & & & &\\
-		S' & & & $ S' \rightarrow cU $ & & & & & & $ S' \rightarrow \varepsilon $\\
-		T & & & & & & & &$ T \rightarrow dVdT' $\\
-		T' & & $ T' \rightarrow \varepsilon $ & & & $ T' \rightarrow W $ & $ T' \rightarrow X $ & &\\
-		U & & & $ U \rightarrow Z $ & & & & $ U \rightarrow Z $ & $ U \rightarrow Y $ & $ U \rightarrow Z $\\
-		V & & & & $ V \rightarrow d $ & & & &\\
-		W & & & & & $ W \rightarrow eT $ & & &\\
-		X & & & & & & $ X \rightarrow fT $ & &\\
-		Y & & & & & & & & $ Y \rightarrow hZ $\\
-		Z & & & $ Z \rightarrow \varepsilon $ & & & & $ Z \rightarrow g $ & & $ Z \rightarrow \varepsilon $\\
+		S & $ S \rightarrow aTbUS' $ & & & & & & &\\ \hline
+		S' & & & $ S' \rightarrow cU $ & & & & & & $ S' \rightarrow \varepsilon $\\ \hline
+		T & & & & $ T \rightarrow dVdT' $ & & & &\\ \hline
+		T' & & $ T' \rightarrow \varepsilon $ & & & $ T' \rightarrow W $ & $ T' \rightarrow X $ & &\\ \hline
+		U & & & $ U \rightarrow Z $ & & & & $ U \rightarrow Z $ & $ U \rightarrow Y $ & $ U \rightarrow Z $\\ \hline
+		V & & & & $ V \rightarrow d $ & & & &\\ \hline
+		W & & & & & $ W \rightarrow eT $ & & &\\ \hline
+		X & & & & & & $ X \rightarrow fT $ & &\\ \hline
+		Y & & & & & & & & $ Y \rightarrow hZ $\\ \hline
+		Z & & & $ Z \rightarrow \varepsilon $ & & & & $ Z \rightarrow g $ & & $ Z \rightarrow \varepsilon $\\ \hline
 	\end{tabular}
 	\end{adjustwidth}
 	\section*{Aufgabe 3}
+	In .zip Datei verfügbar
 \end{document}
