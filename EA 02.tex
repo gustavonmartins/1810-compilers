@@ -122,6 +122,15 @@ void error(symbol failedOn){
 		$T\rightarrow dVd \mid dVdW \mid dVdX$ & \makecell{$T\rightarrow dVdT'$ \\$ T'\rightarrow \varepsilon\mid W \mid X$}
 	\end{tabular}
 	\subsection*{b}
+
+		Folgende Bild erklärt die Herleitung des Folowmenge, wobei FLW(A) bedeutet FOLLOW(A) und FSME(A) bedeutet FIRST(A) - $ \{\varepsilon\} $
+		\newline
+		\newline
+		\includegraphics[width=0.7\linewidth]{followset}
+		\newline
+		An dieser Bild, \$ gehort zum FLW(S) (gezeigt durch die von den link Seite ankommende Pfeil), und alle Elemente von FLW(S) gehören zum FLW(S'). Die richttung eines Pfeil bestimmt die zurehorigkeit zwischen Mengen. Alle elementen von FLW(S') gehören auch zum FLW(U), und alle Elementen von FSME(S') gehoren zum FLW(U) Das erbigt folgende FIRST und FOLLOW Mengen:
+		\newline
+		\newline
 	\begin{tabular}{l|l|l}
 		Regel & FIRST & FOLLOW \\ \hline
 		S & \{a\} & \{\$\}  \\
@@ -136,6 +145,8 @@ void error(symbol failedOn){
 		Z & $\{g,\varepsilon\}$ & \{\$,c\} 
 	\end{tabular}
 	\newline
+
+
 	Für die Steuermenge, FSME(A) bedeutet FIRST(A) - $ \{\varepsilon\}$:
 	
 	\begin{tabular}{l|l|l}
