@@ -1,0 +1,38 @@
+\documentclass[11pt]{scrartcl}
+\usepackage[utf8]{inputenc}
+\usepackage{mathtools}
+\usepackage{amssymb}
+
+\usepackage{caption}
+\usepackage{color}
+\usepackage{xcolor}
+\usepackage{listings}
+\DeclareCaptionFont{white}{\color{white}}
+\DeclareCaptionFormat{listing}{\colorbox{gray}{\parbox{\textwidth}{#1#2#3}}}
+\captionsetup[lstlisting]{format=listing,labelfont=white,textfont=white}
+
+\usepackage{tikz}
+\usetikzlibrary{automata,positioning}
+
+\usepackage{makecell}
+
+\usepackage{changepage}
+
+\title{\textbf{1810 Einsendeaufgabe KE 03}}
+\author{Gustavo Nunes Martins}
+
+\begin{document}
+	\maketitle
+	\section*{Aufgabe 2}
+	\subsection*{a}
+	Nur 2 Produktionsregeln sind verändert, nämlich:
+
+	\begin{tabular}{l|l}
+		vorher & naher \\ \hline
+		$S \rightarrow aTbUcU \mid aTbU$ & 
+		\makecell{$S \rightarrow aTbUS'$\\$ S'\rightarrow cU\mid \varepsilon$}
+		\\ \hline
+		$T\rightarrow dVd \mid dVdW \mid dVdX$ & \makecell{$T\rightarrow dVdT'$ \\$ T'\rightarrow \varepsilon\mid W \mid X$}
+	\end{tabular}
+
+\end{document}
