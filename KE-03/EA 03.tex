@@ -25,14 +25,14 @@
 	\maketitle
 	\section*{Aufgabe 2}
 	\subsection*{a}
-	Nur 2 Produktionsregeln sind verändert, nämlich:
+	17 Zustände sind erfordelich, nämlich:
 
-	\begin{tabular}{l|l}
-		vorher & naher \\ \hline
-		$S \rightarrow aTbUcU \mid aTbU$ & 
-		\makecell{$S \rightarrow aTbUS'$\\$ S'\rightarrow cU\mid \varepsilon$}
-		\\ \hline
-		$T\rightarrow dVd \mid dVdW \mid dVdX$ & \makecell{$T\rightarrow dVdT'$ \\$ T'\rightarrow \varepsilon\mid W \mid X$}
+	\begin{tabular}{l|l|l}
+		0 & & \\ \hline
+		S' & .S & \$ \\ \hline
+		S & .Xa & \$ \\ \hline
+		X & .Xb & a,b \\
+		& .bYa & a,b \\
 	\end{tabular}
 
 \end{document}

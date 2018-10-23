@@ -5,11 +5,11 @@ digraph {
 	S0[label="
 	S'-\> .S	,$ \l
 S	-\>.Xa	,$ \l
-X	-\>.Xb	,a,b \l
-	-\>.bYa	,a,b"];
+X	-\>.Xb 	,\{a \| b\} \l
+	         -\>.bYa	,\{a \|b\}"];
 	S1[label="{a|v|c}"];
 	
-    S0-> S1[label="S"];
+    0-> 1[label="S"];
     0 -> 2[label="X"];
     0 -> 3[label="b"];
     
