@@ -18,6 +18,8 @@
 
 \usepackage{changepage}
 
+\usepackage{mwe}
+
 \title{\textbf{1810 Einsendeaufgabe KE 03}}
 \author{Gustavo Nunes Martins}
 
@@ -34,12 +36,17 @@
 		x & $>$ & error & $>$ & error & error & $>$  \\ \hline
 		\$& $<$ & $<$ & $<$ & $<$ & $<$ & accept 
 	\end{tabular}
+
+Reduktionen sind in grüne Farbe repräsentiert:
+\begin{center}
+	\includegraphics[width=\linewidth]{table.png}
+\end{center}
+	
 	\subsection*{b}
 	\section*{Aufgabe 2}
 	\subsection*{a}
-	17 Zustände sind erfordelich, nämlich:
-
-
+	17 Zustände sind erforderlich, nämlich:
+	\begin{table}[!htbp]
 	\begin{tabular}{l|l|l}
 		\multicolumn{3}{c}{Zustand 0} \\ \hline
 		S' & .S & \$ \\ \hline
@@ -47,8 +54,9 @@
 		X & .Xb & a,b \\
 		& .bYa & a,b \\
 	\end{tabular}
-	
-	\begin{table}[h]
+	\end{table}
+
+	\begin{table}[!htbp]
 		\begin{tabular}[t]{l|l|l}
 			\multicolumn{3}{c}{$1: 0 \xrightarrow{S} 1$} \\ \hline
 			S' & S. & \$ \\ 
@@ -67,7 +75,7 @@
 		\end{tabular}
 	\end{table}
 	
-	\begin{table}[h]
+	\begin{table}[!htbp]
 		\begin{tabular}[t]{l|l|l}
 			\multicolumn{3}{c}{$4: 2 \xrightarrow{a} 4$} \\ \hline
 			S & Xa. & \$ \\ 
@@ -90,7 +98,7 @@
 		\end{tabular}
 	\end{table}
 		
-	\begin{table}[h]
+	\begin{table}[!htbp]
 			\begin{tabular}[t]{l|l|l}
 				\multicolumn{3}{c}{$8: 6 \xrightarrow{a} 8$} \\ \hline
 				X & bYa. & a,b \\ 
@@ -111,8 +119,8 @@
 				 & .aXZ & a \\
 			\end{tabular}
 		\end{table}
-		
-	\begin{table}[h]
+
+	\begin{table}[!htbp]
 		\begin{tabular}[t]{l|l|l}
 				\multicolumn{3}{c}{$11: 9 \xrightarrow{c} 11$} \\ \hline
 				Y & aXc. & a \\ \hline
@@ -131,12 +139,11 @@
 			X & bY.a & a,c \\
 		\end{tabular}
 		\begin{tabular}[t]{l}
-				$7: 10 \xrightarrow{a} 7$ \\ \hline
-				7\\
+				$10 \xrightarrow{a} 7$ \\ \hline
 		\end{tabular}
 	\end{table}
 		
-		\begin{table}[h]
+		\begin{table}[!htbp]
 			\begin{tabular}[t]{l|l|l}
 				\multicolumn{3}{c}{$15: 11 \xrightarrow{c} 15$} \\ \hline
 				Z & cc. & a \\ 
