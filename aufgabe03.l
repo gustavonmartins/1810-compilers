@@ -8,13 +8,36 @@ DIGIT [0-9]
 ID    [a-zA-Z][a-zA-Z0-9]*
 INT   [ ]*{DIGIT}+[ ]*
 NUM   [ ]*{DIGIT}+\.{DIGIT}*[ ]*
-FCALLPREFIXOPEN {ID}[ ]*"("
 STRING \".*\"
 
 %option yylineno
 
 %%
 
+setcolor			  {return SETCOLOR;}
+setdrawstyle		  {return SETDRAWSTYLE;}
+setfont				  {return SETFONT;}
+setlinewidth		  {return SETLINEWIDTH;}
+arc				 	  {return ARC;}
+ellipse			 	  {return ELLIPSE;}
+plot				  {return PLOT;}
+string2path				{return STRING2PATH;}
+concat						{return CONCAT;}
+union 				  {return UNION;}
+scaletobox 			  {return SCALETOBOX;}
+draw				  {return DRAW;}
+fill				  {return FILL;}
+num2string	 		  {return NUM2STRING;}
+write				  {return WRITE;}
+rotate				  {return ROTATE;}
+scale				  {return SCALE;}
+translate			  {return TRANSLATE;}
+clip				  {return CLIP;}
+
+sin										{return SIN;}
+cos										{return COS;}
+random								{return RANDOM;}
+exp										{return EXP;}
 
 picture               {return(PICTURE);}
 start                 {return(START);}
@@ -39,7 +62,6 @@ done                  {return(DONE);}
 
 {STRING}              {return VAL_STRING;}
 "mod"				  {return MOD;}
-{FCALLPREFIXOPEN}     {return FCALLPREFIXOPEN;}
 {ID}                  {return IDENTIFIER;}
 {NUM}                 {return VAL_NUM;}
 {INT}                 {return VAL_INT;}

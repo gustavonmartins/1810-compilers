@@ -15,6 +15,9 @@ extern char *yytext;
 %token VAL_NUM VAL_LINESHAPE VAL_STRING
 %token FCALLPREFIXOPEN
 
+%token SETCOLOR SETDRAWSTYLE SETFONT SETLINEWIDTH ARC ELLIPSE PLOT STRING2PATH CONCAT UNION SCALETOBOX DRAW FILL NUM2STRING WRITE ROTATE SCALE TRANSLATE CLIP
+%token SIN COS RANDOM EXP
+
 %token ASGN ":=" 
 %token ASGN_LATE "<-"
 %token LBLB "<<"
@@ -55,8 +58,31 @@ assign        :  IDENTIFIER ":=" potentialvalue   /*2*/
               |  IDENTIFIER "<-" potentialvalue  /*2*/
               ;
 
-fcall         :  FCALLPREFIXOPEN list ')'                 /*2*/
-              |  fcall_nonprefix                      /*2*/
+fcall         :  fcall_nonprefix                      /*2*/
+			  |  SETCOLOR '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'                 /*2*/
+			  |  SETDRAWSTYLE '(' potentialvalue ',' potentialvalue ')'                 /*2*/
+			  |  SETFONT '(' potentialvalue ',' potentialvalue ')'
+			  |  SETLINEWIDTH '(' potentialvalue ')'
+			  |  ARC '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'  
+			  |  ELLIPSE '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'  
+			  |  PLOT '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'
+			  |  STRING2PATH '(' potentialvalue ',' potentialvalue ')'
+			  |  CONCAT '(' potentialvalue ',' potentialvalue ')'
+			  |  UNION '(' potentialvalue ',' potentialvalue ')'
+			  |  SCALETOBOX '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'
+			  |  DRAW '(' potentialvalue ')'
+			  |  FILL '(' potentialvalue ')'
+			  |  NUM2STRING '(' potentialvalue ')'
+			  |  WRITE '(' potentialvalue ')'
+			  |  WRITE '(' potentialvalue ',' potentialvalue ')'
+			  |  ROTATE '(' potentialvalue ',' potentialvalue ')'
+			  |  SCALE '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'
+			  |  TRANSLATE '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'
+			  |  CLIP '(' potentialvalue ',' potentialvalue ')'
+			  |  SIN '(' potentialvalue ')'
+			  |  COS '(' potentialvalue ')'
+			  |  RANDOM '(' potentialvalue ',' potentialvalue ')'
+			  |  EXP '(' potentialvalue ',' potentialvalue ')'
 			  ; 
 
 loop          :  FOR IDENTIFIER ":=" potentialvalue TO potentialvalue STEP potentialvalue DO commands DONE
