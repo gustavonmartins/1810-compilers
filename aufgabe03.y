@@ -6,7 +6,11 @@
 extern int yylineno;
 extern char *yytext;
 
+#include "aufgabe03.h"
+
 %}
+
+%union {struct ComplexNode* content;}
 
 %token PICTURE IDENTIFIER START END
 %token VAR
@@ -119,16 +123,7 @@ value                 :  '(' potentialvalue ',' potentialvalue ')' /* tuple, use
 
 %%
 
-int main(int argc, char* argv[]){
-  extern FILE* yyin;
-  ++argv;--argc;
-  yyin = fopen(argv[0],"r");
-  yydebug = 1;
-  yylineno=1;
-  yyparse();
-  printf("accepted\n");
 
-}
 
 void yyerror(const char* s){
   printf("rejected: \n");
