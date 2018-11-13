@@ -61,13 +61,13 @@ done                  {return(DONE);}
 ">>"                  {return RBRB;}
 
 {STRING}              {return VAL_STRING;}
-"mod"				  {return MOD;}
+"mod"				  				{return MOD;}
 {ID}                  {return IDENTIFIER;}
-{NUM}                 {return VAL_NUM;}
-{INT}                 {return VAL_INT;}
+{NUM}                 {yylval.ast_double=atof(yytext);return VAL_NUM;}
+{INT}                 {yylval.ast_int=atoi(yytext); 	return VAL_INT;}
 
 
-[ \t\r\n]+              {}
+[ \t\r\n]+            {}
 \%.*                  {}
 .                     {return yytext[0];}
 %%                    
