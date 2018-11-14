@@ -16,25 +16,25 @@ STRING \".*\"
 
 %%
 
-setcolor			  {return SETCOLOR;}
-setdrawstyle		  {return SETDRAWSTYLE;}
-setfont				  {return SETFONT;}
-setlinewidth		  {return SETLINEWIDTH;}
-arc				 	  {return ARC;}
-ellipse			 	  {return ELLIPSE;}
-plot				  {return PLOT;}
-string2path				{return STRING2PATH;}
-concat						{return CONCAT;}
-union 				  {return UNION;}
-scaletobox 			  {return SCALETOBOX;}
-draw				  {return DRAW;}
-fill				  {return FILL;}
-num2string	 		  {return NUM2STRING;}
-write				  {return WRITE;}
-rotate				  {return ROTATE;}
-scale				  {return SCALE;}
-translate			  {return TRANSLATE;}
-clip				  {return CLIP;}
+setcolor						  {return SETCOLOR;}
+setdrawstyle					{return SETDRAWSTYLE;}
+setfont							  {return SETFONT;}
+setlinewidth					{return SETLINEWIDTH;}
+arc				 	  				{return ARC;}
+ellipse			 				  {return ELLIPSE;}
+plot				  				{return PLOT;}
+string2path						{return STRING2PATH;}
+concat								{return CONCAT;}
+union 							  {return UNION;}
+scaletobox 						{return SCALETOBOX;}
+draw				  				{return DRAW;}
+fill				  				{return FILL;}
+num2string	 					{return NUM2STRING;}
+write				  				{return WRITE;}
+rotate							  {return ROTATE;}
+scale				  				{return SCALE;}
+translate						  {return TRANSLATE;}
+clip				  				{return CLIP;}
 
 sin										{return SIN;}
 cos										{return COS;}
@@ -62,11 +62,11 @@ done                  {return(DONE);}
 "<<"                  {return LBLB;}
 ">>"                  {return RBRB;}
 
-{STRING}              {yylval.ast=new Value();yylval.ast->val_string=yytext;			return VAL_STRING;}
+{STRING}              {yylval.ast_value=new Value(yytext);							return VAL_STRING;}
 "mod"				  				{return MOD;}
 {ID}                  {return IDENTIFIER;}
-{NUM}                 {yylval.ast=new Value();yylval.ast->val_num=atof(yytext);		return VAL_NUM;}
-{INT}                 {yylval.ast=new Value();yylval.ast->val_int=atoi(yytext); 	return VAL_INT;}
+{NUM}                 {yylval.ast_value=new Value(atof(yytext));				return VAL_NUM;}
+{INT}                 {yylval.ast_value=new Value(atoi(yytext)); 				return VAL_INT;}
 
 
 [ \t\r\n]+            {}

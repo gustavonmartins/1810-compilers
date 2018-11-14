@@ -12,9 +12,9 @@ int yylex();
 
 %}
 
-%union {struct Value* ast;}
+%union {struct Value* ast_value;}
 				
-%type <ast> VAL_INT VAL_NUM VAL_STRING value
+%type <ast_value> VAL_INT VAL_NUM VAL_STRING value
 
 %token PICTURE IDENTIFIER START END
 %token VAR
@@ -120,9 +120,9 @@ fcall_nonprefix :  potentialvalue '+' potentialvalue
               
 /*3*/
 
-value           :  VAL_INT 			{$$=$1;}
-                |  VAL_NUM 			{$$=$1;}
-                |  VAL_STRING 	{$$=$1;}
+value           :  VAL_INT 			{$$=new Value($1->getInt());		std::cout<<"y: "<<$$->getInt()<<"\n";}
+                |  VAL_NUM 			{$$=new Value($1->getDouble());	std::cout<<"y: "<<$$->getDouble()<<"\n";}
+                |  VAL_STRING 	{$$=new Value($1->getString());	std::cout<<"y: "<<$$->getString()<<"\n";}
                 ;
 
 %%

@@ -9,5 +9,6 @@ start               % Beginner mit Zeichenansweisungen
 
 p:=2;
 x:=4.9;
+q:="hi";
 
 end
