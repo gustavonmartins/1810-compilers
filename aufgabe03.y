@@ -12,13 +12,9 @@ int yylex();
 
 %}
 
-%union {struct ComplexNode* ast;
-				double ast_double;
-				int ast_int;}
+%union {struct Value* ast;}
 				
-%type <ast_int> VAL_INT
-%type <ast_double> VAL_NUM
-%type <ast_double> value
+%type <ast> VAL_INT VAL_NUM VAL_STRING value
 
 %token PICTURE IDENTIFIER START END
 %token VAR
@@ -46,88 +42,88 @@ int yylex();
 
 %%
 
-program : PICTURE VAL_STRING declarations START commands END
-        ;
-
-declarations  : %empty
-              | declarations declaration 
-              ;
-
-declaration   : VAR list ':' TYPE ';'
-              ;
-
-commands      : %empty
-              | commands command
-              ;
-
-command       :  assign ';' /*1*/
-              |  fcall ';'  /*1*/
-              |  loop ';'   /*1*/
-              |  IDENTIFIER ';'  /* for Terms */
-              ;
-/*0*/
-assign        :  IDENTIFIER ":=" potentialvalue   /*2*/
-              |  IDENTIFIER "<-" potentialvalue  /*2*/
-              ;
-
-fcall         :  fcall_nonprefix                      /*2*/
-			  |  SETCOLOR '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'                 /*2*/
-			  |  SETDRAWSTYLE '(' potentialvalue ',' potentialvalue ')'                 /*2*/
-			  |  SETFONT '(' potentialvalue ',' potentialvalue ')'
-			  |  SETLINEWIDTH '(' potentialvalue ')'
-			  |  ARC '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'  
-			  |  ELLIPSE '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'  
-			  |  PLOT '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'
-			  |  STRING2PATH '(' potentialvalue ',' potentialvalue ')'
-			  |  CONCAT '(' potentialvalue ',' potentialvalue ')'
-			  |  UNION '(' potentialvalue ',' potentialvalue ')'
-			  |  SCALETOBOX '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'
-			  |  DRAW '(' potentialvalue ')'
-			  |  FILL '(' potentialvalue ')'
-			  |  NUM2STRING '(' potentialvalue ')'
-			  |  WRITE '(' potentialvalue ')'
-			  |  WRITE '(' potentialvalue ',' potentialvalue ')'
-			  |  ROTATE '(' potentialvalue ',' potentialvalue ')'
-			  |  SCALE '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'
-			  |  TRANSLATE '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'
-			  |  CLIP '(' potentialvalue ',' potentialvalue ')'
-			  |  SIN '(' potentialvalue ')'
-			  |  COS '(' potentialvalue ')'
-			  |  RANDOM '(' potentialvalue ',' potentialvalue ')'
-			  |  EXP '(' potentialvalue ',' potentialvalue ')'
-			  ; 
-
-loop          :  FOR IDENTIFIER ":=" potentialvalue TO potentialvalue STEP potentialvalue DO commands DONE
+program 				: PICTURE VAL_STRING declarations START commands END
+        				;
+	
+declarations  	: %empty
+              	| declarations declaration 
+              	;
+	
+declaration   	: VAR list ':' TYPE ';'
+              	;
+	
+commands      	: %empty
+              	| commands command
+              	;
+	
+command       	:  assign ';' /*1*/
+              	|  fcall ';'  /*1*/
+              	|  loop ';'   /*1*/
+              	|  IDENTIFIER ';'  /* for Terms */
+              	;
+/*0*/	
+assign        	:  IDENTIFIER ":=" potentialvalue   /*2*/
+              	|  IDENTIFIER "<-" potentialvalue  /*2*/
+              	;
+	
+fcall         	:  fcall_nonprefix                      /*2*/
+			  				|  SETCOLOR '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'                 /*2*/
+			  				|  SETDRAWSTYLE '(' potentialvalue ',' potentialvalue ')'                 /*2*/
+			  				|  SETFONT '(' potentialvalue ',' potentialvalue ')'
+			  				|  SETLINEWIDTH '(' potentialvalue ')'
+			  				|  ARC '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'  
+			  				|  ELLIPSE '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'  
+			  				|  PLOT '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'
+			  				|  STRING2PATH '(' potentialvalue ',' potentialvalue ')'
+			  				|  CONCAT '(' potentialvalue ',' potentialvalue ')'
+			  				|  UNION '(' potentialvalue ',' potentialvalue ')'
+			  				|  SCALETOBOX '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'
+			  				|  DRAW '(' potentialvalue ')'
+			  				|  FILL '(' potentialvalue ')'
+			  				|  NUM2STRING '(' potentialvalue ')'
+			  				|  WRITE '(' potentialvalue ')'
+			  				|  WRITE '(' potentialvalue ',' potentialvalue ')'
+			  				|  ROTATE '(' potentialvalue ',' potentialvalue ')'
+			  				|  SCALE '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'
+			  				|  TRANSLATE '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'
+			  				|  CLIP '(' potentialvalue ',' potentialvalue ')'
+			  				|  SIN '(' potentialvalue ')'
+			  				|  COS '(' potentialvalue ')'
+			  				|  RANDOM '(' potentialvalue ',' potentialvalue ')'
+			  				|  EXP '(' potentialvalue ',' potentialvalue ')'
+			  				; 
+	
+loop          	:  FOR IDENTIFIER ":=" potentialvalue TO potentialvalue STEP potentialvalue DO commands DONE
 /*1*/
-potentialvalue     :  value           				/*3*/
-				   |  IDENTIFIER
-				   |  fcall                       /*3 (in 2)*/
-				   |  "<<" list ">>"
-				   |  '{' commands '}'
-				   |  '(' potentialvalue ')'
+potentialvalue  :  value           				/*3*/
+				   			|  IDENTIFIER
+				   			|  fcall                       /*3 (in 2)*/
+				   			|  "<<" list ">>"
+				   			|  '{' commands '}'
+				   			|  '(' potentialvalue ')'
+				   			|  '(' potentialvalue ',' potentialvalue ')' /* tuple, used for points and describing function */
                    ;
 
-list          :  potentialvalue
-              |  list ',' potentialvalue
-              ;
+list          	:  potentialvalue
+              	|  list ',' potentialvalue
+              	;
 
-fcall_nonprefix   	:  potentialvalue '+' potentialvalue
-					|  potentialvalue '-' potentialvalue
-					|  potentialvalue '*' potentialvalue
-					|  potentialvalue '/' potentialvalue
-					|  potentialvalue "mod" potentialvalue
-					|  '+' potentialvalue
-					|  '-' potentialvalue
-					;
+fcall_nonprefix :  potentialvalue '+' potentialvalue
+								|  potentialvalue '-' potentialvalue
+								|  potentialvalue '*' potentialvalue
+								|  potentialvalue '/' potentialvalue
+								|  potentialvalue "mod" potentialvalue
+								|  '+' potentialvalue
+								|  '-' potentialvalue
+								;
 /*2*/
               
 /*3*/
 
-value                 :  '(' potentialvalue ',' potentialvalue ')' {} /* tuple, used for points and describing function */
-                      |  VAL_INT {$$=$1;printf("set: %f\n",$$);}
-                      |  VAL_NUM {$$=$1;printf("set: %f\n",$$);}
-                      |  VAL_STRING {}
-                      ;
+value           :  VAL_INT 			{$$=$1;}
+                |  VAL_NUM 			{$$=$1;}
+                |  VAL_STRING 	{$$=$1;}
+                ;
 
 %%
 

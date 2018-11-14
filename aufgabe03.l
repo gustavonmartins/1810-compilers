@@ -2,6 +2,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include "aufgabe03.tab.h"
+
+#include "datastructure.h"
 %}
 
 DIGIT [0-9]
@@ -60,11 +62,11 @@ done                  {return(DONE);}
 "<<"                  {return LBLB;}
 ">>"                  {return RBRB;}
 
-{STRING}              {return VAL_STRING;}
+{STRING}              {yylval.ast=new Value();yylval.ast->val_string=yytext;			return VAL_STRING;}
 "mod"				  				{return MOD;}
 {ID}                  {return IDENTIFIER;}
-{NUM}                 {yylval.ast_double=atof(yytext);return VAL_NUM;}
-{INT}                 {yylval.ast_int=atoi(yytext); 	return VAL_INT;}
+{NUM}                 {yylval.ast=new Value();yylval.ast->val_num=atof(yytext);		return VAL_NUM;}
+{INT}                 {yylval.ast=new Value();yylval.ast->val_int=atoi(yytext); 	return VAL_INT;}
 
 
 [ \t\r\n]+            {}
