@@ -1,11 +1,11 @@
 #include <iostream>
 #include <vector>
 class ComplexNode {
-	protected:
-	std::string _code;
+	std::vector<ComplexNode*> nodeVector;
 	
-  public:
-  virtual ComplexNode*  eval()=0;
+	public:
+	void addNode(ComplexNode* node){nodeVector.push_back(node);}
+	
 };
 
 class PotentialValue : public ComplexNode {
@@ -22,35 +22,23 @@ class PotentialValue : public ComplexNode {
 	int getInt()								{return _int;}
 	std::string getString()			{return _string;}
 
-	ComplexNode* eval(){}
-};
-
-class FCall : public ComplexNode {
-	std::vector<ComplexNode*> fvector;
-	
-	public:
-	FCall* addFunc(ComplexNode* func){fvector.push_back(func);}
-	
-	ComplexNode* eval(){
-		  for(ComplexNode* i : fvector){
-				  i->eval();
-				}
-		}
-		
+	void eval() {}
 };
 
 class SetColor : public ComplexNode {
-	double r, g, b;
+	double _r, _g, _b;
 	
 	public:
-	SetColor(PotentialValue* r,PotentialValue* g,PotentialValue* b){
-		  this->r=r->getDouble();
-		  this->g=g->getDouble();
-		  this->b=b->getDouble();
+	void init(PotentialValue* r,PotentialValue* g,PotentialValue* b){
+		  _r=r->getDouble();
+		  _g=g->getDouble();
+		  _b=b->getDouble();
+		  std::cout<<"inited setcolor\n";
+		  std::cout<<_r<<" "<<_g<<" "<<_b<<" setrgbcolor 1\n";
 		}
 
-	ComplexNode* eval(){
-		  std::cout<<r<<" "<<g<<" "<< b<<" setrgbcolor";
+	void eval()  {
+		  std::cout<<_r<<" "<<_g<<" "<< _b<<" setrgbcolor 2\n";
 		}
 };
 
@@ -69,5 +57,5 @@ class Value : public ComplexNode {
   double getDouble()			{return val_num;}
   int getInt()						{return val_int;}
 
-	ComplexNode* eval(){}
+	void eval() {}
 };

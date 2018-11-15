@@ -16,11 +16,12 @@ int yylex();
   struct PotentialValue* ast_pv;
   struct FCall* ast_fc;
   struct SetColor* ast_setcolor;
+  struct ComplexNode* ast_cn;
 }
 				
 %type <ast_value> VAL_INT VAL_NUM VAL_STRING value
 %type <ast_pv> potentialvalue
-%type <ast_fc> fcall
+%type <ast_cn> fcall command /* commands program */
 %type <ast_setcolor> SETCOLOR
 
 %token PICTURE IDENTIFIER START END
@@ -63,10 +64,10 @@ commands      	: %empty
               	| commands command
               	;
 	
-command       	:  assign ';' /*1*/
-              	|  fcall ';'  /*1*/
-              	|  loop ';'   /*1*/
-              	|  IDENTIFIER ';'  /* for Terms */
+command       	:  assign ';' 		{} /*1*/
+              	|  fcall ';'  		{$$->addNode($1);} /*1*/
+              	|  loop ';'   		{} /*1*/
+              	|  IDENTIFIER ';' {} /* for Terms */
               	;
 /*0*/	
 assign        	:  IDENTIFIER ":=" potentialvalue   /*2*/
@@ -74,7 +75,7 @@ assign        	:  IDENTIFIER ":=" potentialvalue   /*2*/
               	;
 	
 fcall         	:  fcall_nonprefix                    																																															{}
-			  				|  SETCOLOR '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'							                                              {$$->addFunc($1);}
+			  				|  SETCOLOR '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'							                                              {$$->addNode($1);$1->init($3,$5,$7);std::cout<<"attemp eval: ";$1->eval();}
 			  				|  SETDRAWSTYLE '(' potentialvalue ',' potentialvalue ')'             							                                                {}
 			  				|  SETFONT '(' potentialvalue ',' potentialvalue ')'		                                                                            {}
 			  				|  SETLINEWIDTH '(' potentialvalue ')'		                                                                                          {}
@@ -102,9 +103,9 @@ fcall         	:  fcall_nonprefix                    																											
 	
 loop          	:  FOR IDENTIFIER ":=" potentialvalue TO potentialvalue STEP potentialvalue DO commands DONE
 /*1*/
-potentialvalue  :  value           			{$$=(new PotentialValue)->setInt($1->getInt());					std::cout<<"pv: "<<$$->getInt()<<"\n";
-																				 $$=(new PotentialValue)->setDouble($1->getDouble());					std::cout<<"pv: "<<$$->getDouble()<<"\n";
-																				 $$=(new PotentialValue)->setString($1->getString());					std::cout<<"pv: "<<$$->getString()<<"\n";
+potentialvalue  :  value           			{$$=(new PotentialValue)->setInt($1->getInt());								std::cout<<"pv: "<<$$->getInt()<<"\n";
+																				 $$->setDouble($1->getDouble());					std::cout<<"pv: "<<$$->getDouble()<<"\n";
+																				 $$->setString($1->getString());					std::cout<<"pv: "<<$$->getString()<<"\n";
 																				}		/*3*/
 				   			|  IDENTIFIER																{}		
 				   			|  fcall                 										{}	

@@ -10,5 +10,6 @@ start               % Beginner mit Zeichenansweisungen
 p:=2;
 x:=4.9;
 q:="hi";
+setcolor(1.1,2.2,3.3);
 
 end
