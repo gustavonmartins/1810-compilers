@@ -1,3 +1,5 @@
+#Bison output file
+*.output
 # Prerequisites
 *.d
 
