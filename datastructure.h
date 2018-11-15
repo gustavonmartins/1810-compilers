@@ -1,14 +1,8 @@
 #include <iostream>
 #include <vector>
-class ComplexNode {
-	std::vector<ComplexNode*> nodeVector;
-	
-	public:
-	void addNode(ComplexNode* node){nodeVector.push_back(node);}
-	
-};
 
-class PotentialValue : public ComplexNode {
+
+class PotentialValue {
 	std::string	_string;
 	int 				_int;
 	double 			_double;
@@ -22,10 +16,10 @@ class PotentialValue : public ComplexNode {
 	int getInt()								{return _int;}
 	std::string getString()			{return _string;}
 
-	void eval() {}
+	//void eval() {}
 };
 
-class SetColor : public ComplexNode {
+class SetColor  {
 	double _r, _g, _b;
 	
 	public:
@@ -37,13 +31,20 @@ class SetColor : public ComplexNode {
 		  std::cout<<_r<<" "<<_g<<" "<<_b<<" setrgbcolor 1\n";
 		}
 
-	void eval()  {
+	void apply()  {
 		  std::cout<<_r<<" "<<_g<<" "<< _b<<" setrgbcolor 2\n";
 		}
 };
 
+class ComplexNode {
+	SetColor* _setcolor=nullptr;
+	
+	public:
+	void setSetColor(SetColor* node){_setcolor=node;}
+	
+};
 
-class Value : public ComplexNode {
+class Value{
 	std::string val_string;
   double val_num;
   int val_int;
@@ -57,5 +58,5 @@ class Value : public ComplexNode {
   double getDouble()			{return val_num;}
   int getInt()						{return val_int;}
 
-	void eval() {}
+	//void eval() {}
 };

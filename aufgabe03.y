@@ -65,7 +65,7 @@ commands      	: %empty
               	;
 	
 command       	:  assign ';' 		{} /*1*/
-              	|  fcall ';'  		{$$->addNode($1);} /*1*/
+              	|  fcall ';'  		{} /*1*/
               	|  loop ';'   		{} /*1*/
               	|  IDENTIFIER ';' {} /* for Terms */
               	;
@@ -75,7 +75,7 @@ assign        	:  IDENTIFIER ":=" potentialvalue   /*2*/
               	;
 	
 fcall         	:  fcall_nonprefix                    																																															{}
-			  				|  SETCOLOR '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'							                                              {$$->addNode($1);$1->init($3,$5,$7);std::cout<<"attemp eval: ";$1->eval();}
+			  				|  SETCOLOR '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'							                                              {$$->setSetColor($1);$1->init($3,$5,$7);std::cout<<"attemp eval: ";$1->apply();}
 			  				|  SETDRAWSTYLE '(' potentialvalue ',' potentialvalue ')'             							                                                {}
 			  				|  SETFONT '(' potentialvalue ',' potentialvalue ')'		                                                                            {}
 			  				|  SETLINEWIDTH '(' potentialvalue ')'		                                                                                          {}
