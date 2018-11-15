@@ -19,29 +19,35 @@ class PotentialValue {
 	//void eval() {}
 };
 
-class SetColor  {
-	double _r, _g, _b;
-	
+class FCall  {
 	public:
-	void init(PotentialValue* r,PotentialValue* g,PotentialValue* b){
+	void setcolor(PotentialValue* r,PotentialValue* g,PotentialValue* b){
+		double _r, _g, _b;
 		  _r=r->getDouble();
 		  _g=g->getDouble();
 		  _b=b->getDouble();
-		  std::cout<<"inited setcolor\n";
-		  std::cout<<_r<<" "<<_g<<" "<<_b<<" setrgbcolor 1\n";
+		  std::cout<<_r<<" "<<_g<<" "<<_b<<" setrgbcolor\n\n";
 		}
-
-	void apply()  {
-		  std::cout<<_r<<" "<<_g<<" "<< _b<<" setrgbcolor 2\n";
-		}
-};
-
-class ComplexNode {
-	SetColor* _setcolor=nullptr;
-	
-	public:
-	void setSetColor(SetColor* node){_setcolor=node;}
-	
+		void setfont(PotentialValue* font,PotentialValue* s){
+			std::string _font;
+			int _s;
+			_font=font->getString();
+			_s = s->getInt();
+			std::cout<<"/"<<_font<<"\n"<<_s<<" scalefont\n\n";
+			}
+			
+		void setlinewidth(PotentialValue* w){
+			  int _w;
+			  _w=w->getInt();
+			  std::cout<<_w<<" setlinewidth\n\n";
+			}
+		
+		void setdrawstyle(PotentialValue* s, PotentialValue* e){
+			  int _s, _e;
+			  _s=s->getInt();
+			  _e=e->getInt();
+			  std::cout<<"["<<_s<<" "<<_e<<"] 0 setdash""\n\n";
+			}
 };
 
 class Value{

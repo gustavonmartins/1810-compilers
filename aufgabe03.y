@@ -15,14 +15,11 @@ int yylex();
 %union {struct Value* ast_value;
   struct PotentialValue* ast_pv;
   struct FCall* ast_fc;
-  struct SetColor* ast_setcolor;
-  struct ComplexNode* ast_cn;
 }
 				
 %type <ast_value> VAL_INT VAL_NUM VAL_STRING value
 %type <ast_pv> potentialvalue
-%type <ast_cn> fcall command /* commands program */
-%type <ast_setcolor> SETCOLOR
+%type <ast_fc> fcall SETCOLOR SETFONT SETLINEWIDTH SETDRAWSTYLE
 
 %token PICTURE IDENTIFIER START END
 %token VAR
@@ -75,10 +72,10 @@ assign        	:  IDENTIFIER ":=" potentialvalue   /*2*/
               	;
 	
 fcall         	:  fcall_nonprefix                    																																															{}
-			  				|  SETCOLOR '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'							                                              {$$->setSetColor($1);$1->init($3,$5,$7);std::cout<<"attemp eval: ";$1->apply();}
-			  				|  SETDRAWSTYLE '(' potentialvalue ',' potentialvalue ')'             							                                                {}
-			  				|  SETFONT '(' potentialvalue ',' potentialvalue ')'		                                                                            {}
-			  				|  SETLINEWIDTH '(' potentialvalue ')'		                                                                                          {}
+			  				|  SETCOLOR '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'							                                              {$1->setcolor($3,$5,$7);}
+			  				|  SETDRAWSTYLE '(' potentialvalue ',' potentialvalue ')'             							                                                {$1->setdrawstyle($3,$5);}
+			  				|  SETFONT '(' potentialvalue ',' potentialvalue ')'		                                                                            {$1->setfont($3,$5);}
+			  				|  SETLINEWIDTH '(' potentialvalue ')'		                                                                                          {$1->setlinewidth($3);}
 			  				|  ARC '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'  		                                        {}
 			  				|  ELLIPSE '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'  		                  {}
 			  				|  PLOT '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'		    {}
