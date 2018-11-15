@@ -12,9 +12,16 @@ int yylex();
 
 %}
 
-%union {struct Value* ast_value;}
+%union {struct Value* ast_value;
+  struct PotentialValue* ast_pv;
+  struct FCall* ast_fc;
+  struct SetColor* ast_setcolor;
+}
 				
 %type <ast_value> VAL_INT VAL_NUM VAL_STRING value
+%type <ast_pv> potentialvalue
+%type <ast_fc> fcall
+%type <ast_setcolor> SETCOLOR
 
 %token PICTURE IDENTIFIER START END
 %token VAR
@@ -66,42 +73,45 @@ assign        	:  IDENTIFIER ":=" potentialvalue   /*2*/
               	|  IDENTIFIER "<-" potentialvalue  /*2*/
               	;
 	
-fcall         	:  fcall_nonprefix                      /*2*/
-			  				|  SETCOLOR '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'                 /*2*/
-			  				|  SETDRAWSTYLE '(' potentialvalue ',' potentialvalue ')'                 /*2*/
-			  				|  SETFONT '(' potentialvalue ',' potentialvalue ')'
-			  				|  SETLINEWIDTH '(' potentialvalue ')'
-			  				|  ARC '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'  
-			  				|  ELLIPSE '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'  
-			  				|  PLOT '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'
-			  				|  STRING2PATH '(' potentialvalue ',' potentialvalue ')'
-			  				|  CONCAT '(' potentialvalue ',' potentialvalue ')'
-			  				|  UNION '(' potentialvalue ',' potentialvalue ')'
-			  				|  SCALETOBOX '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'
-			  				|  DRAW '(' potentialvalue ')'
-			  				|  FILL '(' potentialvalue ')'
-			  				|  NUM2STRING '(' potentialvalue ')'
-			  				|  WRITE '(' potentialvalue ')'
-			  				|  WRITE '(' potentialvalue ',' potentialvalue ')'
-			  				|  ROTATE '(' potentialvalue ',' potentialvalue ')'
-			  				|  SCALE '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'
-			  				|  TRANSLATE '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'
-			  				|  CLIP '(' potentialvalue ',' potentialvalue ')'
-			  				|  SIN '(' potentialvalue ')'
-			  				|  COS '(' potentialvalue ')'
-			  				|  RANDOM '(' potentialvalue ',' potentialvalue ')'
-			  				|  EXP '(' potentialvalue ',' potentialvalue ')'
+fcall         	:  fcall_nonprefix                    																																															{}
+			  				|  SETCOLOR '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'							                                              {$$->addFunc($1);}
+			  				|  SETDRAWSTYLE '(' potentialvalue ',' potentialvalue ')'             							                                                {}
+			  				|  SETFONT '(' potentialvalue ',' potentialvalue ')'		                                                                            {}
+			  				|  SETLINEWIDTH '(' potentialvalue ')'		                                                                                          {}
+			  				|  ARC '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'  		                                        {}
+			  				|  ELLIPSE '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'  		                  {}
+			  				|  PLOT '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'		    {}
+			  				|  STRING2PATH '(' potentialvalue ',' potentialvalue ')'		                                                                        {}
+			  				|  CONCAT '(' potentialvalue ',' potentialvalue ')'		                                                                              {}
+			  				|  UNION '(' potentialvalue ',' potentialvalue ')'		                                                                              {}
+			  				|  SCALETOBOX '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'		                                                      {}
+			  				|  DRAW '(' potentialvalue ')'		                                                                                                  {}
+			  				|  FILL '(' potentialvalue ')'		                                                                                                  {}
+			  				|  NUM2STRING '(' potentialvalue ')'		                                                                                            {}
+			  				|  WRITE '(' potentialvalue ')'		                                                                                                  {}
+			  				|  WRITE '(' potentialvalue ',' potentialvalue ')'		                                                                              {}
+			  				|  ROTATE '(' potentialvalue ',' potentialvalue ')'		                                                                              {}
+			  				|  SCALE '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'		                                                            {}
+			  				|  TRANSLATE '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'		                                                        {}
+			  				|  CLIP '(' potentialvalue ',' potentialvalue ')'		                                                                                {}
+			  				|  SIN '(' potentialvalue ')'		                                                                                                    {}
+			  				|  COS '(' potentialvalue ')'		                                                                                                    {}
+			  				|  RANDOM '(' potentialvalue ',' potentialvalue ')'		                                                                              {}
+			  				|  EXP '(' potentialvalue ',' potentialvalue ')'		                                                                                {}
 			  				; 
 	
 loop          	:  FOR IDENTIFIER ":=" potentialvalue TO potentialvalue STEP potentialvalue DO commands DONE
 /*1*/
-potentialvalue  :  value           				/*3*/
-				   			|  IDENTIFIER
-				   			|  fcall                       /*3 (in 2)*/
-				   			|  "<<" list ">>"
-				   			|  '{' commands '}'
-				   			|  '(' potentialvalue ')'
-				   			|  '(' potentialvalue ',' potentialvalue ')' /* tuple, used for points and describing function */
+potentialvalue  :  value           			{$$=(new PotentialValue)->setInt($1->getInt());					std::cout<<"pv: "<<$$->getInt()<<"\n";
+																				 $$=(new PotentialValue)->setDouble($1->getDouble());					std::cout<<"pv: "<<$$->getDouble()<<"\n";
+																				 $$=(new PotentialValue)->setString($1->getString());					std::cout<<"pv: "<<$$->getString()<<"\n";
+																				}		/*3*/
+				   			|  IDENTIFIER																{}		
+				   			|  fcall                 										{}	
+				   			|  "<<" list ">>"														{}
+				   			|  '{' commands '}'													{}
+				   			|  '(' potentialvalue ')'										{}	
+				   			|  '(' potentialvalue ',' potentialvalue ')'{} /* tuple, used for points and describing function */
                    ;
 
 list          	:  potentialvalue
@@ -120,9 +130,9 @@ fcall_nonprefix :  potentialvalue '+' potentialvalue
               
 /*3*/
 
-value           :  VAL_INT 			{$$=new Value($1->getInt());		std::cout<<"y: "<<$$->getInt()<<"\n";}
-                |  VAL_NUM 			{$$=new Value($1->getDouble());	std::cout<<"y: "<<$$->getDouble()<<"\n";}
-                |  VAL_STRING 	{$$=new Value($1->getString());	std::cout<<"y: "<<$$->getString()<<"\n";}
+value           :  VAL_INT 			{$$=(new Value)->setInt($1->getInt());					std::cout<<"v: "<<$$->getInt()<<"\n";}
+                |  VAL_NUM 			{$$=(new Value())->setDouble($1->getDouble());	std::cout<<"v: "<<$$->getDouble()<<"\n";}
+                |  VAL_STRING 	{$$=(new Value())->setString($1->getString());	std::cout<<"v: "<<$$->getString()<<"\n";}
                 ;
 
 %%

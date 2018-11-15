@@ -1,4 +1,5 @@
 #include <iostream>
+#include <vector>
 class ComplexNode {
 	protected:
 	std::string _code;
@@ -13,15 +14,29 @@ class PotentialValue : public ComplexNode {
 	double 			_double;
 	
 	public:
-	PotentialValue(const std::string i_string){_string=i_string;}
-	PotentialValue(const int i_int){_int=i_int;}
-	PotentialValue(const double i_double){_double=i_double;}
+	PotentialValue* setString(const std::string i_string){_string=i_string;	return this;}
+	PotentialValue* setInt(const int i_int){_int=i_int;									return this;}
+	PotentialValue* setDouble(const double i_double){_double=i_double;			return this;}
 	
 	double getDouble()					{return _double;}
 	int getInt()								{return _int;}
 	std::string getString()			{return _string;}
 
 	ComplexNode* eval(){}
+};
+
+class FCall : public ComplexNode {
+	std::vector<ComplexNode*> fvector;
+	
+	public:
+	FCall* addFunc(ComplexNode* func){fvector.push_back(func);}
+	
+	ComplexNode* eval(){
+		  for(ComplexNode* i : fvector){
+				  i->eval();
+				}
+		}
+		
 };
 
 class SetColor : public ComplexNode {
@@ -46,9 +61,9 @@ class Value : public ComplexNode {
   int val_int;
   
   public:
-  Value(std::string _string){val_string=_string;	}
-	Value(double _double){val_num=_double;					}
-	Value(int _int){val_int=_int;										}
+  Value* setString(std::string _string){val_string=_string;	return this;}
+	Value* setDouble(double _double){val_num=_double;				;	return this;}
+	Value* setInt(int _int){val_int=_int;													; return this;}
 	  
   std::string getString()	{return val_string;}
   double getDouble()			{return val_num;}

@@ -62,11 +62,11 @@ done                  {return(DONE);}
 "<<"                  {return LBLB;}
 ">>"                  {return RBRB;}
 
-{STRING}              {yylval.ast_value=new Value(yytext);							return VAL_STRING;}
+{STRING}              {yylval.ast_value=(new Value())->setString(yytext);							return VAL_STRING;}
 "mod"				  				{return MOD;}
 {ID}                  {return IDENTIFIER;}
-{NUM}                 {yylval.ast_value=new Value(atof(yytext));				return VAL_NUM;}
-{INT}                 {yylval.ast_value=new Value(atoi(yytext)); 				return VAL_INT;}
+{NUM}                 {yylval.ast_value=(new Value())->setDouble(atof(yytext));				return VAL_NUM;}
+{INT}                 {yylval.ast_value=(new Value())->setInt(atoi(yytext)); 				return VAL_INT;}
 
 
 [ \t\r\n]+            {}
