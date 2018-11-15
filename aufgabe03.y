@@ -17,8 +17,7 @@ int yylex();
   struct FCall* ast_fc;
 }
 				
-%type <ast_value> VAL_INT VAL_NUM VAL_STRING value
-%type <ast_pv> potentialvalue
+%type <ast_pv> VAL_INT VAL_NUM VAL_STRING potentialvalue
 %type <ast_fc> fcall SETCOLOR SETFONT SETLINEWIDTH SETDRAWSTYLE
 
 %token PICTURE IDENTIFIER START END
@@ -100,17 +99,15 @@ fcall         	:  fcall_nonprefix                    																											
 	
 loop          	:  FOR IDENTIFIER ":=" potentialvalue TO potentialvalue STEP potentialvalue DO commands DONE
 /*1*/
-potentialvalue  :  value           			{$$=(new PotentialValue)->setInt($1->getInt());								std::cout<<"pv: "<<$$->getInt()<<"\n";
-																				 $$->setDouble($1->getDouble());					std::cout<<"pv: "<<$$->getDouble()<<"\n";
-																				 $$->setString($1->getString());					std::cout<<"pv: "<<$$->getString()<<"\n";
-																				}		/*3*/
-				   			|  IDENTIFIER																{}		
+potentialvalue  :	 VAL_INT 			{$$=(new PotentialValue())->setInt($1->getInt());					std::cout<<"v: "<<$$->getInt()<<"\n";}
+								|  VAL_NUM 			{$$=(new PotentialValue())->setDouble($1->getDouble());	std::cout<<"v: "<<$$->getDouble()<<"\n";}
+				   			|  VAL_STRING 	{$$=(new PotentialValue())->setString($1->getString());	std::cout<<"v: "<<$$->getString()<<"\n";}|  IDENTIFIER																{}		
 				   			|  fcall                 										{}	
 				   			|  "<<" list ">>"														{}
 				   			|  '{' commands '}'													{}
 				   			|  '(' potentialvalue ')'										{}	
-				   			|  '(' potentialvalue ',' potentialvalue ')'{} /* tuple, used for points and describing function */
-                   ;
+				   			|  '(' potentialvalue ',' potentialvalue ')'{$$=(new PotentialValue())->setPoint($2->getDouble(),$4->getDouble());} /* tuple, used for points and describing function */
+                ;
 
 list          	:  potentialvalue
               	|  list ',' potentialvalue
@@ -128,18 +125,13 @@ fcall_nonprefix :  potentialvalue '+' potentialvalue
               
 /*3*/
 
-value           :  VAL_INT 			{$$=(new Value)->setInt($1->getInt());					std::cout<<"v: "<<$$->getInt()<<"\n";}
-                |  VAL_NUM 			{$$=(new Value())->setDouble($1->getDouble());	std::cout<<"v: "<<$$->getDouble()<<"\n";}
-                |  VAL_STRING 	{$$=(new Value())->setString($1->getString());	std::cout<<"v: "<<$$->getString()<<"\n";}
-                ;
-
 %%
 
 int main(int argc, char* argv[]){
   extern FILE* yyin;
   ++argv;--argc;
   yyin = fopen(argv[0],"r");
-  //yydebug = 1;
+  yydebug = 1;
   yylineno=1;
   yyparse();
   printf("accepted\n");

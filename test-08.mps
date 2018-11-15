@@ -14,5 +14,6 @@ setcolor(1.1,2.2,3.3);
 setfont("Times New Roman",12);
 setlinewidth(13);
 setdrawstyle(6,3);
+q:=(10.1,11.1);
 
 end

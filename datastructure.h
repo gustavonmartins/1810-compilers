@@ -3,18 +3,21 @@
 
 
 class PotentialValue {
-	std::string	_string;
-	int 				_int;
-	double 			_double;
+	std::string								_string;
+	int 											_int;
+	double 										_double;
+	std::pair<double,double> 	_point;
 	
 	public:
 	PotentialValue* setString(const std::string i_string){_string=i_string;	return this;}
 	PotentialValue* setInt(const int i_int){_int=i_int;									return this;}
 	PotentialValue* setDouble(const double i_double){_double=i_double;			return this;}
+	PotentialValue* setPoint(double x, double y){_point.first=x;_point.second=y; return this;}
 	
-	double getDouble()					{return _double;}
-	int getInt()								{return _int;}
-	std::string getString()			{return _string;}
+	double getDouble()									{return _double;}
+	int getInt()												{return _int;}
+	std::string getString()							{return _string;}
+	std::pair<double,double> getPoint()	{return _point;}
 
 	//void eval() {}
 };
@@ -48,21 +51,4 @@ class FCall  {
 			  _e=e->getInt();
 			  std::cout<<"["<<_s<<" "<<_e<<"] 0 setdash""\n\n";
 			}
-};
-
-class Value{
-	std::string val_string;
-  double val_num;
-  int val_int;
-  
-  public:
-  Value* setString(std::string _string){val_string=_string;	return this;}
-	Value* setDouble(double _double){val_num=_double;				;	return this;}
-	Value* setInt(int _int){val_int=_int;													; return this;}
-	  
-  std::string getString()	{return val_string;}
-  double getDouble()			{return val_num;}
-  int getInt()						{return val_int;}
-
-	//void eval() {}
 };
