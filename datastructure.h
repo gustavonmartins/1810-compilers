@@ -5,7 +5,7 @@
 class PotentialValue {
 	std::string								_string;
 	int 											_int;
-	double 										_double;
+	double 										_double,_r,_alpha,_beta;
 	std::pair<double,double> 	_point;
 	
 	public:
@@ -51,4 +51,11 @@ class FCall  {
 			  _e=e->getInt();
 			  std::cout<<"["<<_s<<" "<<_e<<"] 0 setdash""\n\n";
 			}
+		void arc(PotentialValue* point, PotentialValue* r, PotentialValue* alpha, PotentialValue* beta){
+			std::pair<double,double> _point=point->getPoint();
+			double _r, _alpha, _beta;
+			_r=r->getDouble();
+			_alpha=alpha->getDouble();
+			_beta=beta->getDouble();
+			std::cout<<_point.first<<" "<<_point.second<<" "<<_r<<" "<<_alpha<<" "<<_beta<<" arc closepath \nstroke\n\n";}
 };

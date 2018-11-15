@@ -18,7 +18,7 @@ int yylex();
 }
 				
 %type <ast_pv> VAL_INT VAL_NUM VAL_STRING potentialvalue
-%type <ast_fc> fcall SETCOLOR SETFONT SETLINEWIDTH SETDRAWSTYLE
+%type <ast_fc> fcall SETCOLOR SETFONT SETLINEWIDTH SETDRAWSTYLE ARC
 
 %token PICTURE IDENTIFIER START END
 %token VAR
@@ -75,7 +75,7 @@ fcall         	:  fcall_nonprefix                    																											
 			  				|  SETDRAWSTYLE '(' potentialvalue ',' potentialvalue ')'             							                                                {$1->setdrawstyle($3,$5);}
 			  				|  SETFONT '(' potentialvalue ',' potentialvalue ')'		                                                                            {$1->setfont($3,$5);}
 			  				|  SETLINEWIDTH '(' potentialvalue ')'		                                                                                          {$1->setlinewidth($3);}
-			  				|  ARC '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'  		                                        {}
+			  				|  ARC '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'  		                                        {$1->arc($3,$5,$7,$9);}
 			  				|  ELLIPSE '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'  		                  {}
 			  				|  PLOT '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'		    {}
 			  				|  STRING2PATH '(' potentialvalue ',' potentialvalue ')'		                                                                        {}
@@ -131,7 +131,7 @@ int main(int argc, char* argv[]){
   extern FILE* yyin;
   ++argv;--argc;
   yyin = fopen(argv[0],"r");
-  yydebug = 1;
+  //yydebug = 1;
   yylineno=1;
   yyparse();
   printf("accepted\n");
