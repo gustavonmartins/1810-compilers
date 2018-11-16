@@ -16,7 +16,8 @@ string2path((200,-400),"E ai meu boi");
 setlinewidth(13);
 setdrawstyle(6,3);
 arc((200,300),242,45.0,297.5);
-p:=ellipse((200,300),242,350,45.0,297.5);
+ellipse((200,300),242,350,45.0,297.5);
+string2path((300,300),"Tudo bem");
 
 
 end

@@ -61,7 +61,7 @@ commands      	: %empty
               	;
 	
 command       	:  assign ';' 		{} /*1*/
-              	|  fcall ';'  		{} /*1*/
+              	|  fcall ';'  		{$1->printCode();} /*1*/
               	|  loop ';'   		{} /*1*/
               	|  IDENTIFIER ';' {} /* for Terms */
               	;
