@@ -18,7 +18,7 @@ int yylex();
 }
 				
 %type <ast_pv> VAL_INT VAL_NUM VAL_STRING potentialvalue
-%type <ast_fc> fcall SETCOLOR SETFONT SETLINEWIDTH SETDRAWSTYLE ARC
+%type <ast_fc> fcall SETCOLOR SETFONT SETLINEWIDTH SETDRAWSTYLE ARC ELLIPSE STRING2PATH
 
 %token PICTURE IDENTIFIER START END
 %token VAR
@@ -76,9 +76,9 @@ fcall         	:  fcall_nonprefix                    																											
 			  				|  SETFONT '(' potentialvalue ',' potentialvalue ')'		                                                                            {$1->setfont($3,$5);}
 			  				|  SETLINEWIDTH '(' potentialvalue ')'		                                                                                          {$1->setlinewidth($3);}
 			  				|  ARC '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'  		                                        {$1->arc($3,$5,$7,$9);}
-			  				|  ELLIPSE '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'  		                  {}
+			  				|  ELLIPSE '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'  		                  {$1->ellipse($3,$5,$7,$9,$11);}
 			  				|  PLOT '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'		    {}
-			  				|  STRING2PATH '(' potentialvalue ',' potentialvalue ')'		                                                                        {}
+			  				|  STRING2PATH '(' potentialvalue ',' potentialvalue ')'		                                                                        {$1->string2path($3,$5);}
 			  				|  CONCAT '(' potentialvalue ',' potentialvalue ')'		                                                                              {}
 			  				|  UNION '(' potentialvalue ',' potentialvalue ')'		                                                                              {}
 			  				|  SCALETOBOX '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'		                                                      {}
@@ -99,14 +99,15 @@ fcall         	:  fcall_nonprefix                    																											
 	
 loop          	:  FOR IDENTIFIER ":=" potentialvalue TO potentialvalue STEP potentialvalue DO commands DONE
 /*1*/
-potentialvalue  :	 VAL_INT 			{$$=(new PotentialValue())->setInt($1->getInt());					std::cout<<"v: "<<$$->getInt()<<"\n";}
-								|  VAL_NUM 			{$$=(new PotentialValue())->setDouble($1->getDouble());	std::cout<<"v: "<<$$->getDouble()<<"\n";}
-				   			|  VAL_STRING 	{$$=(new PotentialValue())->setString($1->getString());	std::cout<<"v: "<<$$->getString()<<"\n";}|  IDENTIFIER																{}		
+potentialvalue  :	 VAL_INT 			{$$=(new PotentialValue())->setCode($1->getCode());}
+								|  VAL_NUM 			{$$=(new PotentialValue())->setCode($1->getCode());}
+				   			|  VAL_STRING 	{$$=(new PotentialValue())->setCode($1->getCode());}
+				   			|  IDENTIFIER																{}		
 				   			|  fcall                 										{}	
 				   			|  "<<" list ">>"														{}
 				   			|  '{' commands '}'													{}
 				   			|  '(' potentialvalue ')'										{}	
-				   			|  '(' potentialvalue ',' potentialvalue ')'{$$=(new PotentialValue())->setPoint($2->getDouble(),$4->getDouble());} /* tuple, used for points and describing function */
+				   			|  '(' potentialvalue ',' potentialvalue ')'{$$=(new PotentialValue())->setPoint($2->getCode(),$4->getCode());} /* tuple, used for points and describing function */
                 ;
 
 list          	:  potentialvalue
@@ -134,7 +135,7 @@ int main(int argc, char* argv[]){
   //yydebug = 1;
   yylineno=1;
   yyparse();
-  printf("accepted\n");
+  //printf("accepted\n");
 
 }
 
