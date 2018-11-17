@@ -9,12 +9,14 @@ class PotentialValue {
 	std::pair<std::string,std::string> 	_point;
 	
 	public:
+	PotentialValue()=default;
+	PotentialValue(char* code){_code.assign(code);}
 	PotentialValue* setString(const std::string i_string){_string=i_string;	return this;}
 	PotentialValue* setInt(const int i_int){_int=i_int;									return this;}
 	PotentialValue* setDouble(const double i_double){_double=i_double;			return this;}
 	PotentialValue* setPoint(std::string x, std::string y){_point.first=x;_point.second=y; return this;}
-	PotentialValue* setCode(char* code){_code.assign(code);return this;}
-	PotentialValue* setCode(std::string code){_code=code;return this;}
+	//PotentialValue* setCode(char* code){_code.assign(code);return this;}
+	//PotentialValue* setCode(std::string code){_code=code;return this;}
 	
 	double getDouble()									{return _double;}
 	int getInt()												{return _int;}
@@ -26,57 +28,79 @@ class PotentialValue {
 };
 
 class FCall  {
-	std::string a1, a2, a3, a4, a5, a6, dummy, code;
+	std::string code;
 	
 	public:
-	void printCode(){std::cout<<code;}
+	void printCode(){std::cout<<code<<std::endl;}
 	void setcolor(PotentialValue* r,PotentialValue* g,PotentialValue* b){
-		  a1=r->getCode();
-		  a2=g->getCode();
-		  a3=b->getCode();
-		  code=a1+" "+a2+" "+a3+" setrgbcolor\n\n";
+		std::string a1, a2, a3, a4, a5, a6;
+		a1=r->getCode();
+		a2=g->getCode();
+		a3=b->getCode();
+		code=a1+" "+a2+" "+a3+" setrgbcolor";
 		}
 		void setfont(PotentialValue* font,PotentialValue* s){
+			std::string a1, a2, a3, a4, a5, a6;
 			a1=font->getCode();
 			a2 = s->getCode();
-			code="/"+a1+" findfont \n"+a2+" scalefont \nsetfont\n\n";
+			code="/"+a1+" findfont "+a2+" scalefont setfont";
 			}
 			
 		void setlinewidth(PotentialValue* w){
+			std::string a1, a2, a3, a4, a5, a6;
 			  a1=w->getCode();
-			  code=a1+" setlinewidth\n\n";
+			  code=a1+" setlinewidth";
 			}
 		
 		void setdrawstyle(PotentialValue* s, PotentialValue* e){
+			std::string a1, a2, a3, a4, a5, a6;
 			  a1=s->getCode();
 			  a2=e->getCode();
-			  code="["+a1+" "+a2+"] 0 setdash""\n\n";
+			  code="["+a1+" "+a2+"] 0 setdash";
 			}
 			
 		void arc(PotentialValue* p, PotentialValue* r, PotentialValue* alpha, PotentialValue* beta){
+			std::string a1, a2, a3, a4, a5, a6;
 			a1=p->getPoint().first;
 			a2=p->getPoint().second;
 			a3=r->getCode();
 			a4=alpha->getCode();
 			a5=beta->getCode();
-			code="newpath "+a1+" "+a2+" "+a3+" "+a4+" "+a5+" arc stroke\n\n";
+			code="newpath "+a1+" "+a2+" "+a3+" "+a4+" "+a5+" arc";
 			}
 			
 		void ellipse(PotentialValue* p, PotentialValue* r1, PotentialValue* r2, PotentialValue* alpha, PotentialValue* beta){
-			code="1 "+r2->getCode()+" "+r1->getCode()+" div scale \n";
+			std::string a1, a2, a3, a4, a5, a6;
 			a1=p->getPoint().first;
 			a2=p->getPoint().second;
 			a3=r1->getCode();
-			a4=alpha->getCode();
-			a5=beta->getCode();
-			code=code+"newpath "+a1+" "+a2+" "+a3+" "+a4+" "+a5+" arc stroke\n\n";
+			a4=r2->getCode();
+			a5=alpha->getCode();
+			a6=beta->getCode();
+			code="newpath /savematrix matrix currentmatrix def "+a1+" "+a2+" translate "+a3+" "+a4+" scale 0 0 1 "+a5+" "+a6+" arc savematrix setmatrix";
 			}
 		
 		void string2path(PotentialValue* p, PotentialValue* s){
+			std::string a1, a2, a3, a4, a5, a6;
 			a1=p->getPoint().first;
 			a2=p->getPoint().second;
 			a3=s->getCode();
 			
-			code="newpath "+a1+" "+a2+" moveto ("+a3+") true charpath stroke\n\n";
+			code="newpath "+a1+" "+a2+" moveto ("+a3+") true charpath";
+			//std::cout<<"Code written: "<<code<<std::endl;
+			
+			}
+		
+		void draw(PotentialValue* p){
+			std::string a1, a2, a3, a4, a5, a6;
+			a1=p->getCode();
+			//std::cout<<"test: "<<a1<<std::endl;
+			code=a1+" stroke";
+			}
+		
+		void fill(PotentialValue* p){
+			std::string a1, a2, a3, a4, a5, a6;
+			a1=p->getCode();
+			code=a1+" closepath fill";
 			}
 };

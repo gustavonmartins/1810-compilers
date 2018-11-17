@@ -18,7 +18,7 @@ int yylex();
 }
 				
 %type <ast_pv> VAL_INT VAL_NUM VAL_STRING potentialvalue
-%type <ast_fc> fcall SETCOLOR SETFONT SETLINEWIDTH SETDRAWSTYLE ARC ELLIPSE STRING2PATH
+%type <ast_fc> fcall SETCOLOR SETFONT SETLINEWIDTH SETDRAWSTYLE ARC ELLIPSE STRING2PATH DRAW FILL
 
 %token PICTURE IDENTIFIER START END
 %token VAR
@@ -77,13 +77,13 @@ fcall         	:  fcall_nonprefix                    																											
 			  				|  SETLINEWIDTH '(' potentialvalue ')'		                                                                                          {$1->setlinewidth($3);}
 			  				|  ARC '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'  		                                        {$1->arc($3,$5,$7,$9);}
 			  				|  ELLIPSE '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'  		                  {$1->ellipse($3,$5,$7,$9,$11);}
-			  				|  PLOT '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'		    {}
+			  				|  PLOT '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'		    {std::cout<<"not to be implemented"<<std::flush;}
 			  				|  STRING2PATH '(' potentialvalue ',' potentialvalue ')'		                                                                        {$1->string2path($3,$5);}
-			  				|  CONCAT '(' potentialvalue ',' potentialvalue ')'		                                                                              {}
-			  				|  UNION '(' potentialvalue ',' potentialvalue ')'		                                                                              {}
-			  				|  SCALETOBOX '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'		                                                      {}
-			  				|  DRAW '(' potentialvalue ')'		                                                                                                  {}
-			  				|  FILL '(' potentialvalue ')'		                                                                                                  {}
+			  				|  CONCAT '(' potentialvalue ',' potentialvalue ')'		                                                                              {std::cout<<"not to be implemented"<<std::flush;}
+			  				|  UNION '(' potentialvalue ',' potentialvalue ')'		                                                                              {std::cout<<"not to be implemented"<<std::flush;}
+			  				|  SCALETOBOX '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'		                                                      {std::cout<<"not to be implemented"<<std::flush;}
+			  				|  DRAW '(' potentialvalue ')'		                                                                                                  {$1->draw($3);}
+			  				|  FILL '(' potentialvalue ')'		                                                                                                  {$1->fill($3);}
 			  				|  NUM2STRING '(' potentialvalue ')'		                                                                                            {}
 			  				|  WRITE '(' potentialvalue ')'		                                                                                                  {}
 			  				|  WRITE '(' potentialvalue ',' potentialvalue ')'		                                                                              {}
@@ -99,9 +99,9 @@ fcall         	:  fcall_nonprefix                    																											
 	
 loop          	:  FOR IDENTIFIER ":=" potentialvalue TO potentialvalue STEP potentialvalue DO commands DONE
 /*1*/
-potentialvalue  :	 VAL_INT 			{$$=(new PotentialValue())->setCode($1->getCode());}
-								|  VAL_NUM 			{$$=(new PotentialValue())->setCode($1->getCode());}
-				   			|  VAL_STRING 	{$$=(new PotentialValue())->setCode($1->getCode());}
+potentialvalue  :	 VAL_INT 			{$$=new PotentialValue(yytext);}
+								|  VAL_NUM 			{$$=new PotentialValue(yytext);}
+				   			|  VAL_STRING 	{$$=new PotentialValue(yytext);}
 				   			|  IDENTIFIER																{}		
 				   			|  fcall                 										{}	
 				   			|  "<<" list ">>"														{}
