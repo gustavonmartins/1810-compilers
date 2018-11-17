@@ -3,28 +3,14 @@
 
 class PotentialValue {
 	std::string								_code;
-	std::string								_string;
-	int 											_int;
-	double 										_double,_r,_alpha,_beta;
 	std::pair<std::string,std::string> 	_point;
 	
 	public:
 	PotentialValue()=default;
 	PotentialValue(char* code){_code.assign(code);}
-	PotentialValue* setString(const std::string i_string){_string=i_string;	return this;}
-	PotentialValue* setInt(const int i_int){_int=i_int;									return this;}
-	PotentialValue* setDouble(const double i_double){_double=i_double;			return this;}
 	PotentialValue* setPoint(std::string x, std::string y){_point.first=x;_point.second=y; return this;}
-	//PotentialValue* setCode(char* code){_code.assign(code);return this;}
-	//PotentialValue* setCode(std::string code){_code=code;return this;}
-	
-	double getDouble()									{return _double;}
-	int getInt()												{return _int;}
-	std::string getString()							{return _string;}
 	std::pair<std::string,std::string> getPoint()	{return _point;}
 	std::string getCode()								{return _code;}
-
-	//void eval() {}
 };
 
 class FCall  {
