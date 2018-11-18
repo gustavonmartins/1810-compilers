@@ -9,5 +9,6 @@ pomano<-ellipse(1,2,3,4,5);
 ellipse(1,2,3,4,5);
 q:="hi";
 q;
+draw(string2path((300,400),q));
 
 end

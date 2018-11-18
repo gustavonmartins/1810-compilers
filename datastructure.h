@@ -13,6 +13,7 @@ class ComplexNode  {
 	ComplexNode* printCode(){std::cout<<code<<std::endl;return this;}
 	std::pair<std::string,std::string> getPoint()	{return point;}
 	ComplexNode* setPoint(std::string x, std::string y){point.first=x;point.second=y; return this;}
+	ComplexNode* setString(std::string inp){code = "("+inp.substr(1, inp.size() - 2)+")";return this;}
 	
 	ComplexNode* setCode(std::string _code){code=_code; return this;}
 	std::string getCode(){return code;}
@@ -82,7 +83,7 @@ class ComplexNode  {
 			a2=p->getPoint().second;
 			a3=s->getCode();
 			
-			code="newpath "+a1+" "+a2+" moveto ("+a3+") true charpath";
+			code="newpath "+a1+" "+a2+" moveto "+a3+" true charpath";
 			//std::cout<<"Code written: "<<code<<std::endl;
 			
 			return this;
