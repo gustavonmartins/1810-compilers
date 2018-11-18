@@ -60,11 +60,11 @@ commands      	: %empty
               	| commands command											{}
               	;
 	
-command       	:  IDENTIFIER ":=" potentialvalue  ';'	{}	 /*2*/
-              	|  IDENTIFIER "<-" potentialvalue  ';'	{(new ComplexNode())->latebinding($1,$3)->printCode();delete $1;$1=nullptr;delete $3;$3=nullptr;}	/*2*/
-              	|  fcall ';'  													{(new ComplexNode($1))->printCode();										delete $1;$1=nullptr;											} /*1*/
-              	|  loop ';'   													{} /*1*/
-              	|  IDENTIFIER ';' 											{(new ComplexNode($1))->printCode();} /* for Terms */
+command       	:  IDENTIFIER ":=" potentialvalue  ';'																														{}	 /*2*/
+              	|  IDENTIFIER "<-" potentialvalue  ';'																														{(new ComplexNode())->latebinding($1,$3)->printCode();delete $1;$1=nullptr;delete $3;$3=nullptr;}	/*2*/
+              	|  fcall ';'  																																										{(new ComplexNode($1))->printCode();										delete $1;$1=nullptr;											} /*1*/
+              	|  FOR IDENTIFIER ":=" potentialvalue TO potentialvalue STEP potentialvalue DO commands DONE ';'  {} /*1*/
+              	|  IDENTIFIER ';' 																																								{(new ComplexNode($1))->printCode();} /* for Terms */
               	;
 	
 fcall         	:  fcall_nonprefix                    																																															{}
@@ -94,16 +94,15 @@ fcall         	:  fcall_nonprefix                    																											
 			  				|  EXP '(' potentialvalue ',' potentialvalue ')'		                                                                                {}
 			  				; 
 	
-loop          	:  FOR IDENTIFIER ":=" potentialvalue TO potentialvalue STEP potentialvalue DO commands DONE
 /*1*/
-potentialvalue  :	 VAL_INT 																	{$$=new ComplexNode($1->getCode());delete $1;$1=nullptr;}
-								|  VAL_NUM 																	{$$=new ComplexNode($1->getCode());delete $1;$1=nullptr;}
-				   			|  VAL_STRING 															{$$=new ComplexNode($1->getCode());delete $1;$1=nullptr;}
-				   			|  IDENTIFIER																{}		
-				   			|  fcall                 										{}	
+potentialvalue  :	 VAL_INT 																	{$$=new ComplexNode($1);delete $1;$1=nullptr;}
+								|  VAL_NUM 																	{$$=new ComplexNode($1);delete $1;$1=nullptr;}
+				   			|  VAL_STRING 															{$$=new ComplexNode($1);delete $1;$1=nullptr;}
+				   			|  IDENTIFIER																{$$=new ComplexNode($1);delete $1;$1=nullptr;}		
+				   			|  fcall                 										{$$=new ComplexNode($1);delete $1;$1=nullptr;}	
 				   			|  "<<" list ">>"														{}
 				   			|  '{' commands '}'													{}
-				   			|  '(' potentialvalue ')'										{}	
+				   			|  '(' potentialvalue ')'										{$$=new ComplexNode($2);delete $2;$2=nullptr;}	
 				   			|  '(' potentialvalue ',' potentialvalue ')'{$$=(new ComplexNode())->setPoint($2->getCode(),$4->getCode());delete $2;delete $4;$2=nullptr;$4=nullptr;} /* tuple, used for points and describing function */
                 ;
 
