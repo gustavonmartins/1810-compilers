@@ -4,6 +4,8 @@
 #include "aufgabe03.tab.h"
 
 #include "datastructure.h"
+
+extern int yylex();
 %}
 
 DIGIT [0-9]
@@ -13,6 +15,7 @@ NUM   [ ]*{DIGIT}+\.{DIGIT}*[ ]*
 STRING \".*\"
 
 %option yylineno
+%option noyywrap
 
 %%
 
@@ -62,11 +65,11 @@ done                  {return(DONE);}
 "<<"                  {return LBLB;}
 ">>"                  {return RBRB;}
 
-{STRING}              {yylval.ast_pv=new PotentialValue(yytext);							return VAL_STRING;}
+{STRING}              {yylval.ast_fc=new ComplexNode(yytext);		return VAL_STRING;}
 "mod"				  				{return MOD;}
-{ID}                  {return IDENTIFIER;}
-{NUM}                 {yylval.ast_pv=new PotentialValue(yytext);				return VAL_NUM;}
-{INT}                 {yylval.ast_pv=new PotentialValue(yytext);		return VAL_INT;}
+{ID}                  {yylval.ast_fc=new ComplexNode(yytext);		return IDENTIFIER;}
+{NUM}                 {yylval.ast_fc=new ComplexNode(yytext);		return VAL_NUM;}
+{INT}                 {yylval.ast_fc=new ComplexNode(yytext);		return VAL_INT;}
 
 
 [ \t\r\n]+            {}
@@ -74,4 +77,4 @@ done                  {return(DONE);}
 .                     {return yytext[0];}
 %%                    
 
-int yywrap(void){}
+//int yywrap(void){}

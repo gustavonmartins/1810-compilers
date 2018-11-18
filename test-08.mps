@@ -19,7 +19,10 @@ setdrawstyle(6,3);
 draw(ellipse((222,333),100,50,45.0,270));
 string2path((300,400),"Aqui comecou");
 setcolor(0.9,0.5,0.5);
-p:=string2path((222,333),"Zero");
+zabur<-string2path((222,333),"Zero");
+zabur;
+q;
+q3:=a;
 
 
 end
