@@ -18,7 +18,7 @@ extern int yylex();
 				
 %type <ast_fc> VAL_INT VAL_NUM VAL_STRING potentialvalue
 %type <ast_fc> fcall SETCOLOR SETFONT SETLINEWIDTH SETDRAWSTYLE ARC ELLIPSE STRING2PATH DRAW FILL
-%type <ast_fc> command IDENTIFIER
+%type <ast_fc> command IDENTIFIER fcall_nonprefix
 
 %token PICTURE IDENTIFIER START END
 %token VAR
@@ -110,13 +110,13 @@ list          	:  potentialvalue
               	|  list ',' potentialvalue
               	;
 
-fcall_nonprefix :  potentialvalue '+' potentialvalue
-								|  potentialvalue '-' potentialvalue
-								|  potentialvalue '*' potentialvalue
-								|  potentialvalue '/' potentialvalue
-								|  potentialvalue "mod" potentialvalue
-								|  '+' potentialvalue
-								|  '-' potentialvalue
+fcall_nonprefix :  potentialvalue '+' potentialvalue				{$$=(new ComplexNode())->plus($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}
+								|  potentialvalue '-' potentialvalue				{$$=(new ComplexNode())->minus($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}
+								|  potentialvalue '*' potentialvalue				{$$=(new ComplexNode())->mult($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}
+								|  potentialvalue '/' potentialvalue				{$$=(new ComplexNode())->div($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}
+								|  potentialvalue "mod" potentialvalue			{$$=(new ComplexNode())->mod($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}	
+								|  '+' potentialvalue				                {$$=new ComplexNode($2);delete $2;$2=nullptr;}
+								|  '-' potentialvalue												{$$=(new ComplexNode())->uminus($2);delete $2;$2=nullptr;}		
 								;
 /*2*/
               

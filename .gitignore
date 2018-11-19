@@ -1,5 +1,9 @@
-#Bison output file
+#Bison, flex and others output files
 *.output
+*.lex.c
+*.tab.c
+*.tab.h
+
 # Prerequisites
 *.d
 
