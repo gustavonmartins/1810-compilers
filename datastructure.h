@@ -119,6 +119,19 @@ class ComplexNode  {
 			  return this;
 			}
 			
+		ComplexNode* earlybinding(ComplexNode*& lhs, ComplexNode*& rhs){
+			  std::string a1,dummy, a2, a3, a4, a5, a6;
+			  a1=lhs->getCode();
+			  a2=rhs->getCode();
+			  
+			  
+			  //std::cout<<"a1 is: "<<a1<<std::endl;
+			  //std::cout<<"a2 is: "<<a2<<std::endl;
+			  code="/"+a1+" { "+a2+" } bind def";
+			  
+			  return this;
+			}
+			
 		ComplexNode* uminus(ComplexNode*& num){
 			std::string a1,dummy, a2, a3, a4, a5, a6;
 			a1=num->getCode();
@@ -171,5 +184,23 @@ class ComplexNode  {
 			
 			return this;
 			}
+			
+			ComplexNode* forloop(ComplexNode*& id, ComplexNode*& start, ComplexNode*& end, ComplexNode*& inc, ComplexNode*& cmd){
+			std::string a1,dummy, a2, a3, a4, a5, a6;
+			a1=id->getCode();
+			a2=start->getCode();
+			a3=end->getCode();
+			a4=inc->getCode();			
+			a5=cmd->getCode();
+			code=a2+" "+a4+" "+a3+" { /"+a1+" exch def "+a5+" } for";
+			
+			return this;
+			}
+			
+			ComplexNode* append(ComplexNode*& extra){
+				code=code+"\n"+extra->getCode();
+				
+				return this;
+				}
 };
 

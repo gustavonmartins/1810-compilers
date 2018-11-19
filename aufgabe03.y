@@ -18,7 +18,7 @@ extern int yylex();
 				
 %type <ast_fc> VAL_INT VAL_NUM VAL_STRING potentialvalue
 %type <ast_fc> fcall SETCOLOR SETFONT SETLINEWIDTH SETDRAWSTYLE ARC ELLIPSE STRING2PATH DRAW FILL
-%type <ast_fc> command IDENTIFIER fcall_nonprefix
+%type <ast_fc> command IDENTIFIER fcall_nonprefix program commands
 
 %token PICTURE IDENTIFIER START END
 %token VAR
@@ -46,7 +46,7 @@ extern int yylex();
 
 %%
 
-program 				: PICTURE VAL_STRING declarations START commands END
+program 				: PICTURE VAL_STRING declarations START commands END	{$5->printCode();}
         				;
 	
 declarations  	: %empty
@@ -56,15 +56,15 @@ declarations  	: %empty
 declaration   	: VAR list ':' TYPE ';'
               	;
 	
-commands      	: %empty
-              	| commands command											{}
+commands      	: %empty																{$$=new ComplexNode();}
+              	| commands command											{$$=(new ComplexNode($1))->append($2);delete $1; $1=nullptr;delete $2; $2=nullptr;}
               	;
 	
-command       	:  IDENTIFIER ":=" potentialvalue  ';'																														{}	 /*2*/
-              	|  IDENTIFIER "<-" potentialvalue  ';'																														{(new ComplexNode())->latebinding($1,$3)->printCode();delete $1;$1=nullptr;delete $3;$3=nullptr;}	/*2*/
-              	|  fcall ';'  																																										{(new ComplexNode($1))->printCode();										delete $1;$1=nullptr;											} /*1*/
-              	|  FOR IDENTIFIER ":=" potentialvalue TO potentialvalue STEP potentialvalue DO commands DONE ';'  {} /*1*/
-              	|  IDENTIFIER ';' 																																								{(new ComplexNode($1))->printCode();} /* for Terms */
+command       	:  IDENTIFIER ":=" potentialvalue  ';'																														{$$=(new ComplexNode())->earlybinding($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}	 /*2*/
+              	|  IDENTIFIER "<-" potentialvalue  ';'																														{$$=(new ComplexNode())->latebinding($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}	/*2*/
+              	|  fcall ';'  																																										{$$=(new ComplexNode($1));										delete $1;$1=nullptr;											} /*1*/
+              	|  FOR IDENTIFIER ":=" potentialvalue TO potentialvalue STEP potentialvalue DO commands DONE ';'  	{$$=(new ComplexNode())->forloop($2, $4, $6, $8, $10);delete $2;$2=nullptr;delete $4;$4=nullptr;delete $6;$6=nullptr;delete $8;$8=nullptr;delete $10;$10=nullptr;} /*1*/
+              	|  IDENTIFIER ';' 																																								{$$=new ComplexNode($1);delete $1, $1=nullptr;} /* for Terms */
               	;
 	
 fcall         	:  fcall_nonprefix                    																																															{$$=new ComplexNode($1);delete $1;$1=nullptr;}
