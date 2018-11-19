@@ -67,7 +67,7 @@ command       	:  IDENTIFIER ":=" potentialvalue  ';'																											
               	|  IDENTIFIER ';' 																																								{(new ComplexNode($1))->printCode();} /* for Terms */
               	;
 	
-fcall         	:  fcall_nonprefix                    																																															{}
+fcall         	:  fcall_nonprefix                    																																															{$$=new ComplexNode($1);delete $1;$1=nullptr;}
 			  				|  SETCOLOR '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'							                                              {$1=(new ComplexNode())->setcolor($3,$5,$7);				$$=new ComplexNode($1->getCode());delete $1;$1=nullptr;}
 			  				|  SETDRAWSTYLE '(' potentialvalue ',' potentialvalue ')'             							                                                {$1=(new ComplexNode())->setdrawstyle($3,$5);				$$=new ComplexNode($1->getCode());delete $1;$1=nullptr;}
 			  				|  SETFONT '(' potentialvalue ',' potentialvalue ')'		                                                                            {$1=(new ComplexNode())->setfont($3,$5);						$$=new ComplexNode($1->getCode());delete $1;$1=nullptr;}
