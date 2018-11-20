@@ -88,6 +88,35 @@ class ComplexNode  {
 			
 			return this;
 			}
+			
+			ComplexNode* write(ComplexNode*& p, ComplexNode*& s){
+			std::string a1, a2, a3, a4, a5, a6;
+			a1=p->getPoint().first;
+			a2=p->getPoint().second;
+			a3=s->getCode();
+
+			code="newpath "+a1+" "+ a2+" moveto "+a3+" show";
+
+			return this;
+			}
+
+			ComplexNode* write(ComplexNode*& s){
+			std::string a1, a2, a3, a4, a5, a6;
+			a1=s->getCode();
+			
+			code=a1+" show";
+			
+			return this;
+			}
+			
+			ComplexNode* num2string(ComplexNode*& n){
+			std::string a1, a2, a3, a4, a5, a6;
+			a1=n->getCode();
+			
+			code=a1+" 20 string cvs";
+			
+			return this;
+			}
 		
 		ComplexNode* draw(ComplexNode*& p){
 			std::string a1, a2, a3, a4, a5, a6;

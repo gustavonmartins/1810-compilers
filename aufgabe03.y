@@ -63,7 +63,7 @@ commands      	: %empty																{$$=new ComplexNode();}
 command       	:  IDENTIFIER ":=" potentialvalue  ';'																														{$$=(new ComplexNode())->earlybinding($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}	 /*2*/
               	|  IDENTIFIER "<-" potentialvalue  ';'																														{$$=(new ComplexNode())->latebinding($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}	/*2*/
               	|  fcall ';'  																																										{$$=(new ComplexNode($1));										delete $1;$1=nullptr;											} /*1*/
-              	|  FOR IDENTIFIER ":=" potentialvalue TO potentialvalue STEP potentialvalue DO commands DONE ';'  	{$$=(new ComplexNode())->forloop($2, $4, $6, $8, $10);delete $2;$2=nullptr;delete $4;$4=nullptr;delete $6;$6=nullptr;delete $8;$8=nullptr;delete $10;$10=nullptr;} /*1*/
+              	|  FOR IDENTIFIER ":=" potentialvalue TO potentialvalue STEP potentialvalue DO commands DONE ';'  {$$=(new ComplexNode())->forloop($2, $4, $6, $8, $10);delete $2;$2=nullptr;delete $4;$4=nullptr;delete $6;$6=nullptr;delete $8;$8=nullptr;delete $10;$10=nullptr;} /*1*/
               	|  IDENTIFIER ';' 																																								{$$=new ComplexNode($1);delete $1, $1=nullptr;} /* for Terms */
               	;
 	
@@ -80,9 +80,9 @@ fcall         	:  SETCOLOR '(' potentialvalue ',' potentialvalue ',' potentialva
 			  				|  SCALETOBOX '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'		                                                      {std::cout<<"not to be implemented"<<std::flush;																													 }         
 			  				|  DRAW '(' potentialvalue ')'		                                                                                                  {$1=(new ComplexNode())->draw($3);									$$=new ComplexNode($1->getCode());delete $1;$1=nullptr;}
 			  				|  FILL '(' potentialvalue ')'		                                                                                                  {$1=(new ComplexNode())->fill($3);									$$=new ComplexNode($1->getCode());delete $1;$1=nullptr;}
-			  				|  NUM2STRING '(' potentialvalue ')'		                                                                                            {}
-			  				|  WRITE '(' potentialvalue ')'		                                                                                                  {}
-			  				|  WRITE '(' potentialvalue ',' potentialvalue ')'		                                                                              {}
+			  				|  NUM2STRING '(' potentialvalue ')'		                                                                                            {$$=(new ComplexNode())->num2string($3);delete $3;$3=nullptr;}
+			  				|  WRITE '(' potentialvalue ')'		                                                                                                  {$$=(new ComplexNode())->write($3);delete $3;$3=nullptr;}
+			  				|  WRITE '(' potentialvalue ',' potentialvalue ')'		                                                                              {$$=(new ComplexNode())->write($3,$5);delete $3;$3=nullptr;delete $5;$5=nullptr;}
 			  				|  ROTATE '(' potentialvalue ',' potentialvalue ')'		                                                                              {}
 			  				|  SCALE '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'		                                                            {}
 			  				|  TRANSLATE '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'		                                                        {}
