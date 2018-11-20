@@ -132,55 +132,27 @@ class ComplexNode  {
 			  return this;
 			}
 			
-		ComplexNode* uminus(ComplexNode*& num){
+		ComplexNode* binop(ComplexNode*& left, ComplexNode*& right, std::string op){
 			std::string a1,dummy, a2, a3, a4, a5, a6;
-			a1=num->getCode();
-			code=a1+" neg";
+			a1=left->getCode();
+			a2=right->getCode();
+			
+			if ("random"!=op){
+				code=a1+" "+a2+" "+op;
+				}
+			else{
+				code="rand 2 31 exp 1 sub div cvr "+a2+" "+a1+" sub cvr mul cvr "+a1+" add cvr";
+			}
+			
 			
 			return this;
 			}
 			
-		ComplexNode* plus(ComplexNode*& left, ComplexNode*& right){
+			ComplexNode* unop(ComplexNode*& left, std::string op){
 			std::string a1,dummy, a2, a3, a4, a5, a6;
 			a1=left->getCode();
-			a2=right->getCode();
-			code=a1+" "+a2+" add";
 			
-			return this;
-			}
-			
-			ComplexNode* minus(ComplexNode*& left, ComplexNode*& right){
-			std::string a1,dummy, a2, a3, a4, a5, a6;
-			a1=left->getCode();
-			a2=right->getCode();
-			code=a1+" "+a2+" sub";
-			
-			return this;
-			}
-			
-			ComplexNode* mult(ComplexNode*& left, ComplexNode*& right){
-			std::string a1,dummy, a2, a3, a4, a5, a6;
-			a1=left->getCode();
-			a2=right->getCode();
-			code=a1+" "+a2+" mul";
-			
-			return this;
-			}
-			
-			ComplexNode* div(ComplexNode*& left, ComplexNode*& right){
-			std::string a1,dummy, a2, a3, a4, a5, a6;
-			a1=left->getCode();
-			a2=right->getCode();
-			code=a1+" "+a2+" div";
-			
-			return this;
-			}
-			
-			ComplexNode* mod(ComplexNode*& left, ComplexNode*& right){
-			std::string a1,dummy, a2, a3, a4, a5, a6;
-			a1=left->getCode();
-			a2=right->getCode();
-			code=a1+" "+a2+" mod";
+			code=a1+" "+op;
 			
 			return this;
 			}

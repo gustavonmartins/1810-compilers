@@ -43,6 +43,8 @@ sin										{return SIN;}
 cos										{return COS;}
 random								{return RANDOM;}
 exp										{return EXP;}
+abs										{return ABS;}
+ln                    {return LN;}
 
 picture               {return(PICTURE);}
 start                 {return(START);}

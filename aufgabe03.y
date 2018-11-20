@@ -18,7 +18,7 @@ extern int yylex();
 				
 %type <ast_fc> VAL_INT VAL_NUM VAL_STRING potentialvalue
 %type <ast_fc> fcall SETCOLOR SETFONT SETLINEWIDTH SETDRAWSTYLE ARC ELLIPSE STRING2PATH DRAW FILL
-%type <ast_fc> command IDENTIFIER fcall_nonprefix program commands
+%type <ast_fc> command IDENTIFIER program commands
 
 %token PICTURE IDENTIFIER START END
 %token VAR
@@ -28,7 +28,7 @@ extern int yylex();
 %token FCALLPREFIXOPEN
 
 %token SETCOLOR SETDRAWSTYLE SETFONT SETLINEWIDTH ARC ELLIPSE PLOT STRING2PATH CONCAT UNION SCALETOBOX DRAW FILL NUM2STRING WRITE ROTATE SCALE TRANSLATE CLIP
-%token SIN COS RANDOM EXP
+%token SIN COS RANDOM EXP ABS LN
 
 %token ASGN ":=" 
 %token ASGN_LATE "<-"
@@ -67,8 +67,7 @@ command       	:  IDENTIFIER ":=" potentialvalue  ';'																											
               	|  IDENTIFIER ';' 																																								{$$=new ComplexNode($1);delete $1, $1=nullptr;} /* for Terms */
               	;
 	
-fcall         	:  fcall_nonprefix                    																																															{$$=new ComplexNode($1);delete $1;$1=nullptr;}
-			  				|  SETCOLOR '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'							                                              {$1=(new ComplexNode())->setcolor($3,$5,$7);				$$=new ComplexNode($1->getCode());delete $1;$1=nullptr;}
+fcall         	:  SETCOLOR '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'							                                              {$1=(new ComplexNode())->setcolor($3,$5,$7);				$$=new ComplexNode($1->getCode());delete $1;$1=nullptr;}
 			  				|  SETDRAWSTYLE '(' potentialvalue ',' potentialvalue ')'             							                                                {$1=(new ComplexNode())->setdrawstyle($3,$5);				$$=new ComplexNode($1->getCode());delete $1;$1=nullptr;}
 			  				|  SETFONT '(' potentialvalue ',' potentialvalue ')'		                                                                            {$1=(new ComplexNode())->setfont($3,$5);						$$=new ComplexNode($1->getCode());delete $1;$1=nullptr;}
 			  				|  SETLINEWIDTH '(' potentialvalue ')'		                                                                                          {$1=(new ComplexNode())->setlinewidth($3);					$$=new ComplexNode($1->getCode());delete $1;$1=nullptr;}
@@ -88,10 +87,19 @@ fcall         	:  fcall_nonprefix                    																											
 			  				|  SCALE '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'		                                                            {}
 			  				|  TRANSLATE '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'		                                                        {}
 			  				|  CLIP '(' potentialvalue ',' potentialvalue ')'		                                                                                {}
-			  				|  SIN '(' potentialvalue ')'		                                                                                                    {}
-			  				|  COS '(' potentialvalue ')'		                                                                                                    {}
-			  				|  RANDOM '(' potentialvalue ',' potentialvalue ')'		                                                                              {}
+			  				|  RANDOM '(' potentialvalue ',' potentialvalue ')'		                                                                              {$$=(new ComplexNode())->binop($3,$5,"random");delete $3;$3=nullptr;delete $5;$5=nullptr;}
 			  				|  EXP '(' potentialvalue ',' potentialvalue ')'		                                                                                {}
+			  				|  potentialvalue '+' potentialvalue																																																{$$=(new ComplexNode())->binop($1,$3,"add");delete $1;$1=nullptr;delete $3;$3=nullptr;}
+								|  potentialvalue '-' potentialvalue																																																{$$=(new ComplexNode())->binop($1,$3,"sub");delete $1;$1=nullptr;delete $3;$3=nullptr;}
+								|  potentialvalue '*' potentialvalue																																																{$$=(new ComplexNode())->binop($1,$3,"mul");delete $1;$1=nullptr;delete $3;$3=nullptr;}
+								|  potentialvalue '/' potentialvalue																																																{$$=(new ComplexNode())->binop($1,$3,"div");delete $1;$1=nullptr;delete $3;$3=nullptr;}
+								|  potentialvalue "mod" potentialvalue																																															{$$=(new ComplexNode())->binop($1,$3,"mod");delete $1;$1=nullptr;delete $3;$3=nullptr;}	
+								|  '+' potentialvalue				                																																												{$$=new ComplexNode($2);delete $2;$2=nullptr;}
+								|  '-' potentialvalue																																																								{$$=(new ComplexNode())->unop($2,"neg");delete $2;$2=nullptr;}
+								|  SIN '(' potentialvalue ')'		                                                                                                    {$$=(new ComplexNode())->unop($3,"sin");delete $3;$3=nullptr;}
+								|  COS '(' potentialvalue ')'		                                                                                                    {$$=(new ComplexNode())->unop($3,"cos");delete $3;$3=nullptr;}
+			  				|  ABS '(' potentialvalue ')'																																																				{$$=(new ComplexNode())->unop($3,"abs");delete $3;$3=nullptr;}
+			  				|  LN  '(' potentialvalue ')'																																																				{$$=(new ComplexNode())->unop($3,"ln" );delete $3;$3=nullptr;}
 			  				; 
 	
 /*1*/
@@ -110,14 +118,6 @@ list          	:  potentialvalue
               	|  list ',' potentialvalue
               	;
 
-fcall_nonprefix :  potentialvalue '+' potentialvalue				{$$=(new ComplexNode())->plus($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}
-								|  potentialvalue '-' potentialvalue				{$$=(new ComplexNode())->minus($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}
-								|  potentialvalue '*' potentialvalue				{$$=(new ComplexNode())->mult($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}
-								|  potentialvalue '/' potentialvalue				{$$=(new ComplexNode())->div($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}
-								|  potentialvalue "mod" potentialvalue			{$$=(new ComplexNode())->mod($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}	
-								|  '+' potentialvalue				                {$$=new ComplexNode($2);delete $2;$2=nullptr;}
-								|  '-' potentialvalue												{$$=(new ComplexNode())->uminus($2);delete $2;$2=nullptr;}		
-								;
 /*2*/
               
 /*3*/
