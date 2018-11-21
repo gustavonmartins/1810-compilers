@@ -109,7 +109,7 @@ potentialvalue  :	 VAL_INT 																	{$$=new ComplexNode($1);delete $1;$1
 				   			|  VAL_STRING 															{$$=new ComplexNode($1);delete $1;$1=nullptr;}
 				   			|  IDENTIFIER																{$$=new ComplexNode($1);delete $1;$1=nullptr;}		
 				   			|  fcall                 										{$$=new ComplexNode($1);delete $1;$1=nullptr;}	
-				   			|  '{' commands '}'													{}
+				   			|  '{' commands '}'													{$$=new ComplexNode($2);delete $2;$2=nullptr;}
 				   			|  '(' potentialvalue ')'										{$$=new ComplexNode($2);delete $2;$2=nullptr;}	
 				   			|  '(' potentialvalue ',' potentialvalue ')'{$$=(new ComplexNode())->setPoint($2->getCode(),$4->getCode());delete $2;delete $4;$2=nullptr;$4=nullptr;} /* tuple, used for points and describing function */
                 ;
