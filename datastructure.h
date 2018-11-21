@@ -11,8 +11,8 @@ class ComplexNode  {
 	ComplexNode(std::string _code){code=_code;}
 	ComplexNode(ComplexNode*& child){code=child->getCode();}
 	ComplexNode* printCode(){std::cout<<code<<std::endl;return this;}
-	std::pair<std::string,std::string> getPoint()	{return point;}
-	ComplexNode* setPoint(std::string x, std::string y){point.first=x;point.second=y; return this;}
+	//std::pair<std::string,std::string> getPoint()	{return point;}
+	ComplexNode* setPoint(std::string x, std::string y){code=x+" "+y;return this;}
 	ComplexNode* setString(std::string inp){code = "("+inp.substr(1, inp.size() - 2)+")";return this;}
 	
 	ComplexNode* setCode(std::string _code){code=_code; return this;}
@@ -54,36 +54,38 @@ class ComplexNode  {
 			
 		ComplexNode* arc(ComplexNode*& p, ComplexNode*& r, ComplexNode*& alpha, ComplexNode*& beta){
 			std::string a1, a2, a3, a4, a5, a6;
-			a1=p->getPoint().first;
-			a2=p->getPoint().second;
+			std::string xy;
+			xy=p->getCode();
+
 			a3=r->getCode();
 			a4=alpha->getCode();
 			a5=beta->getCode();
-			code="newpath "+a1+" "+a2+" "+a3+" "+a4+" "+a5+" arc";
+			code="newpath "+xy+" "+a3+" "+a4+" "+a5+" arc";
 			
 			return this;
 			}
 			
 		ComplexNode* ellipse(ComplexNode*& p, ComplexNode*& r1, ComplexNode*& r2, ComplexNode*& alpha, ComplexNode*& beta){
 			std::string a1, a2, a3, a4, a5, a6;
-			a1=p->getPoint().first;
-			a2=p->getPoint().second;
+			std::string xy;
+			xy=p->getCode();
+
 			a3=r1->getCode();
 			a4=r2->getCode();
 			a5=alpha->getCode();
 			a6=beta->getCode();
-			code="newpath /savematrix matrix currentmatrix def "+a1+" "+a2+" translate "+a3+" "+a4+" scale 0 0 1 "+a5+" "+a6+" arc savematrix setmatrix";
+			code="newpath /savematrix matrix currentmatrix def "+xy+" translate "+a3+" "+a4+" scale 0 0 1 "+a5+" "+a6+" arc savematrix setmatrix";
 			
 			return this;
 			}
 		
 		ComplexNode* string2path(ComplexNode*& p, ComplexNode*& s){
 			std::string a1, a2, a3, a4, a5, a6;
-			a1=p->getPoint().first;
-			a2=p->getPoint().second;
+			std::string xy;
+			xy=p->getCode();
 			a3=s->getCode();
 			
-			code="newpath "+a1+" "+a2+" moveto "+a3+" true charpath";
+			code="newpath "+xy+" moveto "+a3+" true charpath";
 			//std::cout<<"Code written: "<<code<<std::endl;
 			
 			return this;
@@ -91,11 +93,11 @@ class ComplexNode  {
 			
 			ComplexNode* write(ComplexNode*& p, ComplexNode*& s){
 			std::string a1, a2, a3, a4, a5, a6;
-			a1=p->getPoint().first;
-			a2=p->getPoint().second;
+			std::string xy;
+			xy=p->getCode();
 			a3=s->getCode();
 
-			code="newpath "+a1+" "+ a2+" moveto "+a3+" show";
+			code="newpath "+xy+" moveto "+a3+" show";
 
 			return this;
 			}
@@ -203,5 +205,25 @@ class ComplexNode  {
 				
 				return this;
 				}
+			
+			/*ComplexNode* pathoverpoints(ComplexNode*& rawlist){
+				
+				reallist=rawlist->getreallist();
+				firstPoint=reallist->getNext()->getCode();
+				code="new path "+currentPoint+" move to "
+				for all others:
+					currentPoint=reallist->getNext()->getCode();
+					code=code+currentPoint+" lineto";
+				
+				return this;
+				}
+			
+			std::vector<std::string> getreallist(){
+			std::vector<std::string> output;
+			
+			
+			
+			return output;	
+				}*/
 };
 
