@@ -3,7 +3,6 @@
 
 class ComplexNode  {
 	std::string code;
-	std::pair<std::string,std::string> 	point;
 	
 	public:
 	ComplexNode()=default;
