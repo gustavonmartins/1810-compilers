@@ -18,7 +18,7 @@ extern int yylex();
 				
 %type <ast_fc> VAL_INT VAL_NUM VAL_STRING potentialvalue
 %type <ast_fc> fcall SETCOLOR SETFONT SETLINEWIDTH SETDRAWSTYLE ARC ELLIPSE STRING2PATH DRAW FILL
-%type <ast_fc> command IDENTIFIER program commands
+%type <ast_fc> command IDENTIFIER program commands list
 
 %token PICTURE IDENTIFIER START END
 %token VAR
@@ -100,7 +100,7 @@ fcall         	:  SETCOLOR '(' potentialvalue ',' potentialvalue ',' potentialva
 								|  COS '(' potentialvalue ')'		                                                                                                    {$$=(new ComplexNode())->unop($3,"cos");delete $3;$3=nullptr;}
 			  				|  ABS '(' potentialvalue ')'																																																				{$$=(new ComplexNode())->unop($3,"abs");delete $3;$3=nullptr;}
 			  				|  LN  '(' potentialvalue ')'																																																				{$$=(new ComplexNode())->unop($3,"ln" );delete $3;$3=nullptr;}
-			  				|  "<<" list ">>"																																																										{/*$$=(new ComplexNode())->pathoverpoints($2);delete $2;$2=nullptr;*/}
+			  				|  "<<" list ">>"																																																										{$$=(new ComplexNode())->pathoverpoints($2);delete $2;$2=nullptr;}
 			  				; 
 	
 /*1*/
@@ -114,8 +114,8 @@ potentialvalue  :	 VAL_INT 																	{$$=new ComplexNode($1);delete $1;$1
 				   			|  '(' potentialvalue ',' potentialvalue ')'{$$=(new ComplexNode())->setPoint($2->getCode(),$4->getCode());delete $2;delete $4;$2=nullptr;$4=nullptr;} /* tuple, used for points and describing function */
                 ;
 
-list          	:  potentialvalue
-              	|  list ',' potentialvalue
+list          	:  potentialvalue														{$$=(new ComplexNode())->initList($1);delete $1;$1=nullptr;}
+              	|  list ',' potentialvalue									{$$=(new ComplexNode())->expandList($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}
               	;
 
 /*2*/

@@ -3,6 +3,7 @@
 
 class ComplexNode  {
 	std::string code;
+	std::vector<ComplexNode> list;
 	
 	public:
 	ComplexNode()=default;
@@ -204,24 +205,33 @@ class ComplexNode  {
 				return this;
 				}
 			
-			/*ComplexNode* pathoverpoints(ComplexNode*& rawlist){
-				
-				reallist=rawlist->getreallist();
-				firstPoint=reallist->getNext()->getCode();
-				code="new path "+currentPoint+" move to "
-				for all others:
-					currentPoint=reallist->getNext()->getCode();
-					code=code+currentPoint+" lineto";
+			ComplexNode* pathoverpoints(ComplexNode*& rawlist){
+				std::vector<ComplexNode> listcopy=rawlist->getList();
+				std::string xy;
+
+				for (std::vector<ComplexNode>::iterator it = listcopy.begin(); it!=listcopy.end(); ++it) {
+					xy=it->getCode();
+					if(it==listcopy.begin()){
+						code="newpath "+xy+" moveto ";
+					} else{
+						code=code+" "+xy+" lineto";
+					}
+				}
 				
 				return this;
 				}
-			
-			std::vector<std::string> getreallist(){
-			std::vector<std::string> output;
-			
-			
-			
-			return output;	
-				}*/
+
+			ComplexNode* initList(ComplexNode*& element){
+				list.push_back(*element);
+				return this;
+				}
+
+			ComplexNode* expandList(ComplexNode*& baselist, ComplexNode*& element){
+				list=baselist->getList();
+				list.push_back(*element);
+				
+				return this;
+				}
+			std::vector<ComplexNode> getList(){return list;}
 };
 
