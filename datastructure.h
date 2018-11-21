@@ -11,7 +11,6 @@ class ComplexNode  {
 	ComplexNode(std::string _code){code=_code;}
 	ComplexNode(ComplexNode*& child){code=child->getCode();}
 	ComplexNode* printCode(){std::cout<<code<<std::endl;return this;}
-	//std::pair<std::string,std::string> getPoint()	{return point;}
 	ComplexNode* setPoint(std::string x, std::string y){code=x+" "+y;return this;}
 	ComplexNode* setString(std::string inp){code = "("+inp.substr(1, inp.size() - 2)+")";return this;}
 	

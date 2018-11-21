@@ -23,6 +23,7 @@ zabur<-string2path((222,333),"Zero");
 zabur;
 q;
 q3:=a;
+draw(zabur);
 
 
 end
