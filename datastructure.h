@@ -233,5 +233,16 @@ class ComplexNode  {
 				return this;
 				}
 			std::vector<ComplexNode> getList(){return list;}
+			
+			ComplexNode* translate(ComplexNode*& x, ComplexNode*& y, ComplexNode*& therma){
+				std::string a1,dummy, a2, a3, a4, a5, a6;
+				a1=x->getCode();
+				a2=y->getCode();
+				a3=therma->getCode();
+				
+				code=a1+" "+a2+" translate "+a3+" "+a1+" neg "+a2+" neg translate" ;
+				
+				return this;
+				}
 };
 
