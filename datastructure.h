@@ -254,5 +254,16 @@ class ComplexNode  {
 				
 				return this;
 				}
+				
+				ComplexNode* scale(ComplexNode*& x, ComplexNode*& y, ComplexNode*& therma){
+				std::string a1,dummy, a2, a3, a4, a5, a6;
+				a1=x->getCode();
+				a2=y->getCode();
+				a3=therma->getCode();
+				
+				code=a1+" "+a2+" scale "+a3+" 1 "+a1+" div 1 "+a2+" div scale" ;
+				
+				return this;
+				}
 };
 

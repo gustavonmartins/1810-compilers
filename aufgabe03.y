@@ -81,7 +81,7 @@ fcall         	:  SETCOLOR '(' potentialvalue ',' potentialvalue ',' potentialva
 			  				|  WRITE '(' potentialvalue ')'		                                                                                                  {$$=(new ComplexNode())->write($3);delete $3;$3=nullptr;}
 			  				|  WRITE '(' potentialvalue ',' potentialvalue ')'		                                                                              {$$=(new ComplexNode())->write($3,$5);delete $3;$3=nullptr;delete $5;$5=nullptr;}
 			  				|  ROTATE '(' potentialvalue ',' potentialvalue ')'		                                                                              {$$=(new ComplexNode())->rotate($3,$5);delete $3;$3=nullptr;delete $5;$5=nullptr;}
-			  				|  SCALE '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'		                                                            {}
+			  				|  SCALE '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'		                                                            {$$=(new ComplexNode())->scale($3,$5,$7);delete $3;$3=nullptr;delete $5;$5=nullptr;delete $7;$7=nullptr;}
 			  				|  TRANSLATE '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'		                                                        {$$=(new ComplexNode())->translate($3,$5,$7);delete $3;$3=nullptr;delete $5;$5=nullptr;delete $7;$7=nullptr;}
 			  				|  CLIP '(' potentialvalue ',' potentialvalue ')'		                                                                                {}
 			  				|  RANDOM '(' potentialvalue ',' potentialvalue ')'		                                                                              {$$=(new ComplexNode())->binop($3,$5,"random");delete $3;$3=nullptr;delete $5;$5=nullptr;}
