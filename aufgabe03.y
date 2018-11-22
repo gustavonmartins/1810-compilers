@@ -132,7 +132,6 @@ int main(int argc, char* argv[]){
   yylineno=1;
   yyparse();
   //printf("accepted\n");
-
 }
 
 void yyerror(const char* s){
