@@ -265,5 +265,14 @@ class ComplexNode  {
 				
 				return this;
 				}
+				
+				ComplexNode* clip(ComplexNode*& p, ComplexNode*& t){
+					std::string cliparea, term;
+					cliparea=p->getCode();
+					term=t->getCode();
+					code="clipsave\n"+cliparea+"\nclip\n"+term+"\ncliprestore";
+					
+					return this;
+					}
 };
 
