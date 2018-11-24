@@ -18,9 +18,9 @@ setfont("Times", 20);      %Schriftart Times, 20pt
 setcolor(1,0,0);  
 translate(150, 400,scale(10,10,rotate(45,draw(string2path( ( 0 , 0 ) ,"Myps")))));
 black; % Setze die farbe auf schwarz
-write((100,680),"Spaete bindung: y=");
+write((100,700),"Spaete bindung: y=");
 write(num2string(y)); %y hat den Wert 5
-%write((100,680));
+write((100,680),"Direkte Bindung: z = ");
 write( num2string ( z ) ) ; %z hat den Wert 3
 
 %Zeichne einige Kreisbogen in unterschiedlichen Farben
