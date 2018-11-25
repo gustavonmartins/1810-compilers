@@ -22,7 +22,6 @@ setcolor(0.9,0.5,0.5);
 zabur<-string2path((222,333),"Zero");
 zabur;
 q;
-q3:=a;
 draw(zabur);
 
 

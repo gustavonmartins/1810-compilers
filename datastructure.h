@@ -135,6 +135,35 @@ class ComplexNode  {
 			
 			return this;
 			}
+		ComplexNode* bind_valins(ComplexNode*& lhs, ComplexNode*& rhs){
+			std::string a1,dummy, a2, a3, a4, a5, a6;
+			  a1=lhs->getCode();
+			  a2=rhs->getCode();
+			  
+			  code="/"+a1+" "+a2+" def";
+			  
+			  return this;
+			}
+			
+		ComplexNode* bind_ident_early(ComplexNode*& lhs, ComplexNode*& rhs){
+			std::string a1,dummy, a2, a3, a4, a5, a6;
+			  a1=lhs->getCode();
+			  a2=rhs->getCode();
+			  
+			  code="/"+a1+" //"+a2+" def";
+			  
+			  return this;
+			}
+			
+		ComplexNode* bind_ident_late(ComplexNode*& lhs, ComplexNode*& rhs){
+			std::string a1,dummy, a2, a3, a4, a5, a6;
+			  a1=lhs->getCode();
+			  a2=rhs->getCode();
+			  
+			  code="/"+a1+" "+a2+" def";
+			  
+			  return this;
+			}
 			
 		ComplexNode* latebinding(ComplexNode*& lhs, ComplexNode*& rhs){
 			  std::string a1,dummy, a2, a3, a4, a5, a6;
