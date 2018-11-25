@@ -103,7 +103,6 @@ fcall         	:  SETCOLOR '(' potentialvalue ',' potentialvalue ',' potentialva
 								|  COS '(' potentialvalue ')'		                                                                                                    {$$=(new ComplexNode())->unop($3,"cos");delete $3;$3=nullptr;}
 			  				|  ABS '(' potentialvalue ')'																																																				{$$=(new ComplexNode())->unop($3,"abs");delete $3;$3=nullptr;}
 			  				|  LN  '(' potentialvalue ')'																																																				{$$=(new ComplexNode())->unop($3,"ln" );delete $3;$3=nullptr;}
-			  				|  "<<" list ">>"																																																										{$$=(new ComplexNode())->pathoverpoints($2);delete $2;$2=nullptr;}
 			  				; 
 	
 /*1*/
@@ -114,6 +113,7 @@ potval_2				:  fcall                 										{$$=new ComplexNode($1);delete $1
 				   			|  '{' commands '}' 												{$$=new ComplexNode($2);delete $2;$2=nullptr;}	/*2*/
 				   			|  '(' potentialvalue ')'										{$$=new ComplexNode($2);delete $2;$2=nullptr;}	
 				   			|  '(' potentialvalue ',' potentialvalue ')'{$$=(new ComplexNode())->setPoint($2->getCode(),$4->getCode());delete $2;delete $4;$2=nullptr;$4=nullptr;} /* tuple, used for points and describing function */
+				   			|  "<<" list ">>"														{$$=(new ComplexNode())->pathoverpoints($2);delete $2;$2=nullptr;}
                 ;
                 
 potval_1			  :  val_ins 																	{$$=new ComplexNode($1);delete $1;$1=nullptr;} //potential value minus int, num, string and id. due to ps boundary conditions
