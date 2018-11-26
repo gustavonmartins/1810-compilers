@@ -160,7 +160,7 @@ class ComplexNode  {
 			  a1=lhs->getCode();
 			  a2=rhs->getCode();
 			  
-			  code="/"+a1+" "+a2+" def";
+			  code="/"+a1+" {"+a2+"} def";
 			  
 			  return this;
 			}
