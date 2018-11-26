@@ -8,7 +8,7 @@ var black : Term;
 start               % Beginner mit Zeichenansweisungen
 
 setcolor(r,g,b);
-setdrawsstyle(s,e);
+setdrawstyle(s,e);
 setfont(font,s);
 setlinewidth(w);
 

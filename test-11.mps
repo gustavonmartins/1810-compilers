@@ -11,7 +11,7 @@ start               % Beginner mit Zeichenansweisungen
   
   r <- 150;
   setcolor(0,1,0);
-  edyn;
+  esta;
   
   r <- 200;
   setcolor(0,0,1);
