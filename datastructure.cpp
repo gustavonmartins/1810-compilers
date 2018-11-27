@@ -169,6 +169,8 @@ ComplexNode* ComplexNode::num2string(ComplexNode*& n)
 ComplexNode* ComplexNode::draw(ComplexNode*& p)
 {
     std::string a1, a2, a3, a4, a5, a6;
+    p->checkType(Type::PATH);
+    
     a1=p->getCode();
     //std::cout<<"test: "<<a1<<std::endl;
     code=a1+" stroke";
@@ -179,6 +181,8 @@ ComplexNode* ComplexNode::draw(ComplexNode*& p)
 ComplexNode* ComplexNode::fill(ComplexNode*& p)
 {
     std::string a1, a2, a3, a4, a5, a6;
+    p->checkType(Type::PATH);
+    
     a1=p->getCode();
     code=a1+" closepath fill";
 
@@ -311,6 +315,8 @@ ComplexNode* ComplexNode::pathoverpoints(ComplexNode*& rawlist)
             code=code+" "+xy+" lineto";
         }
     }
+
+		setType(Type::PATH);
 
     return this;
 }
