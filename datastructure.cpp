@@ -59,6 +59,7 @@ ComplexNode* ComplexNode::setcolor(ComplexNode*& r,ComplexNode*& g,ComplexNode*&
 ComplexNode* ComplexNode::setfont(ComplexNode*& font,ComplexNode*& s)
 {
     std::string a1, a2, a3, a4, a5, a6;
+    font->checkType(Type::STRING);
     a1=font->getCode();
     a2 = s->getCode();
     code="/"+a1+" findfont "+a2+" scalefont setfont";
@@ -118,6 +119,7 @@ ComplexNode* ComplexNode::string2path(ComplexNode*& p, ComplexNode*& s)
 {
     std::string a1, a2, a3, a4, a5, a6;
     std::string xy;
+    s->checkType(Type::STRING);
     xy=p->getCode();
     a3=s->getCode();
 
@@ -158,6 +160,8 @@ ComplexNode* ComplexNode::num2string(ComplexNode*& n)
     a1=n->getCode();
 
     code=a1+" 20 string cvs";
+    
+    setType(Type::STRING);
 
     return this;
 }
