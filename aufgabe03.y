@@ -106,22 +106,22 @@ fcall         	:  SETCOLOR '(' potentialvalue ',' potentialvalue ',' potentialva
 			  				; 
 	
 /*1*/
-potentialvalue  :	 potval_1 																{$$=new ComplexNode($1);delete $1;$1=nullptr;}
-								|  potval_2																	{$$=new ComplexNode($1);delete $1;$1=nullptr;}
+potentialvalue  :	 potval_1 																{$$=(new ComplexNode($1))->setType($1);delete $1;$1=nullptr;}
+								|  potval_2																	{$$=(new ComplexNode($1))->setType($1);delete $1;$1=nullptr;}
 								;
-potval_2				:  fcall                 										{$$=new ComplexNode($1);delete $1;$1=nullptr;}	
-				   			|  '{' commands '}' 												{$$=new ComplexNode($2);delete $2;$2=nullptr;}	/*2*/
-				   			|  '(' potentialvalue ')'										{$$=new ComplexNode($2);delete $2;$2=nullptr;}	
-				   			|  '(' potentialvalue ',' potentialvalue ')'{$$=(new ComplexNode())->setPoint($2->getCode(),$4->getCode());delete $2;delete $4;$2=nullptr;$4=nullptr;} /* tuple, used for points and describing function */
-				   			|  "<<" list ">>"														{$$=(new ComplexNode())->pathoverpoints($2);delete $2;$2=nullptr;}
+potval_2				:  fcall                 										{$$=(new ComplexNode($1))->setType($1);delete $1;$1=nullptr;}	
+				   			|  '{' commands '}' 												{$$=(new ComplexNode($2))->setType(Type::TERM);delete $2;$2=nullptr;}	/*2*/
+				   			|  '(' potentialvalue ')'										{$$=(new ComplexNode($2))->setType($2);delete $2;$2=nullptr;}	
+				   			|  '(' potentialvalue ',' potentialvalue ')'{$$=(new ComplexNode())->setType(Type::POINT)->setPoint($2,$4);delete $2;delete $4;$2=nullptr;$4=nullptr;} /* tuple, used for points and describing function */
+				   			|  "<<" list ">>"														{$$=(new ComplexNode())->setType(Type::PATH)->pathoverpoints($2);delete $2;$2=nullptr;}
                 ;
                 
-potval_1			  :  val_ins 																	{$$=new ComplexNode($1);delete $1;$1=nullptr;} //potential value minus int, num, string and id. due to ps boundary conditions
-				   			|  IDENTIFIER																{$$=new ComplexNode($1);delete $1;$1=nullptr;}	
+potval_1			  :  val_ins 																	{$$=(new ComplexNode($1))->setType($1);delete $1;$1=nullptr;} //potential value minus int, num, string and id. due to ps boundary conditions
+				   			|  IDENTIFIER																{$$=(new ComplexNode($1))->setType($1);delete $1;$1=nullptr;}	
                 
-val_ins					:  VAL_INT																	{$$=new ComplexNode($1);delete $1;$1=nullptr;}
-								|  VAL_NUM 																	{$$=new ComplexNode($1);delete $1;$1=nullptr;}
-				   			|  VAL_STRING 															{$$=new ComplexNode($1);delete $1;$1=nullptr;}
+val_ins					:  VAL_INT																	{$$=(new ComplexNode($1))->setType($1);delete $1;$1=nullptr;}
+								|  VAL_NUM 																	{$$=(new ComplexNode($1))->setType($1);delete $1;$1=nullptr;}
+				   			|  VAL_STRING 															{$$=(new ComplexNode($1))->setType($1);delete $1;$1=nullptr;}
 
 list          	:  potentialvalue														{$$=(new ComplexNode())->initList($1);delete $1;$1=nullptr;}
               	|  list ',' potentialvalue									{$$=(new ComplexNode())->expandList($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}
@@ -147,4 +147,8 @@ void yyerror(const char* s){
   printf("rejected: \n");
   printf("Error on line %d, text \"%s\": %s\n", yylineno,yytext, s);
   exit(-1);
+}
+
+void error_nonblocking(const char* s){
+  printf("Error on line %d, \"%s\"\n", yylineno, s);
 }
