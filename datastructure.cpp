@@ -420,7 +420,7 @@ std::vector<ComplexNode> ComplexNode::getList()
     return list;
 }
 
-ComplexNode* ComplexNode::translate(ComplexNode*& x, ComplexNode*& y, ComplexNode*& therma)
+ComplexNode* ComplexNode::translate(ComplexNode*& x, ComplexNode*& y, ComplexNode*& term)
 {
 		x->checkTypeOR(Type::INT,Type::NUM);
 		y->checkTypeOR(Type::INT,Type::NUM);
@@ -428,27 +428,27 @@ ComplexNode* ComplexNode::translate(ComplexNode*& x, ComplexNode*& y, ComplexNod
     std::string a1,dummy, a2, a3, a4, a5, a6;
     a1=x->getCode();
     a2=y->getCode();
-    a3=therma->getCode();
+    a3=term->getCode();
 
     code=a1+" "+a2+" translate "+a3+" "+a1+" neg "+a2+" neg translate" ;
 
     return this;
 }
 
-ComplexNode* ComplexNode::rotate(ComplexNode*& alpha, ComplexNode*& therma)
+ComplexNode* ComplexNode::rotate(ComplexNode*& alpha, ComplexNode*& term)
 {
 		alpha->checkTypeOR(Type::INT,Type::NUM);
 		
     std::string a1,dummy, a2, a3, a4, a5, a6;
     a1=alpha->getCode();
-    a2=therma->getCode();
+    a2=term->getCode();
 
     code=a1+"  rotate "+a2+" "+a1+" neg rotate";
 
     return this;
 }
 
-ComplexNode* ComplexNode::scale(ComplexNode*& x, ComplexNode*& y, ComplexNode*& therma)
+ComplexNode* ComplexNode::scale(ComplexNode*& x, ComplexNode*& y, ComplexNode*& term)
 {
 		x->checkTypeOR(Type::INT,Type::NUM);
 		y->checkTypeOR(Type::INT,Type::NUM);
@@ -456,7 +456,7 @@ ComplexNode* ComplexNode::scale(ComplexNode*& x, ComplexNode*& y, ComplexNode*& 
     std::string a1,dummy, a2, a3, a4, a5, a6;
     a1=x->getCode();
     a2=y->getCode();
-    a3=therma->getCode();
+    a3=term->getCode();
 
     code=a1+" "+a2+" scale "+a3+" 1 "+a1+" div 1 "+a2+" div scale" ;
 
