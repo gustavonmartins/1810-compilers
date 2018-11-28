@@ -3,7 +3,7 @@
 #include <iostream>
 #include <vector>
 
-enum class Type {INT, NUM, STRING, POINT, PATH, TERM};
+enum class Type {UNSET, INT, NUM, STRING, POINT, PATH, TERM};
 
 class ComplexNode
 {

@@ -161,6 +161,8 @@ ComplexNode* ComplexNode::arc(ComplexNode*& p, ComplexNode*& r, ComplexNode*& al
     a4=alpha->getCode();
     a5=beta->getCode();
     code="newpath "+xy+" "+a3+" "+a4+" "+a5+" arc";
+    
+    setType(Type::PATH);
 
     return this;
 }
@@ -182,7 +184,9 @@ ComplexNode* ComplexNode::ellipse(ComplexNode*& p, ComplexNode*& r1, ComplexNode
     a5=alpha->getCode();
     a6=beta->getCode();
     code="newpath /savematrix matrix currentmatrix def "+xy+" translate "+a3+" "+a4+" scale 0 0 1 "+a5+" "+a6+" arc savematrix setmatrix"; //TODO: have to undo the translate here
-
+    
+    setType(Type::PATH);
+    
     return this;
 }
 
@@ -198,6 +202,8 @@ ComplexNode* ComplexNode::string2path(ComplexNode*& p, ComplexNode*& s)
     a3=s->getCode();
 
     code="newpath "+xy+" moveto "+a3+" true charpath";
+    
+    setType(Type::PATH);
 
     return this;
 }
@@ -478,6 +484,7 @@ std::string typeToString(Type type){
 		case Type::POINT: return "point";
 		case Type::PATH: return "path";
 		case Type::TERM: return "term";
+		case Type::UNSET: return "unset";
 		default: std::cout<<"type to string error\n. Program quits"<<std::endl;exit(-1);
 		}
 	}

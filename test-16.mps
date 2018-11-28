@@ -53,6 +53,8 @@ rotate("twenty",draw(<<(10,20),(30,40)>>)); 					%error, not int or num
 scale(20,2,draw(<<(10,20),(30,40)>>)); 								%pass
 scale(20.2,5,draw(<<(10,20),(30,40)>>)); 							%pass
 scale("twenty",5,draw(<<(10,20),(30,40)>>)); 					%error, not int or num
+draw(arc((100,200),50,0,45));													%pass
+draw(<<(100,200),(150,230),(345,123)>>);							%pass
 
 
 
