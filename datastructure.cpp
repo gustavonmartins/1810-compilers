@@ -13,8 +13,41 @@ ComplexNode::ComplexNode(char* _code){code.assign(_code);}
 ComplexNode::ComplexNode(std::string _code){code=_code;}
 ComplexNode::ComplexNode(ComplexNode*& child){code=child->getCode();}
 ComplexNode* ComplexNode::printCode(){std::cout<<code<<std::endl;return this;}
-ComplexNode* ComplexNode::setPoint(ComplexNode*& x,ComplexNode*& y){code=x->getCode()+" "+y->getCode();return this;}
-ComplexNode* ComplexNode::setString(std::string inp){code = "("+inp.substr(1, inp.size() - 2)+")";return this;}
+ComplexNode* ComplexNode::setPoint(ComplexNode*& x,ComplexNode*& y)
+{
+	x->checkTypeOR(Type::NUM, Type::INT);
+	y->checkTypeOR(Type::NUM, Type::INT);
+
+	code=x->getCode()+" "+y->getCode();
+	
+	setType(Type::POINT);
+	
+	return this;
+}
+
+ComplexNode* ComplexNode::setNum(char* _code)
+{
+	code.assign(_code);
+	
+	setType(Type::NUM);
+	
+	return this;
+}
+
+ComplexNode* ComplexNode::setInt(char* _code)
+{
+	code.assign(_code);
+	
+	setType(Type::INT);
+	
+	return this;
+}
+
+ComplexNode* ComplexNode::setString(std::string inp)
+{code = "("+inp.substr(1, inp.size() - 2)+")";
+	setType(Type::STRING);
+	return this;
+}
 
 ComplexNode* 	ComplexNode::setType(Type intype){type=intype; return this;}
 ComplexNode* 	ComplexNode::setType(ComplexNode*& source){type=source->getType(); return this;}
@@ -36,6 +69,22 @@ void ComplexNode::checkType(Type shouldtype)
 
 }
 
+void ComplexNode::checkTypeOR(Type shouldtype, Type shouldtypeOR)
+{
+    std::string should, shouldOR, is, msg;
+    if(shouldtype!=getType() && shouldtypeOR!=getType())
+    {
+        should=typeToString(shouldtype);
+        shouldOR=typeToString(shouldtypeOR);
+        is=typeToString(getType());
+
+        msg="Type mismatch. Type should be "+should+" or "+shouldOR+", but is "+is;
+        error_nonblocking(msg.c_str());
+        //std::cout<<"type mismatch: expected "+type+", got "checkee->getType();
+        //exit(-1);
+    }
+
+}
 
 ComplexNode* ComplexNode::setCode(std::string _code)
 {
@@ -49,6 +98,10 @@ std::string ComplexNode::getCode()
 ComplexNode* ComplexNode::setcolor(ComplexNode*& r,ComplexNode*& g,ComplexNode*& b)
 {
     std::string a1, a2, a3, a4, a5, a6;
+    r->checkTypeOR(Type::INT,Type::NUM);
+    g->checkTypeOR(Type::INT,Type::NUM);
+    b->checkTypeOR(Type::INT,Type::NUM);
+    
     a1=r->getCode();
     a2=g->getCode();
     a3=b->getCode();
@@ -59,6 +112,7 @@ ComplexNode* ComplexNode::setcolor(ComplexNode*& r,ComplexNode*& g,ComplexNode*&
 ComplexNode* ComplexNode::setfont(ComplexNode*& font,ComplexNode*& s)
 {
     std::string a1, a2, a3, a4, a5, a6;
+    s->checkTypeOR(Type::INT, Type::NUM);
     font->checkType(Type::STRING);
     a1=font->getCode();
     a2 = s->getCode();
@@ -70,6 +124,8 @@ ComplexNode* ComplexNode::setfont(ComplexNode*& font,ComplexNode*& s)
 ComplexNode* ComplexNode::setlinewidth(ComplexNode*& w)
 {
     std::string a1, a2, a3, a4, a5, a6;
+    w->checkTypeOR(Type::INT,Type::NUM);
+    
     a1=w->getCode();
     code=a1+" setlinewidth";
 
@@ -79,6 +135,9 @@ ComplexNode* ComplexNode::setlinewidth(ComplexNode*& w)
 ComplexNode* ComplexNode::setdrawstyle(ComplexNode*& s, ComplexNode*& e)
 {
     std::string a1, a2, a3, a4, a5, a6;
+    s->checkType(Type::INT);
+    e->checkType(Type::INT);
+    
     a1=s->getCode();
     a2=e->getCode();
     code="["+a1+" "+a2+"] 0 setdash";
@@ -88,6 +147,10 @@ ComplexNode* ComplexNode::setdrawstyle(ComplexNode*& s, ComplexNode*& e)
 
 ComplexNode* ComplexNode::arc(ComplexNode*& p, ComplexNode*& r, ComplexNode*& alpha, ComplexNode*& beta)
 {
+		p			->checkType(Type::POINT);
+		r     ->checkTypeOR(Type::INT,Type::NUM);
+		alpha ->checkTypeOR(Type::INT,Type::NUM);
+		beta	->checkTypeOR(Type::INT,Type::NUM);
     std::string a1, a2, a3, a4, a5, a6;
     std::string xy;
     xy=p->getCode();
@@ -102,6 +165,11 @@ ComplexNode* ComplexNode::arc(ComplexNode*& p, ComplexNode*& r, ComplexNode*& al
 
 ComplexNode* ComplexNode::ellipse(ComplexNode*& p, ComplexNode*& r1, ComplexNode*& r2, ComplexNode*& alpha, ComplexNode*& beta)
 {
+		p     ->checkType(Type::POINT);
+		r1    ->checkTypeOR(Type::INT,Type::NUM);
+		r2    ->checkTypeOR(Type::INT,Type::NUM);
+		alpha ->checkTypeOR(Type::INT,Type::NUM);
+		beta	->checkTypeOR(Type::INT,Type::NUM);
     std::string a1, a2, a3, a4, a5, a6;
     std::string xy;
     xy=p->getCode();
@@ -156,6 +224,7 @@ ComplexNode* ComplexNode::write(ComplexNode*& s)
 
 ComplexNode* ComplexNode::num2string(ComplexNode*& n)
 {
+		n->checkTypeOR(Type::INT,Type::NUM);
     std::string a1, a2, a3, a4, a5, a6;
     a1=n->getCode();
 
@@ -341,6 +410,8 @@ std::vector<ComplexNode> ComplexNode::getList()
 
 ComplexNode* ComplexNode::translate(ComplexNode*& x, ComplexNode*& y, ComplexNode*& therma)
 {
+		x->checkTypeOR(Type::INT,Type::NUM);
+		y->checkTypeOR(Type::INT,Type::NUM);
     std::string a1,dummy, a2, a3, a4, a5, a6;
     a1=x->getCode();
     a2=y->getCode();
@@ -353,6 +424,7 @@ ComplexNode* ComplexNode::translate(ComplexNode*& x, ComplexNode*& y, ComplexNod
 
 ComplexNode* ComplexNode::rotate(ComplexNode*& alpha, ComplexNode*& therma)
 {
+		alpha->checkTypeOR(Type::INT,Type::NUM);
     std::string a1,dummy, a2, a3, a4, a5, a6;
     a1=alpha->getCode();
     a2=therma->getCode();
@@ -364,6 +436,8 @@ ComplexNode* ComplexNode::rotate(ComplexNode*& alpha, ComplexNode*& therma)
 
 ComplexNode* ComplexNode::scale(ComplexNode*& x, ComplexNode*& y, ComplexNode*& therma)
 {
+		x->checkTypeOR(Type::INT,Type::NUM);
+		y->checkTypeOR(Type::INT,Type::NUM);
     std::string a1,dummy, a2, a3, a4, a5, a6;
     a1=x->getCode();
     a2=y->getCode();

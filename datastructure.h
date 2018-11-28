@@ -10,6 +10,8 @@ class ComplexNode
     std::string code;
     std::vector<ComplexNode> list;
     Type type;
+    void checkType(Type shouldtype);
+    void checkTypeOR(Type shouldtype, Type shouldtypeOR);
 
 public:
     ComplexNode();
@@ -19,11 +21,12 @@ public:
     ComplexNode* printCode();
     ComplexNode* setPoint(ComplexNode*& x,ComplexNode*& y);
     ComplexNode* setString(std::string inp);
+    ComplexNode* setNum(char* _code);
+    ComplexNode* setInt(char* _code);
 
     ComplexNode* setType(Type intype);
     ComplexNode* setType(ComplexNode*& source);
     Type getType();
-    void checkType(Type shouldtype);
     ComplexNode* setCode(std::string _code);
     std::string getCode();
     ComplexNode* setcolor(ComplexNode*& r,ComplexNode*& g,ComplexNode*& b);
