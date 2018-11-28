@@ -113,7 +113,7 @@ potval_2				:  fcall                 										{$$=(new ComplexNode($1))->setTyp
 				   			|  '{' commands '}' 												{$$=(new ComplexNode($2))->setType(Type::TERM);delete $2;$2=nullptr;}	/*2*/
 				   			|  '(' potentialvalue ')'										{$$=(new ComplexNode($2))->setType($2);delete $2;$2=nullptr;}	
 				   			|  '(' potentialvalue ',' potentialvalue ')'{$$=(new ComplexNode())->setPoint($2,$4);delete $2;delete $4;$2=nullptr;$4=nullptr;} /* tuple, used for points and describing function */
-				   			|  "<<" list ">>"														{$$=(new ComplexNode())->setType(Type::PATH)->pathoverpoints($2);delete $2;$2=nullptr;}
+				   			|  "<<" list ">>"														{$$=(new ComplexNode())->pathoverpoints($2);delete $2;$2=nullptr;}
                 ;
                 
 potval_1			  :  val_ins 																	{$$=(new ComplexNode($1))->setType($1);delete $1;$1=nullptr;} //potential value minus int, num, string and id. due to ps boundary conditions
