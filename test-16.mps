@@ -57,7 +57,6 @@ draw(arc((100,200),50,0,45));													%pass
 draw(<<(100,200),(150,230),(345,123)>>);							%pass
 draw(ellipse((100,200),50,70,0,45));									%pass
 draw(string2path((100,200),"my string"));							%pass
-%draw({string2path((100,200),"my string")});					%pass
 translate(100,100,{draw(arc((100,200),50,0,45));});		%pass
 
 

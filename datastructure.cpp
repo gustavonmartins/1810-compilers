@@ -424,6 +424,7 @@ ComplexNode* ComplexNode::translate(ComplexNode*& x, ComplexNode*& y, ComplexNod
 {
 		x->checkTypeOR(Type::INT,Type::NUM);
 		y->checkTypeOR(Type::INT,Type::NUM);
+		term->checkType(Type::TERM);
 		
     std::string a1,dummy, a2, a3, a4, a5, a6;
     a1=x->getCode();
@@ -438,6 +439,7 @@ ComplexNode* ComplexNode::translate(ComplexNode*& x, ComplexNode*& y, ComplexNod
 ComplexNode* ComplexNode::rotate(ComplexNode*& alpha, ComplexNode*& term)
 {
 		alpha->checkTypeOR(Type::INT,Type::NUM);
+		term->checkType(Type::TERM);
 		
     std::string a1,dummy, a2, a3, a4, a5, a6;
     a1=alpha->getCode();
@@ -452,6 +454,7 @@ ComplexNode* ComplexNode::scale(ComplexNode*& x, ComplexNode*& y, ComplexNode*& 
 {
 		x->checkTypeOR(Type::INT,Type::NUM);
 		y->checkTypeOR(Type::INT,Type::NUM);
+		term->checkType(Type::TERM);
 		
     std::string a1,dummy, a2, a3, a4, a5, a6;
     a1=x->getCode();
@@ -466,6 +469,7 @@ ComplexNode* ComplexNode::scale(ComplexNode*& x, ComplexNode*& y, ComplexNode*& 
 ComplexNode* ComplexNode::clip(ComplexNode*& p, ComplexNode*& t)
 {
 		p->checkType(Type::PATH);
+		t->checkType(Type::TERM);
 		
     std::string cliparea, term;
     cliparea=p->getCode();
