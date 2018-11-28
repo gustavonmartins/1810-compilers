@@ -63,8 +63,6 @@ void ComplexNode::checkType(Type shouldtype)
 
         msg="Type mismatch. Type should be "+should+", but is "+is;
         error_nonblocking(msg.c_str());
-        //std::cout<<"type mismatch: expected "+type+", got "checkee->getType();
-        //exit(-1);
     }
 
 }
@@ -80,8 +78,6 @@ void ComplexNode::checkTypeOR(Type shouldtype, Type shouldtypeOR)
 
         msg="Type mismatch. Type should be "+should+" or "+shouldOR+", but is "+is;
         error_nonblocking(msg.c_str());
-        //std::cout<<"type mismatch: expected "+type+", got "checkee->getType();
-        //exit(-1);
     }
 
 }
@@ -97,10 +93,11 @@ std::string ComplexNode::getCode()
 }
 ComplexNode* ComplexNode::setcolor(ComplexNode*& r,ComplexNode*& g,ComplexNode*& b)
 {
-    std::string a1, a2, a3, a4, a5, a6;
-    r->checkTypeOR(Type::INT,Type::NUM);
+		r->checkTypeOR(Type::INT,Type::NUM);
     g->checkTypeOR(Type::INT,Type::NUM);
     b->checkTypeOR(Type::INT,Type::NUM);
+		
+    std::string a1, a2, a3, a4, a5, a6;
     
     a1=r->getCode();
     a2=g->getCode();
@@ -111,9 +108,11 @@ ComplexNode* ComplexNode::setcolor(ComplexNode*& r,ComplexNode*& g,ComplexNode*&
 }
 ComplexNode* ComplexNode::setfont(ComplexNode*& font,ComplexNode*& s)
 {
-    std::string a1, a2, a3, a4, a5, a6;
     s->checkTypeOR(Type::INT, Type::NUM);
     font->checkType(Type::STRING);
+    
+    std::string a1, a2, a3, a4, a5, a6;
+    
     a1=font->getCode();
     a2 = s->getCode();
     code="/"+a1+" findfont "+a2+" scalefont setfont";
@@ -123,8 +122,9 @@ ComplexNode* ComplexNode::setfont(ComplexNode*& font,ComplexNode*& s)
 
 ComplexNode* ComplexNode::setlinewidth(ComplexNode*& w)
 {
+		w->checkTypeOR(Type::INT,Type::NUM);
+	
     std::string a1, a2, a3, a4, a5, a6;
-    w->checkTypeOR(Type::INT,Type::NUM);
     
     a1=w->getCode();
     code=a1+" setlinewidth";
@@ -134,9 +134,10 @@ ComplexNode* ComplexNode::setlinewidth(ComplexNode*& w)
 
 ComplexNode* ComplexNode::setdrawstyle(ComplexNode*& s, ComplexNode*& e)
 {
-    std::string a1, a2, a3, a4, a5, a6;
-    s->checkType(Type::INT);
+		s->checkType(Type::INT);
     e->checkType(Type::INT);
+    
+    std::string a1, a2, a3, a4, a5, a6;
     
     a1=s->getCode();
     a2=e->getCode();
@@ -151,6 +152,7 @@ ComplexNode* ComplexNode::arc(ComplexNode*& p, ComplexNode*& r, ComplexNode*& al
 		r     ->checkTypeOR(Type::INT,Type::NUM);
 		alpha ->checkTypeOR(Type::INT,Type::NUM);
 		beta	->checkTypeOR(Type::INT,Type::NUM);
+		
     std::string a1, a2, a3, a4, a5, a6;
     std::string xy;
     xy=p->getCode();
@@ -170,6 +172,7 @@ ComplexNode* ComplexNode::ellipse(ComplexNode*& p, ComplexNode*& r1, ComplexNode
 		r2    ->checkTypeOR(Type::INT,Type::NUM);
 		alpha ->checkTypeOR(Type::INT,Type::NUM);
 		beta	->checkTypeOR(Type::INT,Type::NUM);
+		
     std::string a1, a2, a3, a4, a5, a6;
     std::string xy;
     xy=p->getCode();
@@ -185,14 +188,16 @@ ComplexNode* ComplexNode::ellipse(ComplexNode*& p, ComplexNode*& r1, ComplexNode
 
 ComplexNode* ComplexNode::string2path(ComplexNode*& p, ComplexNode*& s)
 {
+    p->checkType(Type::POINT);
+    s->checkType(Type::STRING);
+    
     std::string a1, a2, a3, a4, a5, a6;
     std::string xy;
-    s->checkType(Type::STRING);
+    
     xy=p->getCode();
     a3=s->getCode();
 
     code="newpath "+xy+" moveto "+a3+" true charpath";
-    //std::cout<<"Code written: "<<code<<std::endl;
 
     return this;
 }
@@ -201,6 +206,7 @@ ComplexNode* ComplexNode::write(ComplexNode*& p, ComplexNode*& s)
 {
     p->checkType(Type::POINT);
     s->checkType(Type::STRING);
+    
     std::string a1, a2, a3, a4, a5, a6;
     std::string xy;
     xy=p->getCode();
@@ -214,6 +220,7 @@ ComplexNode* ComplexNode::write(ComplexNode*& p, ComplexNode*& s)
 ComplexNode* ComplexNode::write(ComplexNode*& s)
 {
     s->checkType(Type::STRING);
+    
     std::string a1, a2, a3, a4, a5, a6;
     a1=s->getCode();
 
@@ -225,6 +232,7 @@ ComplexNode* ComplexNode::write(ComplexNode*& s)
 ComplexNode* ComplexNode::num2string(ComplexNode*& n)
 {
 		n->checkTypeOR(Type::INT,Type::NUM);
+		
     std::string a1, a2, a3, a4, a5, a6;
     a1=n->getCode();
 
@@ -237,8 +245,9 @@ ComplexNode* ComplexNode::num2string(ComplexNode*& n)
 
 ComplexNode* ComplexNode::draw(ComplexNode*& p)
 {
+		p->checkType(Type::PATH);
+	
     std::string a1, a2, a3, a4, a5, a6;
-    p->checkType(Type::PATH);
     
     a1=p->getCode();
     //std::cout<<"test: "<<a1<<std::endl;
@@ -249,8 +258,9 @@ ComplexNode* ComplexNode::draw(ComplexNode*& p)
 
 ComplexNode* ComplexNode::fill(ComplexNode*& p)
 {
-    std::string a1, a2, a3, a4, a5, a6;
     p->checkType(Type::PATH);
+    
+    std::string a1, a2, a3, a4, a5, a6;
     
     a1=p->getCode();
     code=a1+" closepath fill";
@@ -296,9 +306,6 @@ ComplexNode* ComplexNode::latebinding(ComplexNode*& lhs, ComplexNode*& rhs)
     a1=lhs->getCode();
     a2=rhs->getCode();
 
-
-    //std::cout<<"a1 is: "<<a1<<std::endl;
-    //std::cout<<"a2 is: "<<a2<<std::endl;
     code="/"+a1+" { "+a2+" } def";
 
     return this;
@@ -310,9 +317,6 @@ ComplexNode* ComplexNode::earlybinding(ComplexNode*& lhs, ComplexNode*& rhs)
     a1=lhs->getCode();
     a2=rhs->getCode();
 
-
-    //std::cout<<"a1 is: "<<a1<<std::endl;
-    //std::cout<<"a2 is: "<<a2<<std::endl;
     code="/"+a1+" { "+a2+" } bind def";
 
     return this;
@@ -374,6 +378,8 @@ ComplexNode* ComplexNode::pathoverpoints(ComplexNode*& rawlist)
 
     for (std::vector<ComplexNode>::iterator it = listcopy.begin(); it!=listcopy.end(); ++it)
     {
+				it->checkType(Type::POINT);
+				
         xy=it->getCode();
         if(it==listcopy.begin())
         {
@@ -412,6 +418,7 @@ ComplexNode* ComplexNode::translate(ComplexNode*& x, ComplexNode*& y, ComplexNod
 {
 		x->checkTypeOR(Type::INT,Type::NUM);
 		y->checkTypeOR(Type::INT,Type::NUM);
+		
     std::string a1,dummy, a2, a3, a4, a5, a6;
     a1=x->getCode();
     a2=y->getCode();
@@ -425,6 +432,7 @@ ComplexNode* ComplexNode::translate(ComplexNode*& x, ComplexNode*& y, ComplexNod
 ComplexNode* ComplexNode::rotate(ComplexNode*& alpha, ComplexNode*& therma)
 {
 		alpha->checkTypeOR(Type::INT,Type::NUM);
+		
     std::string a1,dummy, a2, a3, a4, a5, a6;
     a1=alpha->getCode();
     a2=therma->getCode();
@@ -438,6 +446,7 @@ ComplexNode* ComplexNode::scale(ComplexNode*& x, ComplexNode*& y, ComplexNode*& 
 {
 		x->checkTypeOR(Type::INT,Type::NUM);
 		y->checkTypeOR(Type::INT,Type::NUM);
+		
     std::string a1,dummy, a2, a3, a4, a5, a6;
     a1=x->getCode();
     a2=y->getCode();
@@ -450,6 +459,8 @@ ComplexNode* ComplexNode::scale(ComplexNode*& x, ComplexNode*& y, ComplexNode*& 
 
 ComplexNode* ComplexNode::clip(ComplexNode*& p, ComplexNode*& t)
 {
+		p->checkType(Type::PATH);
+		
     std::string cliparea, term;
     cliparea=p->getCode();
     term=t->getCode();
