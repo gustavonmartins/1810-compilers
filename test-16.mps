@@ -44,14 +44,14 @@ ellipse("hi",(10,10),"zero",<<(10,20),(30,40)>>,45);	%error, not point, not int 
 num2string(3);																				%pass
 num2string(3.5);																			%pass
 num2string((2,2));																		%error, not int or num
-translate(20,30,draw(<<(10,20),(30,40)>>)); 					%pass
-translate(20.2,30.2,draw(<<(10,20),(30,40)>>)); 			%pass
+%translate(20,30,draw(<<(10,20),(30,40)>>)); 					%pass																							%check this
+%translate(20.2,30.2,draw(<<(10,20),(30,40)>>)); 			%pass																							%check this
 translate("twenty",30.2,draw(<<(10,20),(30,40)>>)); 	%error, not int or num
-rotate(20,draw(<<(10,20),(30,40)>>)); 								%pass
-rotate(20.2,draw(<<(10,20),(30,40)>>)); 							%pass
+%rotate(20,draw(<<(10,20),(30,40)>>)); 								%pass																							%check this
+%rotate(20.2,draw(<<(10,20),(30,40)>>)); 							%pass																							%check this
 rotate("twenty",draw(<<(10,20),(30,40)>>)); 					%error, not int or num
-scale(20,2,draw(<<(10,20),(30,40)>>)); 								%pass
-scale(20.2,5,draw(<<(10,20),(30,40)>>)); 							%pass
+%scale(20,2,draw(<<(10,20),(30,40)>>)); 								%pass																						%check this
+%scale(20.2,5,draw(<<(10,20),(30,40)>>)); 							%pass																						%check this
 scale("twenty",5,draw(<<(10,20),(30,40)>>)); 					%error, not int or num
 draw(arc((100,200),50,0,45));													%pass
 draw(<<(100,200),(150,230),(345,123)>>);							%pass

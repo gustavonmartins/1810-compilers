@@ -258,6 +258,8 @@ ComplexNode* ComplexNode::draw(ComplexNode*& p)
     a1=p->getCode();
     //std::cout<<"test: "<<a1<<std::endl;
     code=a1+" stroke";
+    
+    setType(Type::TERM);
 
     return this;
 }
@@ -270,6 +272,8 @@ ComplexNode* ComplexNode::fill(ComplexNode*& p)
     
     a1=p->getCode();
     code=a1+" closepath fill";
+    
+    setType(Type::TERM);
 
     return this;
 }
@@ -432,6 +436,8 @@ ComplexNode* ComplexNode::translate(ComplexNode*& x, ComplexNode*& y, ComplexNod
     a3=term->getCode();
 
     code=a1+" "+a2+" translate "+a3+" "+a1+" neg "+a2+" neg translate" ;
+    
+    setType(Type::TERM);
 
     return this;
 }
@@ -446,6 +452,8 @@ ComplexNode* ComplexNode::rotate(ComplexNode*& alpha, ComplexNode*& term)
     a2=term->getCode();
 
     code=a1+"  rotate "+a2+" "+a1+" neg rotate";
+    
+    setType(Type::TERM);
 
     return this;
 }
@@ -462,6 +470,8 @@ ComplexNode* ComplexNode::scale(ComplexNode*& x, ComplexNode*& y, ComplexNode*& 
     a3=term->getCode();
 
     code=a1+" "+a2+" scale "+a3+" 1 "+a1+" div 1 "+a2+" div scale" ;
+    
+    setType(Type::TERM);
 
     return this;
 }
