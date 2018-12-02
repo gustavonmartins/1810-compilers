@@ -12,6 +12,7 @@ start
 x:=2;
 z:=10;
 p<-(1,1);                     %pass
+p<-((1),(1));                 %pass
 p<-(x,x);                     %pass
 p:=(x,x);                     %pass
 p:=(y,y);                     %fail, not declared
@@ -29,6 +30,9 @@ pt<-<<(1,1),x>>;              %fail, incompatible
 pt:=<<p,p>>;                  %pass
 pt:=<<(1,1),p>>;              %pass
 pt:=<<(1,1),x>>;              %fail, incompatible
+for p := 10 to 20 step 2 do num2string(x); done;    %fail, incompatible
+for y := 10 to 20 step 2 do num2string(x); done;    %fail, not declared
+for x := 10.2 to 20 step 2 do num2string(x); done;  %pass
 
 
 end

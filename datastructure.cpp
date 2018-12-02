@@ -335,6 +335,13 @@ ComplexNode* ComplexNode::earlybinding(ComplexNode*& lhs, ComplexNode*& rhs)
 ComplexNode* ComplexNode::binop(ComplexNode*& left, ComplexNode*& right, std::string op)
 {
     std::string a1,dummy, a2, a3, a4, a5, a6;
+    if ("mod"!=op){
+      left->checkTypeOR(Type::INT, Type::NUM);
+    } else{
+      left->checkType(Type::INT);
+      right->checkType(Type::INT);
+    }
+    env.checkcompatible(left,right);
     a1=left->getCode();
     a2=right->getCode();
 
@@ -354,6 +361,7 @@ ComplexNode* ComplexNode::binop(ComplexNode*& left, ComplexNode*& right, std::st
 ComplexNode* ComplexNode::unop(ComplexNode*& left, std::string op)
 {
     std::string a1,dummy, a2, a3, a4, a5, a6;
+    left->checkTypeOR(Type::INT, Type::NUM);
     a1=left->getCode();
 
     code=a1+" "+op;
@@ -364,6 +372,11 @@ ComplexNode* ComplexNode::unop(ComplexNode*& left, std::string op)
 ComplexNode* ComplexNode::forloop(ComplexNode*& id, ComplexNode*& start, ComplexNode*& end, ComplexNode*& inc, ComplexNode*& cmd)
 {
     std::string a1,dummy, a2, a3, a4, a5, a6;
+    id->checkTypeOR(Type::NUM, Type::INT);
+    start->checkTypeOR(Type::NUM, Type::INT);
+    end->checkTypeOR(Type::NUM, Type::INT);
+    inc->checkTypeOR(Type::NUM, Type::INT);
+    //cmd->checkType(Type::TERM);
     a1=id->getCode();
     a2=start->getCode();
     a3=end->getCode();
@@ -559,6 +572,7 @@ void VarStore::checkcompatible(ComplexNode* lhs, ComplexNode* rhs){
   Type rhsType=rhs->getType();
   if (lhsType==rhsType){return ;}
   else if ((lhsType==Type::NUM)&&(rhsType==Type::INT)){return ;}
+  else if ((lhsType==Type::INT)&&(rhsType==Type::NUM)){return ;}
   else{
     std::string output="Type incompability between left ("+typeToString(lhsType)+") and right ("+typeToString(rhsType)+") hand sides";
     error_nonblocking(output.c_str());}
