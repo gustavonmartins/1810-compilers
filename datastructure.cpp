@@ -75,7 +75,6 @@ void ComplexNode::checkTypeOR(Type shouldtype, Type shouldtypeOR)
         msg="Type mismatch. Type should be "+should+" or "+shouldOR+", but is "+is;
         error_nonblocking(msg.c_str());
     }
-
 }
 
 ComplexNode* ComplexNode::setCode(std::string _code)
@@ -276,7 +275,7 @@ ComplexNode* ComplexNode::fill(ComplexNode*& p)
 ComplexNode* ComplexNode::bind_valins(ComplexNode*& lhs, ComplexNode*& rhs)
 {
     std::string a1,dummy, a2, a3, a4, a5, a6;
-    //env.checkcompatible(lhs, rhs);
+    env.checkcompatible(lhs, rhs);
     a1=lhs->getCode();
     a2=rhs->getCode();
 
@@ -288,6 +287,7 @@ ComplexNode* ComplexNode::bind_valins(ComplexNode*& lhs, ComplexNode*& rhs)
 ComplexNode* ComplexNode::bind_ident_early(ComplexNode*& lhs, ComplexNode*& rhs)
 {
     std::string a1,dummy, a2, a3, a4, a5, a6;
+    env.checkcompatible(lhs, rhs);
     a1=lhs->getCode();
     a2=rhs->getCode();
 
@@ -299,6 +299,7 @@ ComplexNode* ComplexNode::bind_ident_early(ComplexNode*& lhs, ComplexNode*& rhs)
 ComplexNode* ComplexNode::bind_ident_late(ComplexNode*& lhs, ComplexNode*& rhs)
 {
     std::string a1,dummy, a2, a3, a4, a5, a6;
+    env.checkcompatible(lhs, rhs);
     a1=lhs->getCode();
     a2=rhs->getCode();
 
@@ -310,6 +311,7 @@ ComplexNode* ComplexNode::bind_ident_late(ComplexNode*& lhs, ComplexNode*& rhs)
 ComplexNode* ComplexNode::latebinding(ComplexNode*& lhs, ComplexNode*& rhs)
 {
     std::string a1,dummy, a2, a3, a4, a5, a6;
+    env.checkcompatible(lhs, rhs);
     a1=lhs->getCode();
     a2=rhs->getCode();
 
@@ -321,6 +323,7 @@ ComplexNode* ComplexNode::latebinding(ComplexNode*& lhs, ComplexNode*& rhs)
 ComplexNode* ComplexNode::earlybinding(ComplexNode*& lhs, ComplexNode*& rhs)
 {
     std::string a1,dummy, a2, a3, a4, a5, a6;
+    env.checkcompatible(lhs, rhs);
     a1=lhs->getCode();
     a2=rhs->getCode();
 
@@ -550,3 +553,14 @@ Type VarStore::getType(ComplexNode* id){
     return Type::UNSET;
   }
 }
+
+void VarStore::checkcompatible(ComplexNode* lhs, ComplexNode* rhs){
+  Type lhsType=lhs->getType();
+  Type rhsType=rhs->getType();
+  if (lhsType==rhsType){return ;}
+  else if ((lhsType==Type::NUM)&&(rhsType==Type::INT)){return ;}
+  else{
+    std::string output="Type incompability between left ("+typeToString(lhsType)+") and right ("+typeToString(rhsType)+") hand sides";
+    error_nonblocking(output.c_str());}
+}
+

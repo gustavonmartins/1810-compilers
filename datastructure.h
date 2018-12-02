@@ -82,7 +82,7 @@ class VarStore{
   void trydeclaring(const ComplexNode* id, Type type);   //should reference to pointer be here?
   void checkdeclared(const ComplexNode* lhs);            //should reference to pointer be here?
   Type getType(ComplexNode* id);                        //should reference to pointer be here?
-  void checkcompatible(ComplexNode*& lhs, ComplexNode*& rhs);
+  void checkcompatible(ComplexNode* lhs, ComplexNode* rhs); //should reference to pointer be here?
 };
 
 
