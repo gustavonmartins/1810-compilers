@@ -7,16 +7,19 @@ extern int yylineno;
 extern char *yytext;
 
 #include "datastructure.h"
+#include "globals.hpp"
 extern void yyerror(const char *msg);
 extern int yylex();
+
+VarStore env;
 
 %}
 
 %union {
-  struct ComplexNode* ast_fc;
+  class ComplexNode* ast_fc;
 }
 				
-%type <ast_fc> IDENTIFIER VAL_INT VAL_NUM VAL_STRING list potentialvalue fcall command commands program val_ins binding potval_1 potval_2
+%type <ast_fc> IDENTIFIER VAL_INT VAL_NUM VAL_STRING list potentialvalue fcall command commands program val_ins binding potval_1 potval_2 TYPE
 
 %token PICTURE IDENTIFIER START END
 %token VAR
@@ -50,7 +53,7 @@ declarations  	: %empty
               	| declarations declaration 
               	;
 	
-declaration   	: VAR list ':' TYPE ';'
+declaration   	: VAR IDENTIFIER ':' TYPE ';'          {env.trydeclaring($2, $4->getType());}
               	;
 	
 commands      	: %empty																{$$=new ComplexNode();}
@@ -59,16 +62,16 @@ commands      	: %empty																{$$=new ComplexNode();}
 	
 command       	:  binding																																												{$$=(new ComplexNode($1));										delete $1;$1=nullptr;											} /*1*/
               	|  fcall ';'  																																										{$$=(new ComplexNode($1));										delete $1;$1=nullptr;											} /*1*/
-              	|  FOR IDENTIFIER ":=" potentialvalue TO potentialvalue STEP potentialvalue DO commands DONE ';'  {$$=(new ComplexNode())->forloop($2, $4, $6, $8, $10);delete $2;$2=nullptr;delete $4;$4=nullptr;delete $6;$6=nullptr;delete $8;$8=nullptr;delete $10;$10=nullptr;} /*1*/
-              	|  IDENTIFIER ';' 																																								{$$=new ComplexNode($1);delete $1, $1=nullptr;} /* for Terms */
+              	|  FOR IDENTIFIER ":=" potentialvalue TO potentialvalue STEP potentialvalue DO commands DONE ';'  {$2->checkdeclared();$$=(new ComplexNode())->forloop($2, $4, $6, $8, $10);delete $2;$2=nullptr;delete $4;$4=nullptr;delete $6;$6=nullptr;delete $8;$8=nullptr;delete $10;$10=nullptr;} /*1*/
+              	|  IDENTIFIER ';' 																																								{$1->checkdeclared();$$=new ComplexNode($1);delete $1, $1=nullptr;} /* for Terms */
               	;
               	
-binding					:  IDENTIFIER ":=" val_ins				';'																																{$$=(new ComplexNode())->bind_valins($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}	 /*2*/
-              	|  IDENTIFIER "<-" val_ins     		';'																																{$$=(new ComplexNode())->bind_valins($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}	/*2*/
-              	|  IDENTIFIER ":=" IDENTIFIER    	';'																																{$$=(new ComplexNode())->bind_ident_early($1,$3);delete $1; $1=nullptr;delete $3; $3=nullptr;}
-              	|  IDENTIFIER "<-" IDENTIFIER    	';'																																{$$=(new ComplexNode())->bind_ident_late ($1,$3);delete $1; $1=nullptr;delete $3; $3=nullptr;}
-								|  IDENTIFIER ":=" potval_2			  ';'    																														{$$=(new ComplexNode())->earlybinding($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}	 /*2*/
-              	|  IDENTIFIER "<-" potval_2			  ';'    																														{$$=(new ComplexNode())->latebinding($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}	/*2*/
+binding					:  IDENTIFIER ":=" val_ins				';'																																{$1->checkdeclared();                     $$=(new ComplexNode())->bind_valins($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}	 /*2*/
+              	|  IDENTIFIER "<-" val_ins     		';'																																{$1->checkdeclared();                     $$=(new ComplexNode())->bind_valins($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}	/*2*/
+              	|  IDENTIFIER ":=" IDENTIFIER    	';'																																{$1->checkdeclared();$3->checkdeclared(); $$=(new ComplexNode())->bind_ident_early($1,$3);delete $1; $1=nullptr;delete $3; $3=nullptr;}
+              	|  IDENTIFIER "<-" IDENTIFIER    	';'																																{$1->checkdeclared();$3->checkdeclared(); $$=(new ComplexNode())->bind_ident_late ($1,$3);delete $1; $1=nullptr;delete $3; $3=nullptr;}
+								|  IDENTIFIER ":=" potval_2			  ';'    																														{$1->checkdeclared();                     $$=(new ComplexNode())->earlybinding($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}	 /*2*/
+              	|  IDENTIFIER "<-" potval_2			  ';'    																														{$1->checkdeclared();                     $$=(new ComplexNode())->latebinding($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}	/*2*/
 	
 fcall         	:  SETCOLOR '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'							                                              {$$=(new ComplexNode())->setcolor($3,$5,$7);				delete $3;$3=nullptr;delete $5;$5=nullptr;delete $7;$7=nullptr;}
 			  				|  SETDRAWSTYLE '(' potentialvalue ',' potentialvalue ')'             							                                                {$$=(new ComplexNode())->setdrawstyle($3,$5);				delete $3;$3=nullptr;delete $5;$5=nullptr;}
@@ -117,7 +120,7 @@ potval_2				:  fcall                 										{$$=(new ComplexNode($1))->setTyp
                 ;
                 
 potval_1			  :  val_ins 																	{$$=(new ComplexNode($1))->setType($1);delete $1;$1=nullptr;} //potential value minus int, num, string and id. due to ps boundary conditions
-				   			|  IDENTIFIER																{$$=(new ComplexNode($1))->setType($1);delete $1;$1=nullptr;}	
+				   			|  IDENTIFIER																{$1->checkdeclared();$$=(new ComplexNode($1))->setType($1);delete $1;$1=nullptr;}	
                 
 val_ins					:  VAL_INT																	{$$=(new ComplexNode($1))->setType($1);delete $1;$1=nullptr;}
 								|  VAL_NUM 																	{$$=(new ComplexNode($1))->setType($1);delete $1;$1=nullptr;}

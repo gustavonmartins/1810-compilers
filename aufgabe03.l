@@ -4,6 +4,7 @@
 #include "aufgabe03.tab.h"
 
 #include "datastructure.h"
+#include "globals.hpp"
 
 extern int yylex();
 %}
@@ -50,12 +51,14 @@ picture               {return(PICTURE);}
 start                 {return(START);}
 end                   {return(END);}
 var                   {return(VAR);}
-Int                   {return(TYPE);}
-Num                   {return(TYPE);}
-String                {return(TYPE);}
-Point                 {return(TYPE);}
-Path                  {return(TYPE);}
-Term                  {return(TYPE);}
+
+Int                   {yylval.ast_fc=(new ComplexNode())->setType(Type::INT);   return(TYPE);}
+Num                   {yylval.ast_fc=(new ComplexNode())->setType(Type::NUM);   return(TYPE);}
+String                {yylval.ast_fc=(new ComplexNode())->setType(Type::STRING);return(TYPE);}
+Point                 {yylval.ast_fc=(new ComplexNode())->setType(Type::POINT); return(TYPE);}
+Path                  {yylval.ast_fc=(new ComplexNode())->setType(Type::PATH);  return(TYPE);}
+Term                  {yylval.ast_fc=(new ComplexNode())->setType(Type::TERM);  return(TYPE);}
+
 for                   {return(FOR);}
 to                    {return(TO);}
 step                  {return(STEP);}
@@ -69,7 +72,7 @@ done                  {return(DONE);}
 
 {STRING}              {yylval.ast_fc=(new ComplexNode())->setString(yytext);		return VAL_STRING;}
 "mod"				  				{return MOD;}
-{ID}                  {yylval.ast_fc=new ComplexNode(yytext);		return IDENTIFIER;}
+{ID}                  {yylval.ast_fc=(new CN_Identifier())->setCode(yytext);		return IDENTIFIER;}
 {NUM}                 {yylval.ast_fc=(new ComplexNode())->setNum(yytext);		return VAL_NUM;}
 {INT}                 {yylval.ast_fc=(new ComplexNode())->setInt(yytext);		return VAL_INT;}
 

@@ -1,11 +1,12 @@
 #include "datastructure.h"
+#include "globals.hpp"
 
 #include <iostream>
 #include <vector>
 
+
 extern void yyerror(const char* s);
 extern void error_nonblocking(const char* s);
-
 
 
 ComplexNode::ComplexNode()=default;
@@ -87,7 +88,7 @@ ComplexNode* ComplexNode::setCode(std::string _code)
     code=_code;
     return this;
 }
-std::string ComplexNode::getCode()
+std::string ComplexNode::getCode() const
 {
     return code;
 }
@@ -280,6 +281,7 @@ ComplexNode* ComplexNode::fill(ComplexNode*& p)
 ComplexNode* ComplexNode::bind_valins(ComplexNode*& lhs, ComplexNode*& rhs)
 {
     std::string a1,dummy, a2, a3, a4, a5, a6;
+    //env.checkcompatible(lhs, rhs);
     a1=lhs->getCode();
     a2=rhs->getCode();
 
@@ -489,7 +491,9 @@ ComplexNode* ComplexNode::clip(ComplexNode*& p, ComplexNode*& t)
     return this;
 }
 
+void ComplexNode::checkdeclared(){} //Nothing to do, only on identifier class
 
+//////////////////////////////////////////////////////////////////
 std::string typeToString(Type type){
 	switch(type){
 		case Type::INT: return "int";
@@ -502,3 +506,51 @@ std::string typeToString(Type type){
 		default: std::cout<<"type to string error\n. Program quits"<<std::endl;exit(-1);
 		}
 	}
+//////////////////////////////////////////////////////////////////
+ComplexNode* CN_Identifier::setType(Type intype){
+  env.trydeclaring(this, intype);
+
+  return this; 
+}
+
+void CN_Identifier::checkdeclared() {
+  env.checkdeclared(this);
+}
+
+Type CN_Identifier::getType(){
+  return env.getType(this);
+}
+//////////////////////////////////////////////////////////////////
+void VarStore::trydeclaring(const ComplexNode* id, Type type){
+  auto ret = db.insert(std::make_pair(id->getCode(), type));
+
+  if( ret.second)
+  { 
+      //the value is inserted
+  }
+  else
+  {
+      //alredy declared
+      std::string output="Variable "+id->getCode()+" already declared previously";
+      error_nonblocking(output.c_str());
+  }
+}
+
+void VarStore::checkdeclared(const ComplexNode* lhs){
+  std::map<std::string, Type>::iterator it = db.find(lhs->getCode());
+  if(it==db.end()){
+    std::string output="Attempted usage of undeclared variable "+lhs->getCode();
+    error_nonblocking(output.c_str());
+  }
+}
+
+Type VarStore::getType(ComplexNode* id){
+  std::map<std::string, Type>::iterator it = db.find(id->getCode());
+  if(it!=db.end()){
+    return it->second;
+  }
+  else{
+    std::string output="Many error messages will be generated from here on, all redundant but formulated in different ways, because tried to query a type on undeclared variable "+id->getCode();
+    error_nonblocking(output.c_str());
+  }
+}

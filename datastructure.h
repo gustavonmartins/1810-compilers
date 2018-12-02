@@ -2,6 +2,7 @@
 #define DS_H
 #include <iostream>
 #include <vector>
+#include <map>
 
 enum class Type {UNSET, INT, NUM, STRING, POINT, PATH, TERM};
 
@@ -15,6 +16,7 @@ class ComplexNode
 
 public:
     ComplexNode();
+    virtual ~ComplexNode()=default;  //virtual to support identifiers capabilities
     ComplexNode(char* _code);
     ComplexNode(std::string _code);
     ComplexNode(ComplexNode*& child);
@@ -24,11 +26,12 @@ public:
     ComplexNode* setNum(char* _code);
     ComplexNode* setInt(char* _code);
 
-    ComplexNode* setType(Type intype);
+    virtual ComplexNode* setType(Type intype);  //virtual to support identifiers capabilities]
+    virtual void checkdeclared();
     ComplexNode* setType(ComplexNode*& source);
-    Type getType();
+    virtual Type getType();
     ComplexNode* setCode(std::string _code);
-    std::string getCode();
+    std::string getCode() const;
     ComplexNode* setcolor(ComplexNode*& r,ComplexNode*& g,ComplexNode*& b);
     ComplexNode* setfont(ComplexNode*& font,ComplexNode*& s);
     ComplexNode* setlinewidth(ComplexNode*& w);
@@ -61,5 +64,26 @@ public:
 };
 
 std::string typeToString(Type type);
+
+class CN_Identifier: public ComplexNode{
+  
+  public:
+  ComplexNode* setType(Type intype) override;
+  void checkdeclared()  override;
+  Type getType() override;
+};
+
+
+
+class VarStore{
+  std::map<std::string, Type> db;
+
+  public:
+  void trydeclaring(const ComplexNode* id, Type type);   //should reference to pointer be here?
+  void checkdeclared(const ComplexNode* lhs);            //should reference to pointer be here?
+  Type getType(ComplexNode* id);                        //should reference to pointer be here?
+  void checkcompatible(ComplexNode*& lhs, ComplexNode*& rhs);
+};
+
 
 #endif
