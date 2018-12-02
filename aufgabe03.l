@@ -6,7 +6,6 @@
 #include "datastructure.h"
 #include "globals.hpp"
 
-extern int yylex();
 %}
 
 DIGIT [0-9]

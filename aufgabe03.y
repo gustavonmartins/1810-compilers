@@ -3,13 +3,8 @@
 
 #include <stdlib.h>
 
-extern int yylineno;
-extern char *yytext;
-
 #include "datastructure.h"
 #include "globals.hpp"
-extern void yyerror(const char *msg);
-extern int yylex();
 
 VarStore env;
 

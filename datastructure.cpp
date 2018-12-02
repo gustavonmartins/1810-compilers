@@ -4,11 +4,6 @@
 #include <iostream>
 #include <vector>
 
-
-extern void yyerror(const char* s);
-extern void error_nonblocking(const char* s);
-
-
 ComplexNode::ComplexNode()=default;
 ComplexNode::ComplexNode(char* _code):type(Type::UNSET){code.assign(_code);}
 ComplexNode::ComplexNode(std::string _code):type(Type::UNSET){code=_code;}
@@ -552,5 +547,6 @@ Type VarStore::getType(ComplexNode* id){
   else{
     std::string output="Many error messages will be generated from here on, all redundant but formulated in different ways, because tried to query a type on undeclared variable "+id->getCode();
     error_nonblocking(output.c_str());
+    return Type::UNSET;
   }
 }
