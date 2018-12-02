@@ -10,9 +10,9 @@ extern void error_nonblocking(const char* s);
 
 
 ComplexNode::ComplexNode()=default;
-ComplexNode::ComplexNode(char* _code){code.assign(_code);}
-ComplexNode::ComplexNode(std::string _code){code=_code;}
-ComplexNode::ComplexNode(ComplexNode*& child){code=child->getCode();}
+ComplexNode::ComplexNode(char* _code):type(Type::UNSET){code.assign(_code);}
+ComplexNode::ComplexNode(std::string _code):type(Type::UNSET){code=_code;}
+ComplexNode::ComplexNode(ComplexNode*& child):type(Type::UNSET){code=child->getCode();}
 ComplexNode* ComplexNode::printCode(){std::cout<<code<<std::endl;return this;}
 ComplexNode* ComplexNode::setPoint(ComplexNode*& x,ComplexNode*& y)
 {
