@@ -57,7 +57,7 @@ commands      	: %empty																{$$=new ComplexNode();}
 	
 command       	:  binding																																												{$$=(new ComplexNode($1));										delete $1;$1=nullptr;											} /*1*/
               	|  fcall ';'  																																										{$$=(new ComplexNode($1));										delete $1;$1=nullptr;											} /*1*/
-              	|  FOR IDENTIFIER ":=" potentialvalue TO potentialvalue STEP potentialvalue DO commands DONE ';'  {$2->checkdeclared();$$=(new ComplexNode())->forloop($2, $4, $6, $8, $10);delete $2;$2=nullptr;delete $4;$4=nullptr;delete $6;$6=nullptr;delete $8;$8=nullptr;delete $10;$10=nullptr;} /*1*/
+              	|  FOR IDENTIFIER ":=" potentialvalue TO potentialvalue STEP potentialvalue DO commands DONE ';'  {$$=(new ComplexNode())->forloop($2, $4, $6, $8, $10);delete $2;$2=nullptr;delete $4;$4=nullptr;delete $6;$6=nullptr;delete $8;$8=nullptr;delete $10;$10=nullptr;} /*1*/
               	|  IDENTIFIER ';' 																																								{$1->checkdeclared();$$=new ComplexNode($1);delete $1, $1=nullptr;} /* for Terms */
               	;
               	
