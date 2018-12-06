@@ -4,11 +4,19 @@
 #include <iostream>
 #include <vector>
 
+
 ComplexNode::ComplexNode()=default;
 ComplexNode::ComplexNode(char* _code):type(Type::UNSET){code.assign(_code);}
 ComplexNode::ComplexNode(std::string _code):type(Type::UNSET){code=_code;}
 ComplexNode::ComplexNode(ComplexNode*& child):type(Type::UNSET){code=child->getCode();}
-ComplexNode* ComplexNode::printCode(){std::cout<<code<<std::endl;return this;}
+
+ComplexNode* ComplexNode::setDebugInfo(int line){lineno=line;return this;}
+ComplexNode* ComplexNode::printCode(){std::cout<<" "<<code;return this;}
+void ComplexNode::finalwork()
+{
+  printCode();
+}
+
 ComplexNode* ComplexNode::setPoint(ComplexNode*& x,ComplexNode*& y)
 {
 	x->checkTypeOR(Type::NUM, Type::INT);
@@ -21,36 +29,39 @@ ComplexNode* ComplexNode::setPoint(ComplexNode*& x,ComplexNode*& y)
 	return this;
 }
 
-ComplexNode* ComplexNode::setNum(char* _code)
-{
-	code.assign(_code);
-	
-	setType(Type::NUM);
-	
-	return this;
+ComplexNode* ComplexNode::setNum(char* _code){
+  code.assign(_code);
+  setType(Type::NUM);
+  return this;
 }
 
-ComplexNode* ComplexNode::setInt(char* _code)
-{
-	code.assign(_code);
-	
-	setType(Type::INT);
-	
-	return this;
+ComplexNode* ComplexNode::setInt(char* _code){
+  code.assign(_code);
+  setType(Type::INT);
+  return this;
 }
 
-ComplexNode* ComplexNode::setString(std::string inp)
-{code = "("+inp.substr(1, inp.size() - 2)+")";
-	setType(Type::STRING);
-	return this;
+ComplexNode* ComplexNode::setString(std::string inp){
+  code = "("+inp.substr(1, inp.size() - 2)+")";
+  setType(Type::STRING);
+  return this;
 }
 
 ComplexNode* 	ComplexNode::setType(Type intype){type=intype; return this;}
 ComplexNode* 	ComplexNode::setType(ComplexNode*& source){type=source->getType(); return this;}
-Type 			ComplexNode::getType(){return type;}
+Type  ComplexNode::getType(){
+  //std::cout<<"query basic node type...\n";
+  if(type!=Type::UNSET){
+    return type;
+  }
+  else{
+   return (dynamic_cast<ComplexNode*>(probeifsinglechild()))->getType(); 
+  }
+}
 
 void ComplexNode::checkType(Type shouldtype)
 {
+    checkdeclared();
     std::string should, is, msg;
     if(shouldtype!=getType())
     {
@@ -58,7 +69,7 @@ void ComplexNode::checkType(Type shouldtype)
         is=typeToString(getType());
 
         msg="Type mismatch. Type should be "+should+", but is "+is;
-        error_nonblocking(msg.c_str());
+        error_nonblocking(msg.c_str(),this->lineno,this->token);
     }
 
 }
@@ -73,7 +84,7 @@ void ComplexNode::checkTypeOR(Type shouldtype, Type shouldtypeOR)
         is=typeToString(getType());
 
         msg="Type mismatch. Type should be "+should+" or "+shouldOR+", but is "+is;
-        error_nonblocking(msg.c_str());
+        error_nonblocking(msg.c_str(), this->lineno,this->token);
     }
 }
 
@@ -86,34 +97,6 @@ std::string ComplexNode::getCode() const
 {
     return code;
 }
-ComplexNode* ComplexNode::setcolor(ComplexNode*& r,ComplexNode*& g,ComplexNode*& b)
-{
-		r->checkTypeOR(Type::INT,Type::NUM);
-    g->checkTypeOR(Type::INT,Type::NUM);
-    b->checkTypeOR(Type::INT,Type::NUM);
-		
-    std::string a1, a2, a3, a4, a5, a6;
-    
-    a1=r->getCode();
-    a2=g->getCode();
-    a3=b->getCode();
-    code=a1+" "+a2+" "+a3+" setrgbcolor";
-
-    return this;
-}
-ComplexNode* ComplexNode::setfont(ComplexNode*& font,ComplexNode*& s)
-{
-    s->checkTypeOR(Type::INT, Type::NUM);
-    font->checkType(Type::STRING);
-    
-    std::string a1, a2, a3, a4, a5, a6;
-    
-    a1=font->getCode();
-    a2 = s->getCode();
-    code="/"+a1+" findfont "+a2+" scalefont setfont";
-
-    return this;
-}
 
 ComplexNode* ComplexNode::setlinewidth(ComplexNode*& w)
 {
@@ -123,20 +106,6 @@ ComplexNode* ComplexNode::setlinewidth(ComplexNode*& w)
     
     a1=w->getCode();
     code=a1+" setlinewidth";
-
-    return this;
-}
-
-ComplexNode* ComplexNode::setdrawstyle(ComplexNode*& s, ComplexNode*& e)
-{
-		s->checkType(Type::INT);
-    e->checkType(Type::INT);
-    
-    std::string a1, a2, a3, a4, a5, a6;
-    
-    a1=s->getCode();
-    a2=e->getCode();
-    code="["+a1+" "+a2+"] 0 setdash";
 
     return this;
 }
@@ -184,6 +153,21 @@ ComplexNode* ComplexNode::ellipse(ComplexNode*& p, ComplexNode*& r1, ComplexNode
     
     return this;
 }
+
+ComplexNode* ComplexNode::plot(ComplexNode*& x, ComplexNode*& y, ComplexNode*& n, ComplexNode*& min, ComplexNode*& max, ComplexNode*& function){
+  x->checkTypeOR(Type::INT,Type::NUM);
+  y->checkTypeOR(Type::INT,Type::NUM);
+  n->checkTypeOR(Type::INT,Type::NUM);
+  min->checkTypeOR(Type::INT,Type::NUM);
+  max->checkTypeOR(Type::INT,Type::NUM);
+  function->checkType(Type::POINT);
+  std::string a1, a2, a3, a4, a5, a6;
+  
+  setType(Type::PATH);
+  
+  return this;
+}
+
 
 ComplexNode* ComplexNode::string2path(ComplexNode*& p, ComplexNode*& s)
 {
@@ -524,7 +508,9 @@ std::string typeToString(Type type){
 	}
 //////////////////////////////////////////////////////////////////
 ComplexNode* CN_Identifier::setType(Type intype){
+  //std::cout<<"BEGIN CN_ID set type to "<<typeToString(intype)<<std::endl;
   env.trydeclaring(this, intype);
+  //std::cout<<"END CN_ID set type to "<<typeToString(intype)<<std::endl;
 
   return this; 
 }
@@ -534,21 +520,21 @@ void CN_Identifier::checkdeclared() {
 }
 
 Type CN_Identifier::getType(){
+  //std::cout<<">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>querying CN_ID type...\n";
   return env.getType(this);
 }
 //////////////////////////////////////////////////////////////////
 void VarStore::trydeclaring(const ComplexNode* id, Type type){
   auto ret = db.insert(std::make_pair(id->getCode(), type));
 
-  if( ret.second)
+  if(ret.second) //the value was sucessfully inserted
   { 
-      //the value is inserted
+    //std::cout<<"VarStore confirms decl of "<<id->getCode()<<std::endl;
   }
-  else
+  else //alredy declared
   {
-      //alredy declared
       std::string output="Variable "+id->getCode()+" already declared previously";
-      error_nonblocking(output.c_str());
+      error_nonblocking(output.c_str(),id->lineno,id->getCode());
   }
 }
 
@@ -556,7 +542,7 @@ void VarStore::checkdeclared(const ComplexNode* lhs){
   std::map<std::string, Type>::iterator it = db.find(lhs->getCode());
   if(it==db.end()){
     std::string output="Attempted usage of undeclared variable "+lhs->getCode();
-    error_nonblocking(output.c_str());
+    error_nonblocking(output.c_str(), lhs->lineno, lhs->getCode());
   }
 }
 
@@ -567,7 +553,7 @@ Type VarStore::getType(ComplexNode* id){
   }
   else{
     std::string output="Many error messages will be generated from here on, all redundant but formulated in different ways, because tried to query a type on undeclared variable "+id->getCode();
-    error_nonblocking(output.c_str());
+    error_nonblocking(output.c_str(),id->lineno,id->getCode());
     return Type::UNSET;
   }
 }
@@ -580,6 +566,129 @@ void VarStore::checkcompatible(ComplexNode* lhs, ComplexNode* rhs){
   else if ((lhsType==Type::INT)&&(rhsType==Type::NUM)){return ;}
   else{
     std::string output="Type incompability between left ("+typeToString(lhsType)+") and right ("+typeToString(rhsType)+") hand sides";
-    error_nonblocking(output.c_str());}
+    error_nonblocking(output.c_str(),lhs->lineno,lhs->getCode());
+  }
+}
+/////////////////////////////////////////////////////////////////////////
+void Tree::traversebfs()
+{
+  subtraversebfs();
+  finalwork();
 }
 
+void Tree::subtraversebfs()
+{
+  //std::cout<<"subtransversing on "<<children_vector.size()<<+" elements"<<std::endl;
+  for(Tree* current:children_vector){
+    current->traversebfs();
+  }
+}
+
+
+void Tree::addchild(Tree* child)
+{
+	if(nullptr!=child){
+    children_vector.push_back(child);
+    lineno=child->lineno;
+  }else{
+    std::cout<<"addchild tried adding nullptr"<<std::endl;
+    exit(-1);
+  }
+}
+
+Tree* Tree::probeifsinglechild()
+{
+  if(children_vector.size()==1){
+    return *children_vector.begin();
+  }
+  else{
+    std::cout<<"Error: tried to probe type recursively from vector with more than 1 child";
+    exit(-1);
+  }
+}
+
+
+/////////////////////////////////////////////////////////////////////////
+Declaration::Declaration(CN_Identifier*& id, Type type)
+:id(id), type(type){}
+
+void Declaration::finalwork(){
+  id->setType(type);
+  //std::cout<<"%declared "<<id->getCode()<<std::endl;
+}
+
+///////////////////////////////////////////////////////////////////////////
+ForLoop::ForLoop(ComplexNode* id, ComplexNode* start, ComplexNode* end, ComplexNode* inc, ComplexNode* cmd)
+:id(id), start(start), end(end), inc(inc), cmd(cmd){}
+
+void ForLoop::finalwork(){
+  
+  id->setType(Type::NUM);
+  
+  start->checkTypeOR(Type::NUM, Type::INT);
+  start->checkdeclared();
+  
+  end->checkTypeOR(Type::NUM, Type::INT);
+  end->checkdeclared();
+  
+  inc->checkTypeOR(Type::NUM, Type::INT);
+  inc->checkdeclared();
+
+  //Goal: start inc end {/id exch def cmd } for
+  start->traversebfs();
+  inc->traversebfs();
+  end->traversebfs();
+  std::cout<<" { /";
+  id->traversebfs();
+  std::cout<<" exch def ";
+  cmd->traversebfs(); //Will traverse inside cmd, inherited
+  std::cout<<" } for";
+}
+///////////////////////////////////////////////////////////////////////////
+SetColor::SetColor(ComplexNode*& r, ComplexNode*& g, ComplexNode*& b)
+:r(r), g(g), b(b){}
+
+void SetColor::finalwork()
+{
+  r->checkTypeOR(Type::INT,Type::NUM);
+  g->checkTypeOR(Type::INT,Type::NUM);
+  b->checkTypeOR(Type::INT,Type::NUM);
+  
+  r->traversebfs();
+  g->traversebfs();
+  b->traversebfs();
+  
+  std::cout<<" setrgbcolor\n";
+}
+
+///////////////////////////////////////////////////////////
+SetDrawStyle::SetDrawStyle(ComplexNode* s, ComplexNode* e)
+:s(s), e(e){}
+
+void SetDrawStyle::finalwork()
+{
+  s->checkType(Type::INT);
+  e->checkType(Type::INT);
+    
+  std::cout<<"[";
+  s->traversebfs();
+  e->traversebfs();
+  std::cout<<"] 0 setdash\n";
+}
+
+///////////////////////////////////////////////////////////////////
+SetFont::SetFont(ComplexNode*& font, ComplexNode*& s)
+:font(font), s(s) {}
+
+void SetFont::finalwork()
+{
+  font->checkType(Type::STRING);
+  s->checkTypeOR(Type::INT, Type::NUM);
+  
+  //Goal: code="/"+a1+" findfont "+a2+" scalefont setfont";
+  std::cout<<"/";
+  font->traversebfs();
+  std::cout<<" findfont";
+  s->traversebfs();
+  std::cout<<" scalefont setfont\n";
+}

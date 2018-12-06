@@ -12,9 +12,11 @@ VarStore env;
 
 %union {
   class ComplexNode* ast_fc;
+  class CN_Identifier* ast_identifier;
 }
 				
-%type <ast_fc> IDENTIFIER VAL_INT VAL_NUM VAL_STRING list potentialvalue fcall command commands program val_ins binding potval_1 potval_2 TYPE
+%type <ast_fc> VAL_INT VAL_NUM VAL_STRING list potentialvalue fcall command commands program val_ins binding potval_1 potval_2 TYPE declaration declarations
+%type <ast_identifier> IDENTIFIER
 
 %token PICTURE IDENTIFIER START END
 %token VAR
@@ -41,89 +43,89 @@ VarStore env;
 
 %%
 
-program 				: PICTURE VAL_STRING declarations START commands END	{$5->printCode();std::cout<<"\nshowpage";}
-        				;
-	
-declarations  	: %empty
-              	| declarations declaration 
+program         : PICTURE VAL_STRING declarations START commands END  {$3->traversebfs();$5->traversebfs();std::cout<<"\nshowpage\n";}
+                ;
+
+declarations  	: %empty                               {$$=(new ComplexNode());}
+              	| declarations declaration             {$$=(new ComplexNode());$$->addchild($1);$$->addchild($2);}
               	;
-	
-declaration   	: VAR IDENTIFIER ':' TYPE ';'          {env.trydeclaring($2, $4->getType());}
+
+declaration   	: VAR IDENTIFIER ':' TYPE ';'          {$$=new Declaration($2,$4->getType());}
               	;
-	
+
 commands      	: %empty																{$$=new ComplexNode();}
-              	| commands command											{$$=(new ComplexNode($1))->append($2);delete $1; $1=nullptr;delete $2; $2=nullptr;}
+              	| commands command											{$$=(new ComplexNode());$$->addchild($1);$$->addchild($2);}
               	;
-	
-command       	:  binding																																												{$$=(new ComplexNode($1));										delete $1;$1=nullptr;											} /*1*/
-              	|  fcall ';'  																																										{$$=(new ComplexNode($1));										delete $1;$1=nullptr;											} /*1*/
-              	|  FOR IDENTIFIER ":=" potentialvalue TO potentialvalue STEP potentialvalue DO commands DONE ';'  {$$=(new ComplexNode())->forloop($2, $4, $6, $8, $10);delete $2;$2=nullptr;delete $4;$4=nullptr;delete $6;$6=nullptr;delete $8;$8=nullptr;delete $10;$10=nullptr;} /*1*/
-              	|  IDENTIFIER ';' 																																								{$1->checkdeclared();$$=new ComplexNode($1);delete $1, $1=nullptr;} /* for Terms */
+
+command       	:  binding																																												{} /*1*/
+              	|  fcall ';'  	                                                                                  {$$=new ComplexNode();$$->addchild($1);} /*1*/
+              	|  FOR IDENTIFIER ":=" potentialvalue TO potentialvalue STEP potentialvalue DO commands DONE ';'  {$$=new ComplexNode();$$->addchild(new ForLoop($2, $4, $6, $8, $10));} /*1*/
+              	|  IDENTIFIER ';' 																																								{} /* for Terms */
               	;
               	
-binding					:  IDENTIFIER ":=" val_ins				';'																																{$1->checkdeclared();                     $$=(new ComplexNode())->bind_valins($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}	 /*2*/
-              	|  IDENTIFIER "<-" val_ins     		';'																																{$1->checkdeclared();                     $$=(new ComplexNode())->bind_valins($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}	/*2*/
-              	|  IDENTIFIER ":=" IDENTIFIER    	';'																																{$1->checkdeclared();$3->checkdeclared(); $$=(new ComplexNode())->bind_ident_early($1,$3);delete $1; $1=nullptr;delete $3; $3=nullptr;}
-              	|  IDENTIFIER "<-" IDENTIFIER    	';'																																{$1->checkdeclared();$3->checkdeclared(); $$=(new ComplexNode())->bind_ident_late ($1,$3);delete $1; $1=nullptr;delete $3; $3=nullptr;}
-								|  IDENTIFIER ":=" potval_2			  ';'    																														{$1->checkdeclared();                     $$=(new ComplexNode())->earlybinding($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}	 /*2*/
-              	|  IDENTIFIER "<-" potval_2			  ';'    																														{$1->checkdeclared();                     $$=(new ComplexNode())->latebinding($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}	/*2*/
+binding         :  IDENTIFIER ":=" val_ins        ';'                                                               {}   /*2*/
+                |  IDENTIFIER "<-" val_ins     		';'																																{}	/*2*/
+                |  IDENTIFIER ":=" IDENTIFIER    	';'																																{}
+                |  IDENTIFIER "<-" IDENTIFIER    	';'																																{}
+                |  IDENTIFIER ":=" potval_2			  ';'    																														{}	 /*2*/
+                |  IDENTIFIER "<-" potval_2			  ';'    																														{}	/*2*/
 	
-fcall         	:  SETCOLOR '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'							                                              {$$=(new ComplexNode())->setcolor($3,$5,$7);				delete $3;$3=nullptr;delete $5;$5=nullptr;delete $7;$7=nullptr;}
-			  				|  SETDRAWSTYLE '(' potentialvalue ',' potentialvalue ')'             							                                                {$$=(new ComplexNode())->setdrawstyle($3,$5);				delete $3;$3=nullptr;delete $5;$5=nullptr;}
-			  				|  SETFONT '(' potentialvalue ',' potentialvalue ')'		                                                                            {$$=(new ComplexNode())->setfont($3,$5);						delete $3;$3=nullptr;delete $5;$5=nullptr;}
-			  				|  SETLINEWIDTH '(' potentialvalue ')'		                                                                                          {$$=(new ComplexNode())->setlinewidth($3);					delete $3;$3=nullptr;}
-			  				|  ARC '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'  		                                        {$$=(new ComplexNode())->arc($3,$5,$7,$9);					delete $3;$3=nullptr;delete $5;$5=nullptr;delete $7;$7=nullptr;}
-			  				|  ELLIPSE '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'  		                  {$$=(new ComplexNode())->ellipse($3,$5,$7,$9,$11);	delete $3;$3=nullptr;delete $5;$5=nullptr;delete $7;$7=nullptr;delete $9;$9=nullptr;delete $11;$11=nullptr;}
-			  				|  PLOT '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'		    {std::cout<<"error: not to be implemented\n"<<std::flush;exit(-1);																													 }                                 
-			  				|  STRING2PATH '(' potentialvalue ',' potentialvalue ')'		                                                                        {$$=(new ComplexNode())->string2path($3,$5);				delete $3;$3=nullptr;delete $5;$5=nullptr;}
-			  				|  CONCAT '(' potentialvalue ',' potentialvalue ')'		                                                                              {std::cout<<"error: not to be implemented\n"<<std::flush;exit(-1);																													 }         
-			  				|  UNION '(' potentialvalue ',' potentialvalue ')'		                                                                              {std::cout<<"error: not to be implemented\n"<<std::flush;exit(-1);																													 }         
-			  				|  SCALETOBOX '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'		                                                      {std::cout<<"error: not to be implemented\n"<<std::flush;exit(-1);																													 }         
-			  				|  DRAW '(' potentialvalue ')'		                                                                                                  {$$=(new ComplexNode())->draw($3);									delete $3;$3=nullptr;}
-			  				|  FILL '(' potentialvalue ')'		                                                                                                  {$$=(new ComplexNode())->fill($3);									delete $3;$3=nullptr;}
-			  				|  NUM2STRING '(' potentialvalue ')'		                                                                                            {$$=(new ComplexNode())->num2string($3);delete $3;$3=nullptr;}
-			  				|  WRITE '(' potentialvalue ')'		                                                                                                  {$$=(new ComplexNode())->write($3);delete $3;$3=nullptr;}
-			  				|  WRITE '(' potentialvalue ',' potentialvalue ')'		                                                                              {$$=(new ComplexNode())->write($3,$5);delete $3;$3=nullptr;delete $5;$5=nullptr;}
-			  				|  ROTATE '(' potentialvalue ',' potentialvalue ')'		                                                                              {$$=(new ComplexNode())->rotate($3,$5);delete $3;$3=nullptr;delete $5;$5=nullptr;}
-			  				|  SCALE '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'		                                                            {$$=(new ComplexNode())->scale($3,$5,$7);delete $3;$3=nullptr;delete $5;$5=nullptr;delete $7;$7=nullptr;}
-			  				|  TRANSLATE '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'		                                                        {$$=(new ComplexNode())->translate($3,$5,$7);delete $3;$3=nullptr;delete $5;$5=nullptr;delete $7;$7=nullptr;}
-			  				|  CLIP '(' potentialvalue ',' potentialvalue ')'		                                                                                {$$=(new ComplexNode())->clip($3,$5);delete $3; $3=nullptr;delete $5; $5=nullptr;}
-			  				|  RANDOM '(' potentialvalue ',' potentialvalue ')'		                                                                              {$$=(new ComplexNode())->binop($3,$5,"random");delete $3;$3=nullptr;delete $5;$5=nullptr;}
-			  				|  EXP '(' potentialvalue ',' potentialvalue ')'		                                                                                {$$=(new ComplexNode())->binop($3,$5,"exp");delete $3;$3=nullptr;delete $5;$5=nullptr;}
-			  				|  potentialvalue '+' potentialvalue																																																{$$=(new ComplexNode())->binop($1,$3,"add");delete $1;$1=nullptr;delete $3;$3=nullptr;}
-								|  potentialvalue '-' potentialvalue																																																{$$=(new ComplexNode())->binop($1,$3,"sub");delete $1;$1=nullptr;delete $3;$3=nullptr;}
-								|  potentialvalue '*' potentialvalue																																																{$$=(new ComplexNode())->binop($1,$3,"mul");delete $1;$1=nullptr;delete $3;$3=nullptr;}
-								|  potentialvalue '/' potentialvalue																																																{$$=(new ComplexNode())->binop($1,$3,"div");delete $1;$1=nullptr;delete $3;$3=nullptr;}
-								|  potentialvalue "mod" potentialvalue																																															{$$=(new ComplexNode())->binop($1,$3,"mod");delete $1;$1=nullptr;delete $3;$3=nullptr;}	
-								|  '+' potentialvalue				                																																												{$$=new ComplexNode($2);delete $2;$2=nullptr;}
-								|  '-' potentialvalue																																																								{$$=(new ComplexNode())->unop($2,"neg");delete $2;$2=nullptr;}
-								|  SIN '(' potentialvalue ')'		                                                                                                    {$$=(new ComplexNode())->unop($3,"sin");delete $3;$3=nullptr;}
-								|  COS '(' potentialvalue ')'		                                                                                                    {$$=(new ComplexNode())->unop($3,"cos");delete $3;$3=nullptr;}
-			  				|  ABS '(' potentialvalue ')'																																																				{$$=(new ComplexNode())->unop($3,"abs");delete $3;$3=nullptr;}
-			  				|  LN  '(' potentialvalue ')'																																																				{$$=(new ComplexNode())->unop($3,"ln" );delete $3;$3=nullptr;}
-			  				; 
+fcall           :  SETCOLOR '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'							                                              {$$=new ComplexNode();$$->addchild(new SetColor($3,$5,$7));}
+                |  SETDRAWSTYLE '(' potentialvalue ',' potentialvalue ')'             							                                                {$$=new ComplexNode();$$->addchild(new SetDrawStyle($3,$5));}
+                |  SETFONT '(' potentialvalue ',' potentialvalue ')'                                                                                {$$=new ComplexNode();$$->addchild(new SetFont($3,$5));}
+                |  SETLINEWIDTH '(' potentialvalue ')'		                                                                                          {}
+                |  ARC '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'  		                                        {}
+                |  ELLIPSE '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'  		                  {}
+                |  PLOT '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'		    {}
+                |  STRING2PATH '(' potentialvalue ',' potentialvalue ')'		                                                                        {}
+                |  CONCAT '(' potentialvalue ',' potentialvalue ')'		                                                                              {std::cout<<"error: not to be implemented\n"<<std::flush;exit(-1);																													 }         
+                |  UNION '(' potentialvalue ',' potentialvalue ')'		                                                                              {std::cout<<"error: not to be implemented\n"<<std::flush;exit(-1);																													 }         
+                |  SCALETOBOX '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'		                                                      {std::cout<<"error: not to be implemented\n"<<std::flush;exit(-1);																													 }         
+                |  DRAW '(' potentialvalue ')'		                                                                                                  {}
+                |  FILL '(' potentialvalue ')'		                                                                                                  {}
+                |  NUM2STRING '(' potentialvalue ')'		                                                                                            {}
+                |  WRITE '(' potentialvalue ')'		                                                                                                  {}
+                |  WRITE '(' potentialvalue ',' potentialvalue ')'		                                                                              {}
+                |  ROTATE '(' potentialvalue ',' potentialvalue ')'		                                                                              {}
+                |  SCALE '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'		                                                            {}
+                |  TRANSLATE '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'		                                                        {}
+                |  CLIP '(' potentialvalue ',' potentialvalue ')'		                                                                                {}
+                |  RANDOM '(' potentialvalue ',' potentialvalue ')'		                                                                              {}
+                |  EXP '(' potentialvalue ',' potentialvalue ')'		                                                                                {}
+                |  potentialvalue '+' potentialvalue																																																{}
+                |  potentialvalue '-' potentialvalue																																																{}
+                |  potentialvalue '*' potentialvalue																																																{}
+                |  potentialvalue '/' potentialvalue																																																{}
+                |  potentialvalue "mod" potentialvalue																																															{}
+                |  '+' potentialvalue				                																																												{}
+                |  '-' potentialvalue																																																								{}
+                |  SIN '(' potentialvalue ')'		                                                                                                    {}
+                |  COS '(' potentialvalue ')'		                                                                                                    {}
+                |  ABS '(' potentialvalue ')'																																																				{}
+                |  LN  '(' potentialvalue ')'																																																				{}
+                ; 
 	
 /*1*/
-potentialvalue  :	 potval_1 																{$$=(new ComplexNode($1))->setType($1);delete $1;$1=nullptr;}
-								|  potval_2																	{$$=(new ComplexNode($1))->setType($1);delete $1;$1=nullptr;}
+potentialvalue  :  potval_1                                 {$$=new ComplexNode();$$->addchild($1);}
+								|  potval_2                                 {}
 								;
-potval_2				:  fcall                 										{$$=(new ComplexNode($1))->setType($1);delete $1;$1=nullptr;}	
-				   			|  '{' commands '}' 												{$$=(new ComplexNode($2))->setType(Type::TERM);delete $2;$2=nullptr;}	/*2*/
-				   			|  '(' potentialvalue ')'										{$$=(new ComplexNode($2))->setType($2);delete $2;$2=nullptr;}	
-				   			|  '(' potentialvalue ',' potentialvalue ')'{$$=(new ComplexNode())->setPoint($2,$4);delete $2;delete $4;$2=nullptr;$4=nullptr;} /* tuple, used for points and describing function */
-				   			|  "<<" list ">>"														{$$=(new ComplexNode())->pathoverpoints($2);delete $2;$2=nullptr;}
+potval_2				:  fcall                 										{}	
+				   			|  '{' commands '}' 												{}	/*2*/
+				   			|  '(' potentialvalue ')'										{}	
+				   			|  '(' potentialvalue ',' potentialvalue ')'{} /* tuple, used for points and describing function */
+				   			|  "<<" list ">>"														{}
                 ;
                 
-potval_1			  :  val_ins 																	{$$=(new ComplexNode($1))->setType($1);delete $1;$1=nullptr;} //potential value minus int, num, string and id. due to ps boundary conditions
-				   			|  IDENTIFIER																{$1->checkdeclared();$$=(new ComplexNode($1))->setType($1);delete $1;$1=nullptr;}	
+potval_1        :  val_ins                                  {$$=new ComplexNode();$$->addchild($1);$$->setType($1->getType());} //potential value minus int, num, string and id. due to ps boundary conditions
+                |  IDENTIFIER                               {$$=new ComplexNode();$$->addchild($1);} //WARNING: You want to set types not WHILE parsing (here), but AFTER parsin (at traversebfs)
                 
-val_ins					:  VAL_INT																	{$$=(new ComplexNode($1))->setType($1);delete $1;$1=nullptr;}
-								|  VAL_NUM 																	{$$=(new ComplexNode($1))->setType($1);delete $1;$1=nullptr;}
-				   			|  VAL_STRING 															{$$=(new ComplexNode($1))->setType($1);delete $1;$1=nullptr;}
+val_ins         :  VAL_INT                                  {$$=new ComplexNode();$$->addchild($1);$$->setType(Type::INT);}
+                |  VAL_NUM                                  {$$=new ComplexNode();$$->addchild($1);$$->setType(Type::NUM);}
+                |  VAL_STRING                               {$$=new ComplexNode();$$->addchild($1);$$->setType(Type::STRING);}
 
-list          	:  potentialvalue														{$$=(new ComplexNode())->initList($1);delete $1;$1=nullptr;}
-              	|  list ',' potentialvalue									{$$=(new ComplexNode())->expandList($1,$3);delete $1;$1=nullptr;delete $3;$3=nullptr;}
-              	;
+list            :  potentialvalue														{}
+                |  list ',' potentialvalue									{}
+                ;
 
 /*2*/
               
@@ -147,6 +149,11 @@ void yyerror(const char* s){
   exit(-1);
 }
 
+/*
 void error_nonblocking(const char* s){
   printf("Error on line %d, \"%s\"\n", yylineno, s);
+}
+*/
+void error_nonblocking(const char* s, int line, std::string token){
+  printf("Error on line %d, near token %s \"%s\"\n", line, token.c_str(), s);
 }

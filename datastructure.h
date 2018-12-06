@@ -6,22 +6,47 @@
 
 enum class Type {UNSET, INT, NUM, STRING, POINT, PATH, TERM};
 
-class ComplexNode
+class Tree{
+  public:
+  virtual ~Tree()=default;
+  
+  void addchild(Tree* child);
+  void traversebfs();
+  void subtraversebfs();
+  
+  int lineno;
+  std::string token;
+  
+protected:
+  virtual void finalwork()=0;
+  Tree* probeifsinglechild();
+  
+private:
+  std::vector<Tree*> children_vector;
+
+};
+////////////////////////////////////////////////////////////////////////////////////
+class ComplexNode : public Tree
 {
-    std::string code;
     std::vector<ComplexNode> list;
     Type type;
-    void checkType(Type shouldtype);
-    void checkTypeOR(Type shouldtype, Type shouldtypeOR);
+protected:
+  std::string code;
 
-public:
-    ComplexNode();
+  void finalwork() override;
+public:  
     virtual ~ComplexNode()=default;  //virtual to support identifiers capabilities
+    
+    ComplexNode();
     ComplexNode(char* _code);
     ComplexNode(std::string _code);
     ComplexNode(ComplexNode*& child);
+    
+    ComplexNode* setDebugInfo(int line);
+    void checkType(Type shouldtype);
     ComplexNode* printCode();
-    ComplexNode* setPoint(ComplexNode*& x,ComplexNode*& y);
+    void checkTypeOR(Type shouldtype, Type shouldtypeOR);ComplexNode* setPoint(ComplexNode*& x,ComplexNode*& y);
+    
     ComplexNode* setString(std::string inp);
     ComplexNode* setNum(char* _code);
     ComplexNode* setInt(char* _code);
@@ -32,12 +57,12 @@ public:
     virtual Type getType();
     ComplexNode* setCode(std::string _code);
     std::string getCode() const;
-    ComplexNode* setcolor(ComplexNode*& r,ComplexNode*& g,ComplexNode*& b);
-    ComplexNode* setfont(ComplexNode*& font,ComplexNode*& s);
+    
+
     ComplexNode* setlinewidth(ComplexNode*& w);
-    ComplexNode* setdrawstyle(ComplexNode*& s, ComplexNode*& e);
     ComplexNode* arc(ComplexNode*& p, ComplexNode*& r, ComplexNode*& alpha, ComplexNode*& beta);
     ComplexNode* ellipse(ComplexNode*& p, ComplexNode*& r1, ComplexNode*& r2, ComplexNode*& alpha, ComplexNode*& beta);
+    ComplexNode* plot(ComplexNode*& x, ComplexNode*& y, ComplexNode*& n, ComplexNode*& min, ComplexNode*& max, ComplexNode*& function);
     ComplexNode* string2path(ComplexNode*& p, ComplexNode*& s);
     ComplexNode* write(ComplexNode*& p, ComplexNode*& s);
     ComplexNode* write(ComplexNode*& s);
@@ -62,9 +87,9 @@ public:
     ComplexNode* scale(ComplexNode*& x, ComplexNode*& y, ComplexNode*& therma);
     ComplexNode* clip(ComplexNode*& p, ComplexNode*& t);
 };
-
+//////////////////////////////////////////////////////////////////
 std::string typeToString(Type type);
-
+//////////////////////////////////////////////////////////////////
 class CN_Identifier: public ComplexNode{
   
   public:
@@ -74,7 +99,7 @@ class CN_Identifier: public ComplexNode{
 };
 
 
-
+//////////////////////////////////////////////////////////////////
 class VarStore{
   std::map<std::string, Type> db;
 
@@ -85,5 +110,46 @@ class VarStore{
   void checkcompatible(ComplexNode* lhs, ComplexNode* rhs); //should reference to pointer be here?
 };
 
+//////////////////////////////////////////////////////////////////////
+class Declaration: public ComplexNode{
+  ComplexNode* id;
+  Type type;
+public:
+  Declaration(CN_Identifier*& id, Type type);
+  void finalwork() override;
+};
+
+///////////////////////////////////////////////////////////////////////////
+class ForLoop: public ComplexNode{
+  ComplexNode *id, *start, *end, *inc, *cmd;
+  //commands not declared here because are inside children (inherited)
+public:
+  ForLoop(ComplexNode* id, ComplexNode* start, ComplexNode* end, ComplexNode* inc, ComplexNode* cmd);
+  void finalwork() override;
+};
+///////////////////////////////////////////////////////////////////////////
+class SetColor: public ComplexNode{
+  ComplexNode *r, *g, *b;
+public:
+  SetColor(ComplexNode*& r,ComplexNode*& g,ComplexNode*& b);
+  void finalwork() override;
+};
+
+///////////////////////////////////////////////////////////////////////////
+class SetDrawStyle: public ComplexNode{
+  ComplexNode *s, *e;
+public:
+  SetDrawStyle(ComplexNode* s, ComplexNode* e);
+  void finalwork() override;
+};
+////////////////////////////////////////////////////////////////////
+class SetFont: public ComplexNode{
+  ComplexNode *font, *s;
+
+public:
+  SetFont(ComplexNode*& font,ComplexNode*& s);
+  void finalwork() override;
+  
+};
 
 #endif

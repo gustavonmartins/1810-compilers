@@ -69,11 +69,11 @@ done                  {return(DONE);}
 "<<"                  {return LBLB;}
 ">>"                  {return RBRB;}
 
-{STRING}              {yylval.ast_fc=(new ComplexNode())->setString(yytext);		return VAL_STRING;}
+{STRING}              {yylval.ast_fc=(new ComplexNode())->setString(yytext)->setDebugInfo(yylineno);		return VAL_STRING;}
 "mod"				  				{return MOD;}
-{ID}                  {yylval.ast_fc=(new CN_Identifier())->setCode(yytext);		return IDENTIFIER;}
-{NUM}                 {yylval.ast_fc=(new ComplexNode())->setNum(yytext);		return VAL_NUM;}
-{INT}                 {yylval.ast_fc=(new ComplexNode())->setInt(yytext);		return VAL_INT;}
+{ID}                  {yylval.ast_fc=(new CN_Identifier())->setCode(yytext)->setDebugInfo(yylineno);		return IDENTIFIER;}
+{NUM}                 {yylval.ast_fc=(new ComplexNode())->setNum(yytext)->setDebugInfo(yylineno);		return VAL_NUM;}
+{INT}                 {yylval.ast_fc=(new ComplexNode())->setInt(yytext)->setDebugInfo(yylineno);		return VAL_INT;}
 
 
 [ \t\r\n]+            {}
