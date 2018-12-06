@@ -73,7 +73,7 @@ binding         :  IDENTIFIER ":=" val_ins        ';'                           
 fcall           :  SETCOLOR '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'							                                              {$$=new ComplexNode();$$->addchild(new SetColor($3,$5,$7));}
                 |  SETDRAWSTYLE '(' potentialvalue ',' potentialvalue ')'             							                                                {$$=new ComplexNode();$$->addchild(new SetDrawStyle($3,$5));}
                 |  SETFONT '(' potentialvalue ',' potentialvalue ')'                                                                                {$$=new ComplexNode();$$->addchild(new SetFont($3,$5));}
-                |  SETLINEWIDTH '(' potentialvalue ')'		                                                                                          {}
+                |  SETLINEWIDTH '(' potentialvalue ')'                                                                                              {$$=new ComplexNode();$$->addchild(new SetLineWidth($3));}
                 |  ARC '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'  		                                        {}
                 |  ELLIPSE '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'  		                  {}
                 |  PLOT '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'		    {}

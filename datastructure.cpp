@@ -98,18 +98,6 @@ std::string ComplexNode::getCode() const
     return code;
 }
 
-ComplexNode* ComplexNode::setlinewidth(ComplexNode*& w)
-{
-		w->checkTypeOR(Type::INT,Type::NUM);
-	
-    std::string a1, a2, a3, a4, a5, a6;
-    
-    a1=w->getCode();
-    code=a1+" setlinewidth";
-
-    return this;
-}
-
 ComplexNode* ComplexNode::arc(ComplexNode*& p, ComplexNode*& r, ComplexNode*& alpha, ComplexNode*& beta)
 {
 		p			->checkType(Type::POINT);
@@ -642,7 +630,7 @@ void ForLoop::finalwork(){
   id->traversebfs();
   std::cout<<" exch def ";
   cmd->traversebfs(); //Will traverse inside cmd, inherited
-  std::cout<<" } for";
+  std::cout<<" } for\n";
 }
 ///////////////////////////////////////////////////////////////////////////
 SetColor::SetColor(ComplexNode*& r, ComplexNode*& g, ComplexNode*& b)
@@ -691,4 +679,16 @@ void SetFont::finalwork()
   std::cout<<" findfont";
   s->traversebfs();
   std::cout<<" scalefont setfont\n";
+}
+
+////////////////////////////////////////////////////////////////////
+
+SetLineWidth::SetLineWidth(ComplexNode*& w)
+:w(w){}
+
+void SetLineWidth::finalwork(){
+    w->checkTypeOR(Type::INT,Type::NUM);
+
+    w->traversebfs();
+    std::cout<<" setlinewidth\n";
 }

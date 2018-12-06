@@ -151,5 +151,14 @@ public:
   void finalwork() override;
   
 };
+////////////////////////////////////////////////////////////////////
+class SetLineWidth: public ComplexNode{
+  ComplexNode *w;
+
+public:
+  SetLineWidth(ComplexNode*& w);
+  void finalwork() override;
+  
+};
 
 #endif
