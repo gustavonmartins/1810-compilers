@@ -76,7 +76,6 @@ public:
     ComplexNode* earlybinding(ComplexNode*& lhs, ComplexNode*& rhs);
     ComplexNode* binop(ComplexNode*& left, ComplexNode*& right, std::string op);
     ComplexNode* unop(ComplexNode*& left, std::string op);
-    ComplexNode* forloop(ComplexNode*& id, ComplexNode*& start, ComplexNode*& end, ComplexNode*& inc, ComplexNode*& cmd);
     ComplexNode* append(ComplexNode*& extra);
     ComplexNode* pathoverpoints(ComplexNode*& rawlist);
     ComplexNode* initList(ComplexNode*& element);

@@ -341,29 +341,6 @@ ComplexNode* ComplexNode::unop(ComplexNode*& left, std::string op)
     return this;
 }
 
-ComplexNode* ComplexNode::forloop(ComplexNode*& id, ComplexNode*& start, ComplexNode*& end, ComplexNode*& inc, ComplexNode*& cmd)
-{
-    std::string a1,dummy, a2, a3, a4, a5, a6;
-    env.trydeclaring(id, Type::NUM);
-    id->checkdeclared();
-    id->checkTypeOR(Type::NUM, Type::INT);
-    start->checkTypeOR(Type::NUM, Type::INT);
-    start->checkdeclared();
-    end->checkTypeOR(Type::NUM, Type::INT);
-    end->checkdeclared();
-    inc->checkTypeOR(Type::NUM, Type::INT);
-    inc->checkdeclared();
-    //cmd->checkType(Type::TERM);
-    a1=id->getCode();
-    a2=start->getCode();
-    a3=end->getCode();
-    a4=inc->getCode();
-    a5=cmd->getCode();
-    code=a2+" "+a4+" "+a3+" { /"+a1+" exch def "+a5+" } for";
-
-    return this;
-}
-
 ComplexNode* ComplexNode::append(ComplexNode*& extra)
 {
     code=code+"\n"+extra->getCode();
