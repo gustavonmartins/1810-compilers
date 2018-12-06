@@ -11,7 +11,7 @@ ComplexNode::ComplexNode(std::string _code):type(Type::UNSET){code=_code;}
 ComplexNode::ComplexNode(ComplexNode*& child):type(Type::UNSET){code=child->getCode();}
 
 ComplexNode* ComplexNode::setDebugInfo(int line){lineno=line;return this;}
-ComplexNode* ComplexNode::printCode(){std::cout<<" "<<code;return this;}
+ComplexNode* ComplexNode::printCode(){std::cout<<code;return this;}
 void ComplexNode::finalwork()
 {
   printCode();
@@ -642,11 +642,11 @@ void SetColor::finalwork()
   g->checkTypeOR(Type::INT,Type::NUM);
   b->checkTypeOR(Type::INT,Type::NUM);
   
-  r->traversebfs();
-  g->traversebfs();
-  b->traversebfs();
+  r->traversebfs();std::cout<<" ";
+  g->traversebfs();std::cout<<" ";
+  b->traversebfs();std::cout<<" ";
   
-  std::cout<<" setrgbcolor\n";
+  std::cout<<"setrgbcolor\n";
 }
 
 ///////////////////////////////////////////////////////////
@@ -659,7 +659,7 @@ void SetDrawStyle::finalwork()
   e->checkType(Type::INT);
     
   std::cout<<"[";
-  s->traversebfs();
+  s->traversebfs();std::cout<<" ";
   e->traversebfs();
   std::cout<<"] 0 setdash\n";
 }
