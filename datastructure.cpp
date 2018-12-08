@@ -372,7 +372,6 @@ ComplexNode* ComplexNode::unop(ComplexNode*& left, std::string op)
 ComplexNode* ComplexNode::forloop(ComplexNode*& id, ComplexNode*& start, ComplexNode*& end, ComplexNode*& inc, ComplexNode*& cmd)
 {
     std::string a1,dummy, a2, a3, a4, a5, a6;
-    env.trydeclaring(id, Type::NUM);
     id->checkdeclared();
     id->checkTypeOR(Type::NUM, Type::INT);
     start->checkTypeOR(Type::NUM, Type::INT);
