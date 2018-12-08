@@ -29,12 +29,12 @@ private:
 class ComplexNode : public Tree
 {
     std::vector<ComplexNode> list;
-    Type type;
 protected:
   std::string code;
 
   void finalwork() override;
 public:  
+    Type type;
     virtual ~ComplexNode()=default;  //virtual to support identifiers capabilities
     
     ComplexNode();
@@ -51,9 +51,9 @@ public:
     ComplexNode* setNum(char* _code);
     ComplexNode* setInt(char* _code);
 
-    virtual ComplexNode* setType(Type intype);  //virtual to support identifiers capabilities]
+    //virtual ComplexNode* setType(Type intype);  //virtual to support identifiers capabilities]
     virtual void checkdeclared();
-    ComplexNode* setType(ComplexNode*& source);
+    //ComplexNode* setType(ComplexNode*& source);
     virtual Type getType();
     ComplexNode* setCode(std::string _code);
     std::string getCode() const;
@@ -92,22 +92,13 @@ std::string typeToString(Type type);
 class CN_Identifier: public ComplexNode{
   
   public:
-  ComplexNode* setType(Type intype) override;
+  //ComplexNode* setType(Type intype) override;
   void checkdeclared()  override;
   Type getType() override;
 };
 
 
 //////////////////////////////////////////////////////////////////
-class VarStore{
-  std::map<std::string, Type> db;
-
-  public:
-  void trydeclaring(const ComplexNode* id, Type type);   //should reference to pointer be here?
-  void checkdeclared(const ComplexNode* lhs);            //should reference to pointer be here?
-  Type getType(ComplexNode* id);                        //should reference to pointer be here?
-  void checkcompatible(ComplexNode* lhs, ComplexNode* rhs); //should reference to pointer be here?
-};
 
 //////////////////////////////////////////////////////////////////////
 class Declaration: public ComplexNode{

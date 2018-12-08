@@ -4,6 +4,73 @@
 #include <iostream>
 #include <vector>
 
+/*
+void VarStore::trydeclaring(const ComplexNode* id, Type type){
+  auto ret = db.insert(std::make_pair(id->getCode(), type));
+
+  if(ret.second) //the value was sucessfully inserted
+  { 
+    //std::cout<<"VarStore confirms decl of "<<id->getCode()<<std::endl;
+  }
+  else //alredy declared
+  {
+      std::string output="Variable "+id->getCode()+" already declared previously";
+      error_nonblocking(output.c_str(),id->lineno,id->getCode());
+  }
+}
+*/
+class VarStore{
+  std::map<std::string, Type> db;
+
+  public:
+  void trydeclaring(std::string id, Type type){
+  auto ret = db.insert(std::make_pair(id, type));
+
+  if(ret.second) //the value was sucessfully inserted
+  { 
+    //std::cout<<"VarStore confirms decl of "<<id<<std::endl;
+  }
+  else //alredy declared
+  {
+      std::string output="Variable "+id+" already declared previously";
+      error_nonblocking(output.c_str(),-1);
+  }
+}
+
+  void checkdeclared(const ComplexNode* lhs){
+  std::map<std::string, Type>::iterator it = db.find(lhs->getCode());
+  if(it==db.end()){
+    std::string output="Attempted usage of undeclared variable "+lhs->getCode();
+    error_nonblocking(output.c_str(), lhs->lineno, lhs->getCode());
+  }
+}
+
+  Type getType(ComplexNode* id){
+  std::map<std::string, Type>::iterator it = db.find(id->getCode());
+  if(it!=db.end()){
+    return it->second;
+  }
+  else{
+    std::string output="Many error messages will be generated from here on, all redundant but formulated in different ways, because tried to query a type on undeclared variable "+id->getCode();
+    error_nonblocking(output.c_str(),id->lineno,id->getCode());
+    return Type::UNSET;
+  }
+}
+
+  void checkcompatible(ComplexNode* lhs, ComplexNode* rhs){
+  Type lhsType=lhs->getType();
+  Type rhsType=rhs->getType();
+  if (lhsType==rhsType){return ;}
+  else if ((lhsType==Type::NUM)&&(rhsType==Type::INT)){return ;}
+  else if ((lhsType==Type::INT)&&(rhsType==Type::NUM)){return ;}
+  else{
+    std::string output="Type incompability between left ("+typeToString(lhsType)+") and right ("+typeToString(rhsType)+") hand sides";
+    error_nonblocking(output.c_str(),lhs->lineno,lhs->getCode());
+  }
+}
+} env;
+/////////////////////////////////////////////////////////////
+
 
 ComplexNode::ComplexNode()=default;
 ComplexNode::ComplexNode(char* _code):type(Type::UNSET){code.assign(_code);}
@@ -24,31 +91,32 @@ ComplexNode* ComplexNode::setPoint(ComplexNode*& x,ComplexNode*& y)
 
 	code=x->getCode()+" "+y->getCode();
 	
-	setType(Type::POINT);
+	//setType(Type::POINT);
+  setType(this,Type::POINT);
 	
 	return this;
 }
 
 ComplexNode* ComplexNode::setNum(char* _code){
   code.assign(_code);
-  setType(Type::NUM);
+  setType(this,Type::NUM);
   return this;
 }
 
 ComplexNode* ComplexNode::setInt(char* _code){
   code.assign(_code);
-  setType(Type::INT);
+  setType(this,Type::INT);
   return this;
 }
 
 ComplexNode* ComplexNode::setString(std::string inp){
   code = "("+inp.substr(1, inp.size() - 2)+")";
-  setType(Type::STRING);
+  setType(this,Type::STRING);
   return this;
 }
 
-ComplexNode* 	ComplexNode::setType(Type intype){type=intype; return this;}
-ComplexNode* 	ComplexNode::setType(ComplexNode*& source){type=source->getType(); return this;}
+//ComplexNode* 	ComplexNode::setType(Type intype){type=intype; return this;}
+//ComplexNode* 	ComplexNode::setType(ComplexNode*& source){type=source->getType(); return this;}
 Type  ComplexNode::getType(){
   //std::cout<<"query basic node type...\n";
   if(type!=Type::UNSET){
@@ -114,7 +182,7 @@ ComplexNode* ComplexNode::arc(ComplexNode*& p, ComplexNode*& r, ComplexNode*& al
     a5=beta->getCode();
     code="newpath "+xy+" "+a3+" "+a4+" "+a5+" arc";
     
-    setType(Type::PATH);
+    setType(this,Type::PATH);
 
     return this;
 }
@@ -137,7 +205,7 @@ ComplexNode* ComplexNode::ellipse(ComplexNode*& p, ComplexNode*& r1, ComplexNode
     a6=beta->getCode();
     code="newpath /savematrix matrix currentmatrix def "+xy+" translate "+a3+" "+a4+" scale 0 0 1 "+a5+" "+a6+" arc savematrix setmatrix"; //TODO: have to undo the translate here
     
-    setType(Type::PATH);
+    setType(this,Type::PATH);
     
     return this;
 }
@@ -151,7 +219,7 @@ ComplexNode* ComplexNode::plot(ComplexNode*& x, ComplexNode*& y, ComplexNode*& n
   function->checkType(Type::POINT);
   std::string a1, a2, a3, a4, a5, a6;
   
-  setType(Type::PATH);
+  setType(this,Type::PATH);
   
   return this;
 }
@@ -170,7 +238,7 @@ ComplexNode* ComplexNode::string2path(ComplexNode*& p, ComplexNode*& s)
 
     code="newpath "+xy+" moveto "+a3+" true charpath";
     
-    setType(Type::PATH);
+    setType(this,Type::PATH);
 
     return this;
 }
@@ -211,7 +279,7 @@ ComplexNode* ComplexNode::num2string(ComplexNode*& n)
 
     code=a1+" 20 string cvs";
     
-    setType(Type::STRING);
+    setType(this,Type::STRING);
 
     return this;
 }
@@ -226,7 +294,7 @@ ComplexNode* ComplexNode::draw(ComplexNode*& p)
     //std::cout<<"test: "<<a1<<std::endl;
     code=a1+" stroke";
     
-    setType(Type::TERM);
+    setType(this,Type::TERM);
 
     return this;
 }
@@ -240,7 +308,7 @@ ComplexNode* ComplexNode::fill(ComplexNode*& p)
     a1=p->getCode();
     code=a1+" closepath fill";
     
-    setType(Type::TERM);
+    setType(this,Type::TERM);
 
     return this;
 }
@@ -368,7 +436,7 @@ ComplexNode* ComplexNode::pathoverpoints(ComplexNode*& rawlist)
         }
     }
 
-		setType(Type::PATH);
+		setType(this,Type::PATH);
 
     return this;
 }
@@ -404,7 +472,7 @@ ComplexNode* ComplexNode::translate(ComplexNode*& x, ComplexNode*& y, ComplexNod
 
     code=a1+" "+a2+" translate "+a3+" "+a1+" neg "+a2+" neg translate" ;
     
-    setType(Type::TERM);
+    setType(this,Type::TERM);
 
     return this;
 }
@@ -420,7 +488,7 @@ ComplexNode* ComplexNode::rotate(ComplexNode*& alpha, ComplexNode*& term)
 
     code=a1+"  rotate "+a2+" "+a1+" neg rotate";
     
-    setType(Type::TERM);
+    setType(this,Type::TERM);
 
     return this;
 }
@@ -438,7 +506,7 @@ ComplexNode* ComplexNode::scale(ComplexNode*& x, ComplexNode*& y, ComplexNode*& 
 
     code=a1+" "+a2+" scale "+a3+" 1 "+a1+" div 1 "+a2+" div scale" ;
     
-    setType(Type::TERM);
+    setType(this,Type::TERM);
 
     return this;
 }
@@ -472,6 +540,7 @@ std::string typeToString(Type type){
 		}
 	}
 //////////////////////////////////////////////////////////////////
+/*
 ComplexNode* CN_Identifier::setType(Type intype){
   //std::cout<<"BEGIN CN_ID set type to "<<typeToString(intype)<<std::endl;
   env.trydeclaring(this, intype);
@@ -479,7 +548,7 @@ ComplexNode* CN_Identifier::setType(Type intype){
 
   return this; 
 }
-
+*/
 void CN_Identifier::checkdeclared() {
   env.checkdeclared(this);
 }
@@ -489,51 +558,15 @@ Type CN_Identifier::getType(){
   return env.getType(this);
 }
 //////////////////////////////////////////////////////////////////
-void VarStore::trydeclaring(const ComplexNode* id, Type type){
-  auto ret = db.insert(std::make_pair(id->getCode(), type));
 
-  if(ret.second) //the value was sucessfully inserted
-  { 
-    //std::cout<<"VarStore confirms decl of "<<id->getCode()<<std::endl;
-  }
-  else //alredy declared
-  {
-      std::string output="Variable "+id->getCode()+" already declared previously";
-      error_nonblocking(output.c_str(),id->lineno,id->getCode());
-  }
-}
 
-void VarStore::checkdeclared(const ComplexNode* lhs){
-  std::map<std::string, Type>::iterator it = db.find(lhs->getCode());
-  if(it==db.end()){
-    std::string output="Attempted usage of undeclared variable "+lhs->getCode();
-    error_nonblocking(output.c_str(), lhs->lineno, lhs->getCode());
-  }
-}
 
-Type VarStore::getType(ComplexNode* id){
-  std::map<std::string, Type>::iterator it = db.find(id->getCode());
-  if(it!=db.end()){
-    return it->second;
-  }
-  else{
-    std::string output="Many error messages will be generated from here on, all redundant but formulated in different ways, because tried to query a type on undeclared variable "+id->getCode();
-    error_nonblocking(output.c_str(),id->lineno,id->getCode());
-    return Type::UNSET;
-  }
-}
 
-void VarStore::checkcompatible(ComplexNode* lhs, ComplexNode* rhs){
-  Type lhsType=lhs->getType();
-  Type rhsType=rhs->getType();
-  if (lhsType==rhsType){return ;}
-  else if ((lhsType==Type::NUM)&&(rhsType==Type::INT)){return ;}
-  else if ((lhsType==Type::INT)&&(rhsType==Type::NUM)){return ;}
-  else{
-    std::string output="Type incompability between left ("+typeToString(lhsType)+") and right ("+typeToString(rhsType)+") hand sides";
-    error_nonblocking(output.c_str(),lhs->lineno,lhs->getCode());
-  }
-}
+
+
+
+
+
 /////////////////////////////////////////////////////////////////////////
 void Tree::traversebfs()
 {
@@ -578,7 +611,7 @@ Declaration::Declaration(CN_Identifier*& id, Type type)
 :id(id), type(type){}
 
 void Declaration::finalwork(){
-  id->setType(type);
+  try_setType(id->getCode(),type);
   //std::cout<<"%declared "<<id->getCode()<<std::endl;
 }
 
@@ -588,7 +621,7 @@ ForLoop::ForLoop(ComplexNode* id, ComplexNode* start, ComplexNode* end, ComplexN
 
 void ForLoop::finalwork(){
   
-  id->setType(Type::NUM);
+  try_setType(id->getCode(),Type::NUM);
   
   start->checkTypeOR(Type::NUM, Type::INT);
   start->checkdeclared();
@@ -668,4 +701,12 @@ void SetLineWidth::finalwork(){
 
     w->traversebfs();
     std::cout<<" setlinewidth\n";
+}
+////////////////////////////////////////////
+void setType(ComplexNode* node, Type intype){
+  node->type=intype;
+}
+
+void try_setType(std::string id, Type intype){
+  env.trydeclaring(id, intype);
 }

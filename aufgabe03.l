@@ -51,12 +51,12 @@ start                 {return(START);}
 end                   {return(END);}
 var                   {return(VAR);}
 
-Int                   {yylval.ast_fc=(new ComplexNode())->setType(Type::INT);   return(TYPE);}
-Num                   {yylval.ast_fc=(new ComplexNode())->setType(Type::NUM);   return(TYPE);}
-String                {yylval.ast_fc=(new ComplexNode())->setType(Type::STRING);return(TYPE);}
-Point                 {yylval.ast_fc=(new ComplexNode())->setType(Type::POINT); return(TYPE);}
-Path                  {yylval.ast_fc=(new ComplexNode())->setType(Type::PATH);  return(TYPE);}
-Term                  {yylval.ast_fc=(new ComplexNode())->setType(Type::TERM);  return(TYPE);}
+Int                   {yylval.ast_fc=(new ComplexNode());setType(yylval.ast_fc,Type::INT);   return(TYPE);}
+Num                   {yylval.ast_fc=(new ComplexNode());setType(yylval.ast_fc,Type::NUM);   return(TYPE);}
+String                {yylval.ast_fc=(new ComplexNode());setType(yylval.ast_fc,Type::STRING);return(TYPE);}
+Point                 {yylval.ast_fc=(new ComplexNode());setType(yylval.ast_fc,Type::POINT); return(TYPE);}
+Path                  {yylval.ast_fc=(new ComplexNode());setType(yylval.ast_fc,Type::PATH);  return(TYPE);}
+Term                  {yylval.ast_fc=(new ComplexNode());setType(yylval.ast_fc,Type::TERM);  return(TYPE);}
 
 for                   {return(FOR);}
 to                    {return(TO);}

@@ -6,8 +6,6 @@
 #include "datastructure.h"
 #include "globals.hpp"
 
-VarStore env;
-
 %}
 
 %union {
@@ -116,12 +114,12 @@ potval_2				:  fcall                 										{}
 				   			|  "<<" list ">>"														{}
                 ;
                 
-potval_1        :  val_ins                                  {$$=new ComplexNode();$$->addchild($1);$$->setType($1->getType());} //potential value minus int, num, string and id. due to ps boundary conditions
+potval_1        :  val_ins                                  {$$=new ComplexNode();$$->addchild($1);setType($$,$1->getType());} //potential value minus int, num, string and id. due to ps boundary conditions
                 |  IDENTIFIER                               {$$=new ComplexNode();$$->addchild($1);} //WARNING: You want to set types not WHILE parsing (here), but AFTER parsin (at traversebfs)
                 
-val_ins         :  VAL_INT                                  {$$=new ComplexNode();$$->addchild($1);$$->setType(Type::INT);}
-                |  VAL_NUM                                  {$$=new ComplexNode();$$->addchild($1);$$->setType(Type::NUM);}
-                |  VAL_STRING                               {$$=new ComplexNode();$$->addchild($1);$$->setType(Type::STRING);}
+val_ins         :  VAL_INT                                  {$$=new ComplexNode();$$->addchild($1);setType($$,Type::INT);}
+                |  VAL_NUM                                  {$$=new ComplexNode();$$->addchild($1);setType($$,Type::NUM);}
+                |  VAL_STRING                               {$$=new ComplexNode();$$->addchild($1);setType($$,Type::STRING);}
 
 list            :  potentialvalue														{}
                 |  list ',' potentialvalue									{}
@@ -156,4 +154,8 @@ void error_nonblocking(const char* s){
 */
 void error_nonblocking(const char* s, int line, std::string token){
   printf("Error on line %d, near token %s \"%s\"\n", line, token.c_str(), s);
+}
+
+void error_nonblocking(const char* s, int line){
+  printf("Error on line %d \"%s\"\n", line, s);
 }
