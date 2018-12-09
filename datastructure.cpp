@@ -522,6 +522,9 @@ std::string typeToString(Type type){
 		}
 	}
 //////////////////////////////////////////////////////////////////
+std::string const disable_newpath=" /newpath_backup {newpath} bind def /newpath { } bind def ";
+std::string const reenable_newpath=" /newpath {newpath_backup} bind def ";
+//////////////////////////////////////////////////////////////////
 ComplexNode* CN_Identifier::setType(Type intype){
   env.trydeclaring(this, intype);
 

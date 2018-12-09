@@ -76,15 +76,15 @@ fcall         	:  SETCOLOR '(' potentialvalue ',' potentialvalue ',' potentialva
 			  				|  PLOT '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'		    {std::cout<<"error: not to be implemented\n"<<std::flush;exit(-1);																													 }                                 
 			  				|  STRING2PATH '(' potentialvalue ',' potentialvalue ')'		                                                                        {$$=(new ComplexNode())->string2path($3,$5);				delete $3;$3=nullptr;delete $5;$5=nullptr;}
 			  				|  CONCAT '(' potentialvalue[left] 
-                                              {$<ast_fc>prepare_left = (new ComplexNode())->setCode($left->getCode()+" reversepath currentpoint newpath");}
+                                              {$<ast_fc>prepare_left = (new ComplexNode())->setCode($left->getCode()+" reversepath currentpoint ");}
                                               [prepare_left] 
                               ',' potentialvalue[right]
-                              ')' {$fcall=(new ComplexNode())->setCode($<ast_fc>prepare_left->getCode()+$right->getCode()+" lineto"+($left->getCode()).erase(($left->getCode().find("newpath")),7));} //remove "newpath" (7 chars) from the left curve
+                              ')' {$fcall=(new ComplexNode())->setCode($<ast_fc>prepare_left->getCode()+$right->getCode()+" lineto"+disable_newpath+($left->getCode())+reenable_newpath);}
                 |  UNION '(' potentialvalue[left] 
-                                              {$<ast_fc>prepare_left = (new ComplexNode())->setCode($left->getCode()+" reversepath currentpoint newpath");}
+                                              {$<ast_fc>prepare_left = (new ComplexNode())->setCode($left->getCode()+" reversepath currentpoint ");}
                                               [prepare_left] 
                               ',' potentialvalue[right]
-                              ')' {$fcall=(new ComplexNode())->setCode($<ast_fc>prepare_left->getCode()+$right->getCode()+" moveto"+($left->getCode()).erase(($left->getCode().find("newpath")),7));} //remove "newpath" (7 chars) from the left curve
+                              ')' {$fcall=(new ComplexNode())->setCode($<ast_fc>prepare_left->getCode()+$right->getCode()+" moveto"+disable_newpath+($left->getCode())+reenable_newpath);}
 			  				|  SCALETOBOX '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'		                                                      {std::cout<<"error: not to be implemented\n"<<std::flush;exit(-1);																													 }         
 			  				|  DRAW '(' potentialvalue ')'		                                                                                                  {$$=(new ComplexNode())->draw($3);									delete $3;$3=nullptr;}
 			  				|  FILL '(' potentialvalue ')'		                                                                                                  {$$=(new ComplexNode())->fill($3);									delete $3;$3=nullptr;}
