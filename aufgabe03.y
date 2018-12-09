@@ -14,13 +14,12 @@ VarStore env;
   class ComplexNode* ast_fc;
 }
 				
-%type <ast_fc> IDENTIFIER VAL_INT VAL_NUM VAL_STRING list potentialvalue fcall command commands program val_ins binding potval_1 potval_2 TYPE
+%type <ast_fc> list potentialvalue fcall command commands program val_ins binding potval_1 potval_2
 
-%token PICTURE IDENTIFIER START END
+%token PICTURE START END
 %token VAR
-%token TYPE
-%token FOR TO VAL_INT STEP DO DONE
-%token VAL_NUM VAL_STRING
+<ast_fc> TYPE IDENTIFIER VAL_INT VAL_NUM VAL_STRING
+%token FOR TO  STEP DO DONE
 
 %token SETCOLOR SETDRAWSTYLE SETFONT SETLINEWIDTH ARC ELLIPSE PLOT STRING2PATH CONCAT UNION SCALETOBOX DRAW FILL NUM2STRING WRITE ROTATE SCALE TRANSLATE CLIP
 %token SIN COS RANDOM EXP ABS LN
@@ -76,8 +75,16 @@ fcall         	:  SETCOLOR '(' potentialvalue ',' potentialvalue ',' potentialva
 			  				|  ELLIPSE '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'  		                  {$$=(new ComplexNode())->ellipse($3,$5,$7,$9,$11);	delete $3;$3=nullptr;delete $5;$5=nullptr;delete $7;$7=nullptr;delete $9;$9=nullptr;delete $11;$11=nullptr;}
 			  				|  PLOT '(' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ',' potentialvalue ')'		    {std::cout<<"error: not to be implemented\n"<<std::flush;exit(-1);																													 }                                 
 			  				|  STRING2PATH '(' potentialvalue ',' potentialvalue ')'		                                                                        {$$=(new ComplexNode())->string2path($3,$5);				delete $3;$3=nullptr;delete $5;$5=nullptr;}
-			  				|  CONCAT '(' potentialvalue ',' potentialvalue ')'		                                                                              {std::cout<<"error: not to be implemented\n"<<std::flush;exit(-1);																													 }         
-			  				|  UNION '(' potentialvalue ',' potentialvalue ')'		                                                                              {std::cout<<"error: not to be implemented\n"<<std::flush;exit(-1);																													 }         
+			  				|  CONCAT '(' potentialvalue[left] 
+                                              {$<ast_fc>prepare_left = (new ComplexNode())->setCode($left->getCode()+" reversepath currentpoint newpath");}
+                                              [prepare_left] 
+                              ',' potentialvalue[right]
+                              ')' {$fcall=(new ComplexNode())->setCode($<ast_fc>prepare_left->getCode()+$right->getCode()+" lineto"+($left->getCode()).erase(($left->getCode().find("newpath")),7));} //remove "newpath" (7 chars) from the left curve
+                |  UNION '(' potentialvalue[left] 
+                                              {$<ast_fc>prepare_left = (new ComplexNode())->setCode($left->getCode()+" reversepath currentpoint newpath");}
+                                              [prepare_left] 
+                              ',' potentialvalue[right]
+                              ')' {$fcall=(new ComplexNode())->setCode($<ast_fc>prepare_left->getCode()+$right->getCode()+" moveto"+($left->getCode()).erase(($left->getCode().find("newpath")),7));} //remove "newpath" (7 chars) from the left curve
 			  				|  SCALETOBOX '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'		                                                      {std::cout<<"error: not to be implemented\n"<<std::flush;exit(-1);																													 }         
 			  				|  DRAW '(' potentialvalue ')'		                                                                                                  {$$=(new ComplexNode())->draw($3);									delete $3;$3=nullptr;}
 			  				|  FILL '(' potentialvalue ')'		                                                                                                  {$$=(new ComplexNode())->fill($3);									delete $3;$3=nullptr;}

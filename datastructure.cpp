@@ -155,7 +155,7 @@ ComplexNode* ComplexNode::arc(ComplexNode*& p, ComplexNode*& r, ComplexNode*& al
     a3=r->getCode();
     a4=alpha->getCode();
     a5=beta->getCode();
-    code="newpath "+xy+" "+a3+" "+a4+" "+a5+" arc";
+    code=" newpath "+xy+" "+a3+" "+a4+" "+a5+" arc";
     
     setType(Type::PATH);
 
@@ -178,7 +178,7 @@ ComplexNode* ComplexNode::ellipse(ComplexNode*& p, ComplexNode*& r1, ComplexNode
     a4=r2->getCode();
     a5=alpha->getCode();
     a6=beta->getCode();
-    code="newpath /savematrix matrix currentmatrix def "+xy+" translate "+a3+" "+a4+" scale 0 0 1 "+a5+" "+a6+" arc savematrix setmatrix"; //TODO: have to undo the translate here
+    code=" newpath /savematrix matrix currentmatrix def "+xy+" translate "+a3+" "+a4+" scale 0 0 1 "+a5+" "+a6+" arc savematrix setmatrix"; //TODO: have to undo the translate here
     
     setType(Type::PATH);
     
@@ -196,7 +196,7 @@ ComplexNode* ComplexNode::string2path(ComplexNode*& p, ComplexNode*& s)
     xy=p->getCode();
     a3=s->getCode();
 
-    code="newpath "+xy+" moveto "+a3+" true charpath";
+    code=" newpath "+xy+" moveto "+a3+" true charpath";
     
     setType(Type::PATH);
 
@@ -213,7 +213,7 @@ ComplexNode* ComplexNode::write(ComplexNode*& p, ComplexNode*& s)
     xy=p->getCode();
     a3=s->getCode();
 
-    code="newpath "+xy+" moveto "+a3+" show";
+    code=" newpath "+xy+" moveto "+a3+" show";
 
     return this;
 }
@@ -410,7 +410,7 @@ ComplexNode* ComplexNode::pathoverpoints(ComplexNode*& rawlist)
         xy=it->getCode();
         if(it==listcopy.begin())
         {
-            code="newpath "+xy+" moveto ";
+            code=" newpath "+xy+" moveto ";
         }
         else
         {
