@@ -13,7 +13,7 @@ z:=10;
 p<-(1,1);                     %pass
 p<-(x,x);                     %pass
 p<-(y,y);                     %fail. undeclared y
-p<-(z,z);                     %fail. undeclared y
+p<-(z,z);                     %pass
 p1<-p;                        %fail. undeclared p1
 p2<-p;                        %pass
 

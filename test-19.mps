@@ -32,7 +32,7 @@ pt:=<<(1,1),p>>;              %pass
 pt:=<<(1,1),x>>;              %fail, incompatible
 for p := 10 to 20 step 2 do num2string(x); done;    %fail, incompatible
 for y := 10 to 20 step 2 do num2string(x); done;    %fail, not declared
-for x := 10.2 to 20 step 2 do num2string(x); done;  %pass
+for x := 10.2 to 20 step 2 do num2string(x); done;  %fail, already declared
 
 
 end
