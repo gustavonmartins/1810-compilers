@@ -38,6 +38,7 @@ public:
     ComplexNode* setdrawstyle(ComplexNode*& s, ComplexNode*& e);
     ComplexNode* arc(ComplexNode*& p, ComplexNode*& r, ComplexNode*& alpha, ComplexNode*& beta);
     ComplexNode* ellipse(ComplexNode*& p, ComplexNode*& r1, ComplexNode*& r2, ComplexNode*& alpha, ComplexNode*& beta);
+    ComplexNode* plot(ComplexNode*& x, ComplexNode*& y, ComplexNode*& n, ComplexNode*& min, ComplexNode*& max, ComplexNode* var,ComplexNode* function);
     ComplexNode* string2path(ComplexNode*& p, ComplexNode*& s);
     ComplexNode* scaletobox(ComplexNode* xw, ComplexNode* yw, ComplexNode* p);
     ComplexNode* write(ComplexNode*& p, ComplexNode*& s);

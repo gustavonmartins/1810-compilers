@@ -189,6 +189,39 @@ ComplexNode* ComplexNode::ellipse(ComplexNode*& p, ComplexNode*& r1, ComplexNode
     return this;
 }
 
+ComplexNode* ComplexNode::plot(ComplexNode*& x, ComplexNode*& y, ComplexNode*& n, ComplexNode*& min, ComplexNode*& max, ComplexNode* var,ComplexNode* function)
+{
+    std::string a1,dummy, a2, a3, a4, a5, a6;
+    x   ->checkTypeOR(Type::NUM, Type::INT);
+    y   ->checkTypeOR(Type::NUM, Type::INT);
+    n   ->checkTypeOR(Type::NUM, Type::INT);
+    min ->checkTypeOR(Type::NUM, Type::INT);
+    max ->checkTypeOR(Type::NUM, Type::INT);
+
+    /* WORKING EXAMPLE:
+/fun {x sin 100 mul} def
+/start 0 def
+/inc 10 def
+/end 600 def
+newpath 0 0 moveto start inc end {dup /x exch def fun lineto } for
+
+    */
+
+    std::string fun, start, inc, end, run, translate, untranslate;
+    fun=function->getCode();
+    start=min->getCode();
+    end=max->getCode();
+    inc=end+" "+start+" sub "+n->getCode()+" 1 sub div"; //(max-min)/(n-1)      end start sub n 1 sub div
+    translate=x->getCode()+" "+y->getCode()+" translate";
+    untranslate=x->getCode()+" neg "+y->getCode()+" neg translate";
+    
+    code=translate+" newpath 0 0 moveto "+start+" "+inc+" "+end+" {dup /"+var->getCode()+" exch def "+fun+" lineto } for "+untranslate;
+    
+    setType(Type::PATH);
+
+    return this;
+}
+
 ComplexNode* ComplexNode::string2path(ComplexNode*& p, ComplexNode*& s)
 {
     p->checkType(Type::POINT);
