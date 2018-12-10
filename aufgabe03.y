@@ -40,7 +40,7 @@ VarStore env;
 
 %%
 
-program 				: PICTURE VAL_STRING declarations START commands END	{$5->printCode();std::cout<<"\nshowpage";}
+program 				: PICTURE VAL_STRING declarations START commands END	{$5->printCode();std::cout<<"\nshowpage\n";}
         				;
 	
 declarations  	: %empty
@@ -85,7 +85,7 @@ fcall         	:  SETCOLOR '(' potentialvalue ',' potentialvalue ',' potentialva
                                               [prepare_left] 
                               ',' potentialvalue[right]
                               ')' {$fcall=(new ComplexNode())->setCode($<ast_fc>prepare_left->getCode()+$right->getCode()+" moveto"+disable_newpath+($left->getCode())+reenable_newpath);}
-			  				|  SCALETOBOX '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'		                                                      {std::cout<<"error: not to be implemented\n"<<std::flush;exit(-1);																													 }         
+                |  SCALETOBOX '(' potentialvalue ',' potentialvalue ',' potentialvalue ')'		                                                      {$$=(new ComplexNode())->scaletobox($3, $5, $7); delete $3, $3=nullptr; delete $5, $5=nullptr; delete $7, $7=nullptr;}
 			  				|  DRAW '(' potentialvalue ')'		                                                                                                  {$$=(new ComplexNode())->draw($3);									delete $3;$3=nullptr;}
 			  				|  FILL '(' potentialvalue ')'		                                                                                                  {$$=(new ComplexNode())->fill($3);									delete $3;$3=nullptr;}
 			  				|  NUM2STRING '(' potentialvalue ')'		                                                                                            {$$=(new ComplexNode())->num2string($3);delete $3;$3=nullptr;}

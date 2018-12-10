@@ -110,6 +110,10 @@ ComplexNode* ComplexNode::setfont(ComplexNode*& font,ComplexNode*& s)
     
     a1=font->getCode();
     a2 = s->getCode();
+    //Has to remove () from this string, otherwise stacks gets dirty
+    a1.pop_back();
+    a1.erase(a1.begin());
+    
     code="/"+a1+" findfont "+a2+" scalefont setfont";
 
     return this;
@@ -201,6 +205,50 @@ ComplexNode* ComplexNode::string2path(ComplexNode*& p, ComplexNode*& s)
     setType(Type::PATH);
 
     return this;
+}
+
+ComplexNode* ComplexNode::scaletobox(ComplexNode* xw, ComplexNode* yw, ComplexNode* p){
+  xw->checkTypeOR(Type::INT, Type::NUM);
+  yw->checkTypeOR(Type::INT, Type::NUM);
+  p ->checkType(Type::PATH);
+  
+  
+
+/* SAMPLE OF HAND-MADE GHOSTSCRIPT PROCESS:  
+/mypath {newpath 0 0 moveto 50 100 lineto} def
+
+/dx_is {currentpoint pop reversepath currentpoint reversepath pop sub} def
+/dy_is {currentpoint exch pop reversepath currentpoint reversepath exch pop sub} def
+/dx_should {200} def
+/dy_should{200} def
+
+/find_sx {dx_should dx_is div } def
+/find_sy {dy_should dy_is div} def
+
+/prepare_scalestack {1 find_sx div 1 find_sy div find_sx find_sy} def
+
+/scale_final {mypath prepare_scalestack scale mypath scale} def
+*/
+  std::string mypath=p->getCode();
+  code=R"(
+    
+/dx_is {currentpoint pop reversepath currentpoint reversepath pop sub} def
+/dy_is {currentpoint exch pop reversepath currentpoint reversepath exch pop sub} def
+/dx_should {)"+xw->getCode()+R"(} def
+/dy_should{)"+yw->getCode()+R"(} def
+
+/find_sx {dx_should dx_is div } def
+/find_sy {dy_should dy_is div} def
+
+/prepare_scalestack {1 find_sx div 1 find_sy div find_sx find_sy} def
+
+/scale_final {)"+mypath+R"( prepare_scalestack scale )"+mypath+R"( scale} def
+
+scale_final
+
+)";
+  
+  return this;
 }
 
 ComplexNode* ComplexNode::write(ComplexNode*& p, ComplexNode*& s)

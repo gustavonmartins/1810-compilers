@@ -39,6 +39,7 @@ public:
     ComplexNode* arc(ComplexNode*& p, ComplexNode*& r, ComplexNode*& alpha, ComplexNode*& beta);
     ComplexNode* ellipse(ComplexNode*& p, ComplexNode*& r1, ComplexNode*& r2, ComplexNode*& alpha, ComplexNode*& beta);
     ComplexNode* string2path(ComplexNode*& p, ComplexNode*& s);
+    ComplexNode* scaletobox(ComplexNode* xw, ComplexNode* yw, ComplexNode* p);
     ComplexNode* write(ComplexNode*& p, ComplexNode*& s);
     ComplexNode* write(ComplexNode*& s);
     ComplexNode* num2string(ComplexNode*& n);
