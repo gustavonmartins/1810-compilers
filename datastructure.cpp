@@ -265,8 +265,8 @@ ComplexNode* ComplexNode::scaletobox(ComplexNode* xw, ComplexNode* yw, ComplexNo
   std::string mypath=p->getCode();
   code=R"(
     
-/dx_is {currentpoint pop reversepath currentpoint reversepath pop sub} def
-/dy_is {currentpoint exch pop reversepath currentpoint reversepath exch pop sub} def
+/dx_is {pathbbox 1 index 4 index sub 5 1 roll pop pop pop pop} def
+/dy_is {pathbbox 0 index 3 index sub 5 1 roll pop pop pop pop} def
 /dx_should {)"+xw->getCode()+R"(} def
 /dy_should{)"+yw->getCode()+R"(} def
 
@@ -583,6 +583,8 @@ ComplexNode* ComplexNode::clip(ComplexNode*& p, ComplexNode*& t)
     cliparea=p->getCode();
     term=t->getCode();
     code="clipsave\n"+cliparea+"\nclip\n"+term+"\ncliprestore";
+    
+    setType(Type::TERM);
 
     return this;
 }
